@@ -1,0 +1,100 @@
+\documentclass[a4paper,10pt,oneside]{book}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[paper=a4paper,margin=1in]{geometry}
+\usepackage{imakeidx}
+\usepackage{tikz}
+\usepackage{fancyvrb}
+\usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\usepackage{caption}
+\usetikzlibrary{positioning, quotes}
+\usepackage[english]{babel}
+\usepackage[skip=10pt plus1pt, indent=40pt]{parskip}
+\usepackage[
+  backend=bibtex,
+  style=numeric,
+  sorting=ydnt
+  ]{biblatex}
+\addbibresource{quotes.bib}
+\makeindex
+
+\newcommand{\putimage}[3] {
+	\begin{figure}[H]
+	    \centering
+	    \includegraphics[width=0.9\linewidth]{#1}
+	    \caption{#2}\label{#3}
+	\end{figure}
+}
+
+\begin{document}
+    
+    \begin{titlepage}
+        
+        \noindent
+        \begin{minipage}[t]{0.19\textwidth}
+            \vspace{-4mm}{\includegraphics[scale=1.15]{logo_unimib.pdf}}
+        \end{minipage}
+        \begin{minipage}[t]{0.81\textwidth}
+        {
+                \setstretch{1.42}
+                {\textsc{Università degli Studi di Milano - Bicocca}} \\
+                \textbf{Scuola di Scienze} \\
+                \textbf{Dipartimento di Informatica, Sistemistica e Comunicazione} \\
+                \textbf{Master Degree in Computer Science} \\
+                \par
+        }
+        \end{minipage}
+        
+	\vspace{40mm}
+        
+	\begin{center}
+            {\LARGE{
+                    \setstretch{1.2}
+                    \textbf{Failing to solve traffic with Reinforcement Learning and Curriculum approaches}
+                    \par
+            }}
+            {\large{
+                    \setstretch{1.2}
+                    \textit{What is SUMO and why intelligent traffic lights would make traffic worse}
+                    \par
+            }}
+        \end{center}
+        
+        \vspace{50mm}
+
+        \noindent
+        {\large \textbf{Supervisor:} Prof. Giuseppe Vizzari}
+        
+        \vspace{15mm}
+
+        \begin{flushright}
+            {\large \textbf{Candidate:}} \\
+            \large{Refolli Francesco} \\
+            \large{Matricola 865955} 
+        \end{flushright}
+        
+        \vspace{40mm}
+        \begin{center}
+            {\large{\bf Academic Year 2024-2025}}
+        \end{center}
+
+        \restoregeometry
+        
+    \end{titlepage}
+
+    \include{abstract}
+    \printindex
+    \tableofcontents
+    \renewcommand{\baselinestretch}{1.5} 
+    
+    \printbibliography
+\end{document}
