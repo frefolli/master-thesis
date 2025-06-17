@@ -54,7 +54,7 @@ The urban area can be divided into \textit{zones} in which some vehicles can or 
 \textit{Restricted traffic zones} (\textbf{ZTL}) are effectively used in city centers to block the entrance of non-resident vehicles and reduce the number of vehicles in the area. Vehicles violating this blockage are subject to a fine. If this fine is too low or if the coverage is limited, the ZTL has the same effects of a CAS.
 \textit{Controlled access zones} (\textbf{CAS}) are similar but only require the payment of a toll in order to enter in the zone. An infamous example is the Area C of the city of Milan, where in order to enter it, the driver needs to buy a ticket (but some vehicles are exempts). Usually, the toll is used as a deterrent for persuading drivers to avoid central areas. Unfortunately, this measure is usually misunderstood as a way of taxing non-residents or citizens.
 Finally, in \textit{Low emission zones} (\textbf{LEZ}) the only vehicles which entrance is forbidden are the ones exceeding pollution limits (e.g. by Europe emission standards). This measure is effective only in those societies where electric vehicles (EVs) and low-emission vehicles make up a small percentage of registered vehicles, because otherwise a large number of vehicles would not be affected by this regulation.
-In general, the more restrictive an area is and the more area it coverts, the more it reduces traffic and wear and tear of the road network. Nonetheless, zones can also have the side effect of increasing traffic in peripheral areas or citizen rage if the restricted area is not well served by public transit, if the are no interchange parking lots outside of the area and if it's not reachable by other means, such as buses and trains.
+In general, the more restrictive an area is and the more area it coverts, the more it reduces traffic and wear and tear of the road network \cite{derobertis2016traffic}. Nonetheless, zones can also have the side effect of increasing traffic in peripheral areas or citizen rage if the restricted area is not well served by public transit, if the are no interchange parking lots outside of the area and if it's not reachable by other means, such as buses and trains.
 
 \paragraph{Dedicated lanes}
 
@@ -99,21 +99,22 @@ Precedence to tram and buses can be given by detecting their proximity to the tr
 This section gives an introduction to demand modeling which will be useful in further chapters to explain how demand has been simulated and how scenarios have been created.
 The two subsections answer two diffent aspects of demand modeling: space and time.
 
-\subsection{Where?}
+\subsection{Where do vehicles go?}
 
 In \textit{Origin-destination matrices} (\textbf{OD Matrix}) every cell contains a number representing the approximate demand of transit vehicles from a zone A to a zone B. Depending of the scale of the simulation, zones can be regions, provinces, cities or urban districts.
 For example, the Lombardy region yearly analyze traffic and demand \cite{ODLombardia2014} between its cities in order to plan maintenance and improvements in its regional road network.
 It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 \cite{ODMilano2010} had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished (it can be seen in \ref{fig:odzones-milano-2010}) and therefore the matrix has to be taken with coarse-grain granularity.
 Nonetheless, counting vehicles and inferring their origin destination it not an easy activity \cite{bell1983estimation}.
 
-\subsection{When?}
+\subsection{When do vehicles depart?}
 
 Usually, mobility agencies create more than one OD matrix in order to capture how traffic levels change during a day.
 Some agencies such as AMAT use three time ranges: 07:00-10:00 (morning peak), 10:00-16:00 (off-peak) and 16:00-20:00 (evening peak). 
 While other entities like Regione Lombardia, provide hourly data.
-In figures \ref{fig:odmatrix-milano-2010} and \ref{fig:odmatrix-lombardy-2014}, mean traffic levels from OD matrices of Milan and Lombardy region can be seen as they estimate a similar situation.
+In figures \ref{fig:odmatrix-milano-2010} and \ref{fig:odmatrix-lombardy-2014}, we can see through mean traffic levels from OD matrices of Milan and Lombardy region can be seen as they estimate a similar situation.
 What happens during working days is that there are two major peaks, one in the morning and one in the afternoon/evening, which correspond to workers going and returning from work.
 Recently it has emerged also another phenomenon called \textit{third rush hour}, which is the peak during midday due to trips with private vehicles in order to have lunch.
+Traffic peaks depend also on the day of the year. In those days before or after the weekend, an increase in trips is registered due to long-distance commutes and holidays in which people are used to travel between an home city and a work/holiday city. It can increase also in proximity of scheduled events like sport matches, concerts, strikes and political demonstrations.
 %% Creare un sketch grafico di come si comporta il traffico, magari da sovrapporre a quelli
 
 \section{Settings and assumptions}
