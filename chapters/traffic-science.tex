@@ -4,7 +4,7 @@
 
 \paragraph{Terminology}
 
-In the rest of the document I will refer to \textit{transit} or \textit{flow} to indicate a group of traveling vehicles.
+In the rest of the document we will refer to \textit{transit} or \textit{flow} to indicate a group of traveling vehicles.
 The word \textit{traffic} will be used only indicate the phenomenon of high density flows where there is the perception of being slowed down.
 The word \textit{jam} will indicate strictly a deadlock traffic event.
 
@@ -68,22 +68,51 @@ Where space isn't enough for two-way roads with dedicated lanes, often a good so
 
 \paragraph{Cloverleafs}
 
+Intersections can be built in the form of \textit{cloverleafs} to remove entirely conflicts from crossing flows. While this offer high capacity and speed, it requires excessive land usage and cannot be built in urban context without erasing entire neighborhoods. (FOTO: Confronto tra centro di Siena e cloverleaf).
+
 \paragraph{Precedence rule}
+
+In urban area, non regulated intersections often follow the precedence rule: a vehicle should wait for the transit of a vehicle coming from its right, for example. The clear advantage is the lack of specialized infrastructure, at the cost of dependency on human reaction times and some times it can lead to deadlocks.
 
 \paragraph{Roundabouts}
 
+In roundabouts, the precedence rule is "inverted": the precedence is given to vehicles which are already in the roundabout. Depending on reaction times, it is observed that it grants a continuous flow and minimizes idle times.
+
 \paragraph{Traffic lights}
+
+With respect to other regulation strategies, \textit{traffic lights} are more \textbf{interesting} since they offer flexibility and regulators can apply different programs over time.
 
 \subparagraph{Fixed cycle}
 
+The most common program is the \textit{fixed cycle program}. Every X seconds its state changes, switching from green to yellow and red, effectively selecting from which lanes vehicles are allowed to occupy the intersection and where they can go. An intuition is that with low cycle time (e.g. 10 seconds), the intersection behaves like a roundabout, which is advantageous when dealing with incoming traffic uniformly distributed among the entrances. With long cycles, the queue is less segmented (as start-and-stop phenomenon is reduced) but depending on the distribution of the incoming flows, it can lead to a waste of time, as vehicles from a trafficked main road may need to wait on red a long cycle with a deserted side road on green.
+
 \subparagraph{Green-wave}
 
-\subparagraph{Asservimento semaforico}
+Traffic lights can be \textit{synchronized} in order to obtain a so-called \textit{green-wave}, in which many adjacent traffic lights are set to green in order to grant a continuous or uninterrupted flow. This can be achieved by directly synchronizing the phase of all traffic lights or by implementing a cycle schedule allowing groups of vehicles to flow in a direction while maintaining time separation with respect to preceding vehicles and vehicles from other directions crossing the intersections.
+
+\subparagraph{Transit signal priority}
+
+Precedence to tram and buses can be given by detecting their proximity to the traffic light regulated intersection. This drastically reduces waiting times for public transit vehicles, which eventually could reduce the number of circulating private vehicles and thus lower traffic levels. This can be applied also to other type of public vehicles like emergency vehicles.
 
 \section{Demand models}
 
-%% When: Rush-hour models
-%% Where: Origin/Destination models
+This section gives an introduction to demand modeling which will be useful in further chapters to explain how demand has been simulated and how scenarios have been created.
+
+\subsection{Where}
+
+In \textit{Origin-destination matrices} (\textbf{OD Matrix}) every cell contains a number representing the approximate demand of transit vehicles from a zone A to a zone B. Depending of the scale of the simulation, zones can be regions, provinces, cities or urban districts.
+For example, the Lombardy region yearly analyze traffic and demand between its cities in order to plan maintenance and improvements in its regional road network.
+It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished and therefore the matrix has to be taken with coarse-grain granularity.
+Nonetheless, counting vehicles and inferring their origin destination it not an easy activity \cite{bell1983estimation}.
+
+\subsection{When}
+
+Usually, mobility agencies create more than one OD matrix in order to capture how traffic levels change during a day. For example, the AMAT model uses three time ranges: 07:00-10:00 (morning peak), 10:00-16:00 (off-peak) and 16:00-20:00 (evening peak). 
+
+%% Creare grafico con le medie orarie con la matrice di AMAT per coppia OD, cioe' come varia nel tempo
+%% Creare grafico con le medie orarie con la matrice della Lombardia per coppia OD, cioe' come varia nel tempo
+%% Creare un sketch grafico di come si comporta il traffico, magari da sovrapporre a quelli
+%% Introdurre il corcetto di Third Rush Hour (cioe' l'ora di pranzo)
 
 \section{Assumptions}
 
