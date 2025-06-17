@@ -46,7 +46,7 @@ What happens when among all the route that can be possibly be followed there is 
 
 \paragraph{Bypasses, freeways, motorways}
 
-Freeways and motorways are an example of \textit{specialized roads} which can be used to segregate the flows of vehicles needing to travel long distances from the local/regional transit. Those are generally built far from urban areas and those are what prevented urban planners from extending local roads into ten-lanes wide monsters. A further example of specialized road are bypasses, which are used to cut travel times and reduce the number of vehicles that go through the city center, but can also be used in combination with motorways. For example, there is a project to build a bypass in the Bologna's motorway node to split the flow on the basis of whether those vehicles are going to Bologna or need to reach other destinations like Firenze and Ancona. Specialized roads are generally effective in reducing travel times and represent the more convenient way for traveling mid/long distances, however they require extensive land usage and are subject to increased demand. As they essentially only add capacity to the system, it's only a matter of time before vehicle density reaches jamming levels.
+Freeways and motorways are an example of \textit{specialized roads} which can be used to segregate the flows of vehicles needing to travel long distances from the local/regional transit. Those are generally built far from urban areas and those are what prevented urban planners from extending local roads into ten-lanes wide monsters. A further example of specialized road are bypasses, which are used to cut travel times and reduce the number of vehicles that go through the city center, but can also be used in combination with motorways. For example, in image \ref{fig:bologna-bypass} are reported three alternatives proposed by authorities to build a bypass in the Bologna's motorway node to split the flow on the basis of whether those vehicles are going to Bologna or need to reach other destinations like Firenze and Ancona. Specialized roads are generally effective in reducing travel times and represent the more convenient way for traveling mid/long distances, however they require extensive land usage and are subject to increased demand. As they essentially only add capacity to the system, it's only a matter of time before vehicle density reaches jamming levels.
 
 \paragraph{Transit zones}
 
@@ -97,22 +97,24 @@ Precedence to tram and buses can be given by detecting their proximity to the tr
 \section{Demand models}
 
 This section gives an introduction to demand modeling which will be useful in further chapters to explain how demand has been simulated and how scenarios have been created.
+The two subsections answer two diffent aspects of demand modeling: space and time.
 
-\subsection{Where}
+\subsection{Where?}
 
 In \textit{Origin-destination matrices} (\textbf{OD Matrix}) every cell contains a number representing the approximate demand of transit vehicles from a zone A to a zone B. Depending of the scale of the simulation, zones can be regions, provinces, cities or urban districts.
 For example, the Lombardy region yearly analyze traffic and demand between its cities in order to plan maintenance and improvements in its regional road network.
-It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished and therefore the matrix has to be taken with coarse-grain granularity.
+It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished (it can be seen in \ref{fig:odzones-milano-2010}) and therefore the matrix has to be taken with coarse-grain granularity.
 Nonetheless, counting vehicles and inferring their origin destination it not an easy activity \cite{bell1983estimation}.
 
-\subsection{When}
+\subsection{When?}
 
-Usually, mobility agencies create more than one OD matrix in order to capture how traffic levels change during a day. For example, the AMAT model uses three time ranges: 07:00-10:00 (morning peak), 10:00-16:00 (off-peak) and 16:00-20:00 (evening peak). 
-
-%% Creare grafico con le medie orarie con la matrice di AMAT per coppia OD, cioe' come varia nel tempo
-%% Creare grafico con le medie orarie con la matrice della Lombardia per coppia OD, cioe' come varia nel tempo
+Usually, mobility agencies create more than one OD matrix in order to capture how traffic levels change during a day.
+Some agencies such as AMAT use three time ranges: 07:00-10:00 (morning peak), 10:00-16:00 (off-peak) and 16:00-20:00 (evening peak). 
+While other entities like Regione Lombardia, provide hourly data.
+In figures \ref{fig:odmatrix-milano-2010} and \ref{fig:odmatrix-lombardy-2014}, mean traffic levels from OD matrices of Milan and Lombardy region can be seen as they estimate a similar situation.
+What happens during working days is that there are two major peaks, one in the morning and one in the afternoon/evening, which correspond to workers going and returning from work.
+Recently it has emerged also another phenomenon called \textit{third rush hour}, which is the peak during midday due to trips with private vehicles in order to have lunch.
 %% Creare un sketch grafico di come si comporta il traffico, magari da sovrapporre a quelli
-%% Introdurre il corcetto di Third Rush Hour (cioe' l'ora di pranzo)
 
 \section{Assumptions}
 
@@ -131,20 +133,41 @@ Usually, mobility agencies create more than one OD matrix in order to capture ho
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\linewidth]{figures/multigraph-is-better-than-nothing.png}
-    \caption{A complex intersection pair which is connected with more different roads (Viale Zara. Milan. Italy). In \textit{green} the main lanes, in \textit{blue} the side lanes, in \textit{orange} the tramway.}
+    \caption{A complex intersection pair which is connected with more different roads (Viale Zara. Milan. Italy). In \textit{green} the main lanes, in \textit{blue} the side lanes, in \textit{orange} the tramway. Source: Google Maps (2025)}
     \label{fig:multigraph-is-better-than-nothing}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\linewidth]{figures/atlanta-georgia-freeway.jpg}
-    \caption{A view of Atlanta Freeway, Georgia}
+    \caption{A view of Atlanta Freeway, Georgia. Source: \href{https://www.cnu.org/publicsquare/2017/08/03/why-urban-freeway-expansion-futile}{cnu.org}}
     \label{fig:atlanta-georgia-freeway}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.75\linewidth]{figures/bologna-bypass.jpg}
-    \caption{Highlight of alternatives for the Bologna node bypass}
+    \caption{Highlight of alternatives for the Bologna node bypass. Source: Corriere della Sera}
     \label{fig:bologna-bypass}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{figures/ODZones.Show.Milano2010.png}
+    \caption{Traffic levels from OD Matrix of Milan in 2010}
+    \label{fig:odzones-milano-2010}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{figures/ODGraph.Mean.Milano2010.png}
+    \caption{Traffic levels from OD Matrix of Milan in 2010}
+    \label{fig:odmatrix-milano-2010}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{figures/ODGraph.Mean.Lombardia2014.png}
+    \caption{Traffic levels from OD Matrix of Lombardy in 2014}
+    \label{fig:odmatrix-lombardy-2014}
 \end{figure}
