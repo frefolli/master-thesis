@@ -27,12 +27,51 @@
 \addbibresource{quotes.bib}
 \makeindex
 
-\newcommand{\putimage}[3] {
-	\begin{figure}[H]
-	    \centering
-	    \includegraphics[width=0.9\linewidth]{#1}
-	    \caption{#2}\label{#3}
-	\end{figure}
+\newcommand{\putimage}[4] {
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=#4\linewidth]{#1}
+    \caption{\protect#2}\label{#3}
+  \end{figure}
+}
+
+\newcommand{\putsubimage}[5] {
+  \begin{minipage}{#4\linewidth}
+    \centering
+    \includegraphics[width=#5\linewidth]{#1}
+    \caption{#2}\label{#3}
+  \end{minipage}
+}
+
+\newcommand{\putimagecouple}[2] {
+  \begin{figure}[!htb]
+    \centering
+    #1
+    \hspace{0.5cm}
+    #2
+  \end{figure}
+}
+
+\newcommand{\putimagetriple}[3] {
+  \begin{figure}[!htb]
+    \centering
+    #1
+    #2
+    #3
+  \end{figure}
+}
+
+\newcommand{\putimagequadruple}[4] {
+  \begin{figure}[!htb]
+    \centering
+    #1
+    \hspace{0.5cm}
+    #2
+    \linebreak
+    #3
+    \hspace{0.5cm}
+    #4
+  \end{figure}
 }
 
 \begin{document}
