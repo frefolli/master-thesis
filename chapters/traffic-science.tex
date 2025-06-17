@@ -68,7 +68,7 @@ Where space isn't enough for two-way roads with dedicated lanes, often a good so
 
 \paragraph{Cloverleafs}
 
-Intersections can be built in the form of \textit{cloverleafs} to remove entirely conflicts from crossing flows. While this offer high capacity and speed, it requires excessive land usage and cannot be built in urban context without erasing entire neighborhoods. (FOTO: Confronto tra centro di Siena e cloverleaf).
+Intersections can be built in the form of \textit{cloverleafs} to remove entirely conflicts from crossing flows. While this offer high capacity and speed, it requires excessive land usage (as can be seen in figure \ref{fig:houston-interchange-siena}) and cannot be built in urban context without erasing entire neighborhoods.
 
 \paragraph{Precedence rule}
 
@@ -102,8 +102,8 @@ The two subsections answer two diffent aspects of demand modeling: space and tim
 \subsection{Where?}
 
 In \textit{Origin-destination matrices} (\textbf{OD Matrix}) every cell contains a number representing the approximate demand of transit vehicles from a zone A to a zone B. Depending of the scale of the simulation, zones can be regions, provinces, cities or urban districts.
-For example, the Lombardy region yearly analyze traffic and demand between its cities in order to plan maintenance and improvements in its regional road network.
-It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished (it can be seen in \ref{fig:odzones-milano-2010}) and therefore the matrix has to be taken with coarse-grain granularity.
+For example, the Lombardy region yearly analyze traffic and demand \cite{ODLombardia2014} between its cities in order to plan maintenance and improvements in its regional road network.
+It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 \cite{ODMilano2010} had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished (it can be seen in \ref{fig:odzones-milano-2010}) and therefore the matrix has to be taken with coarse-grain granularity.
 Nonetheless, counting vehicles and inferring their origin destination it not an easy activity \cite{bell1983estimation}.
 
 \subsection{When?}
@@ -116,17 +116,17 @@ What happens during working days is that there are two major peaks, one in the m
 Recently it has emerged also another phenomenon called \textit{third rush hour}, which is the peak during midday due to trips with private vehicles in order to have lunch.
 %% Creare un sketch grafico di come si comporta il traffico, magari da sovrapporre a quelli
 
-\section{Assumptions}
+\section{Settings and assumptions}
 
-% Only cars
-% Synthetic data
-% Baseline traffic lights are using green-wave mode of operation
-% Synthetic queues
-
-\section{Scenarios}
-
-% Breda
-% Celoria
+% Assumptions
+%% Only cars
+%% Two peak rush hours
+%% Synthetic data
+%% Artificial queues
+%% Baseline traffic lights are using green-wave mode of operation
+% Settings
+%% Breda
+%% Celoria
 
 \section{Figures}
 
@@ -153,8 +153,15 @@ Recently it has emerged also another phenomenon called \textit{third rush hour},
 
 \begin{figure}[h]
     \centering
+    \includegraphics[width=0.75\linewidth]{figures/houston-interchange-siena.png}
+    \caption{Comparison between a cloverleaf in Houston, USA, and the city center of Siena, Italy. Source: \href{https://www.reddit.com/r/geography/comments/193ryy5/siena_compared_to_highway_interchange_in_houston/}{r/geography}}
+    \label{fig:houston-interchange-siena}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
     \includegraphics[width=0.75\linewidth]{figures/ODZones.Show.Milano2010.png}
-    \caption{Traffic levels from OD Matrix of Milan in 2010}
+    \caption{OD Zones used within the 2010 Milano AMAT model}
     \label{fig:odzones-milano-2010}
 \end{figure}
 
