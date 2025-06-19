@@ -1,0 +1,50 @@
+\chapter{Traffic Simulations}
+
+\section{SUMO}
+
+SUMO (Simulation of Urban MObility) is an open source multi-modal, microscopic traffic simulator developed by the Institute of Transportation Systems at the German Aerospace Center. It accept a network description file ($*.net.xml$), a demand and flows description file ($*.rou.xml$). It comes with several utils which enable the user to construct or edit a network or a simulation, generate demand from OD matrices, verify correctness of description files, dump slices of OpenStreetMap and more.
+
+\paragraph{Sumo-gui}
+
+\paragraph{Netedit}
+
+\paragraph{Network}
+
+% Explain options as well
+% Edges
+% Lanes
+% Intersections
+% Traffic Lights (and programs)
+
+\paragraph{Flows}
+
+% Explain options as well
+% Vehicles
+% Routes
+% TAZ
+
+\paragraph{Flexibility}
+
+% Explain general sumo-wide options
+% Acceleration model
+% Entering delays
+% Lane change granularity
+% Usage of junctions as TAZ
+% Simulation step
+% Deadlocks and recover (--ignore-junction-blocker)
+
+\section{Traffic lights as agents}
+
+% Traffic light is an agent
+% Changing to other phases is its action
+% Its phase is its state
+% Incoming vehicles and lanes are its observation
+
+\section{SUMO + RL}
+
+% Enabling device for simulation with traffic light agents
+% Blends reinforcement learning into agents
+% Gather metrics from vehicles and lanes in order
+% Plots metrics
+% Generates flows
+% Executes simulations

@@ -11,8 +11,8 @@
   - [ ] Assumptions and study scenarios
 - [ ] Traffic Simulation
   - [ ] SUMO
-  - [ ] sumo-rl
   - [ ] Traffic lights as agents
+  - [ ] SUMO + RL
 - [ ] Background on Reinforcement Learning
   - [ ] Reinforcement Learning
   - [ ] Curriculum Learning
