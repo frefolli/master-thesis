@@ -2,45 +2,60 @@
 
 \section{SUMO}
 
-SUMO (Simulation of Urban MObility) is an open source multi-modal, microscopic traffic simulator developed by the Institute of Transportation Systems at the German Aerospace Center. It accept a network description file ($*.net.xml$), a demand and flows description file ($*.rou.xml$). It comes with several utils which enable the user to construct or edit a network or a simulation, generate demand from OD matrices, verify correctness of description files, dump slices of OpenStreetMap and more.
+SUMO (Simulation of Urban MObility) is an open source multi-modal, microscopic traffic simulator developed by the Institute of Transportation Systems at the German Aerospace Center. It accept a network description file ($*.net.xml$), a demand and flows description file ($*.rou.xml$). It comes with several utilities which enable the user to construct or edit a network or a simulation, generate demand from OD matrices, verify correctness of description files, dump slices of OpenStreetMap and more. The simulator can run headless or within a graphical user interface (which can be seen in figure \ref{fig:sumo-gui}), which let the user inspect details of network elements or vehicles at runtime and modify parameters at-fly. The user can also stop and resume the simulation as well as export its instant dump or change the simulation step.
 
-\paragraph{Sumo-gui}
+\paragraph{TraCI}
+
+TraCI is a network application protocol used in order to query the simulation environment. Since the simulator has been thought as a standalone executable, there is not library to interact with and all has to be done with TraCI. Queries can be used to obtain data from the simulation, such as vehicles position, speed and route, lane density, traffic lights programs and state. A notable limitation is that there is no clear granularity for retrievable content. For example, it is possible to ask the \textit{mean waiting time of vehicles in a specific lane} but not the \textit{mean accumulated waiting time of vehicles of that lane}. The reason? Not a clue. Nonetheless, you may need to ask single informations a query at a time, which is rather slow. For that reason, I recommend to cache and compute "manually" data whenever it is possible in order to avoid costly network connections. Ten queries per vehicle or per lane don't sound a lot until one discovers to have twenty-five thousand vehicles and a hundred lanes per simulation step just for a simple five intersection scenario. In further chapters I will explain which metrics I track, what they represent and why I need them. TraCI also allows to \textbf{set} some data, such as traffic light program and current state. This is important for implementing traffic light agents on top of SUMO. In further sections I will introduce the concept of multi agent simulation and how a traffic light can be seen as a proper agent.
 
 \paragraph{Netedit}
 
+\ref{fig:netedit-demand}
+\ref{fig:netedit-internal-connections}
+\ref{fig:netedit-network}
+\ref{fig:netedit-roundabout}
+\ref{fig:netedit-tllogic}
+
 \paragraph{Network}
 
-% Explain options as well
 % Edges
 % Lanes
 % Intersections
 % Traffic Lights (and programs)
+% Roundabouts
+% Explain options as well
 
 \paragraph{Flows}
 
-% Explain options as well
 % Vehicles
 % Routes
 % TAZ
+% Explain options as well
 
 \paragraph{Flexibility}
 
 % Explain general sumo-wide options
-% Acceleration model
-% Entering delays
-% Lane change granularity
-% Usage of junctions as TAZ
-% Simulation step
-% Deadlocks and recover (--ignore-junction-blocker)
+%% Acceleration model
+%% Entering delays
+%% Lane change granularity
+%% Usage of junctions as TAZ
+%% Simulation step
+%% Deadlocks and recover (--ignore-junction-blocker)
 
-\section{Traffic lights as agents}
+\section{Multi-agent simulations}
 
-% Traffic light is an agent
-% Changing to other phases is its action
-% Its phase is its state
-% Incoming vehicles and lanes are its observation
+% Concept of Multi Agent Simulations
+% Agents of this simulation
+%% Vehicles as agents
+%%% Chaning lane is an action
+%%% Driving is an action
+%% Traffic light is an agent
+%%% Changing to other phases is its action
+%%% Its phase is its state
+%%% Incoming vehicles and lanes are its observation
+%% Learning agents
 
-\section{SUMO + RL}
+\section{A control plane of SUMO agents}
 
 % Enabling device for simulation with traffic light agents
 % Blends reinforcement learning into agents
@@ -48,3 +63,12 @@ SUMO (Simulation of Urban MObility) is an open source multi-modal, microscopic t
 % Plots metrics
 % Generates flows
 % Executes simulations
+
+\section{Figures}
+
+\putimage{figures/sumo-gui.png}{A view of SUMO simulator GUI interface loaded with a simulation scenario. The picture is centered over a few intersections in which the phases of traffic lights are highlighted.}{fig:sumo-gui}{1.0}
+\putimage{figures/netedit-network.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the network of the simulation.}{fig:netedit-network}{1.0}
+\putimage{figures/netedit-demand.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the transit demand of the simulation.}{fig:netedit-demand}{1.0}
+\putimage{figures/netedit-internal-connections.png}{A view of SUMO Net-edit utility. The (editable) internal connections of an intersection are highlighted.}{fig:netedit-internal-connections}{1.0}
+\putimage{figures/netedit-roundabout.png}{A view of SUMO Net-edit utility. SUMO also supports simulation of roundabout, but are coerced into crooked intersections.}{fig:netedit-roundabout}{1.0}
+\putimage{figures/netedit-tllogic.png}{A view of SUMO Net-edit utility. The (editable) program of a traffic light is highlighted.}{fig:netedit-tllogic}{1.0}
