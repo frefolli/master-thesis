@@ -4,33 +4,55 @@
 
 SUMO (Simulation of Urban MObility) is an open source multi-modal, microscopic traffic simulator developed by the Institute of Transportation Systems at the German Aerospace Center. It accept a network description file ($*.net.xml$), a demand and flows description file ($*.rou.xml$). It comes with several utilities which enable the user to construct or edit a network or a simulation, generate demand from OD matrices, verify correctness of description files, dump slices of OpenStreetMap and more. The simulator can run headless or within a graphical user interface (which can be seen in figure \ref{fig:sumo-gui}), which let the user inspect details of network elements or vehicles at runtime and modify parameters at-fly. The user can also stop and resume the simulation as well as export its instant dump or change the simulation step.
 
+\putimage{figures/sumo-gui.png}{A view of SUMO simulator GUI interface loaded with a simulation scenario. The picture is centered over a few intersections in which the phases of traffic lights are highlighted.}{fig:sumo-gui}{1.0}
+
 \paragraph{TraCI}
 
-TraCI is a network application protocol used in order to query the simulation environment. Since the simulator has been thought as a standalone executable, there is not library to interact with and all has to be done with TraCI. Queries can be used to obtain data from the simulation, such as vehicles position, speed and route, lane density, traffic lights programs and state. A notable limitation is that there is no clear granularity for retrievable content. For example, it is possible to ask the \textit{mean waiting time of vehicles in a specific lane} but not the \textit{mean accumulated waiting time of vehicles of that lane}. The reason? Not a clue. Nonetheless, you may need to ask single informations a query at a time, which is rather slow. For that reason, I recommend to cache and compute "manually" data whenever it is possible in order to avoid costly network connections. Ten queries per vehicle or per lane don't sound a lot until one discovers to have twenty-five thousand vehicles and a hundred lanes per simulation step just for a simple five intersection scenario. In further chapters I will explain which metrics I track, what they represent and why I need them. TraCI also allows to \textbf{set} some data, such as traffic light program and current state. This is important for implementing traffic light agents on top of SUMO. In further sections I will introduce the concept of multi agent simulation and how a traffic light can be seen as a proper agent.
+Since the simulator has been thought as a standalone executable, there is not library to interact with and all has to be done with TraCI, a network application protocol defined as part of the SUMO project. Queries can be used to obtain data from the simulation, such as vehicles position, speed and route, lane density, traffic lights programs and state. A notable limitation is that there is no clear granularity for retrievable content. For example, it is possible to ask the \textit{mean waiting time of vehicles in a specific lane} but not the \textit{mean accumulated waiting time of vehicles of that lane}. The reason? Not a clue. Nonetheless, you may need to ask single informations a query at a time, which is rather slow. For that reason, I recommend to cache and compute "manually" data whenever it is possible in order to avoid costly network connections. Ten queries per vehicle or per lane don't sound a lot until one discovers to have twenty-five thousand vehicles and a hundred lanes per simulation step just for a simple five intersection scenario. In further chapters I will explain which metrics I track, what they represent and why I need them. TraCI also allows to \textbf{set} some data, such as traffic light program and current state. This is important for implementing traffic light agents on top of SUMO. In further sections I will introduce the concept of multi agent simulation and how a traffic light can be seen as a proper agent.
 
 \paragraph{Netedit}
 
-\ref{fig:netedit-demand}
-\ref{fig:netedit-internal-connections}
-\ref{fig:netedit-network}
-\ref{fig:netedit-roundabout}
-\ref{fig:netedit-tllogic}
+SUMO has a scenario creation utility which enables the user to build and edit a network as well as demands and other additional data.
+In figure \ref{fig:netedit-network}, the graphical interface for shaping a network can be seen. It allows to create junctions and edges, editing intersection connections, adding traffic lights and TAZ and more.
+In figure \ref{fig:netedit-demand}, the graphical interface for adding demands can be seen. It allows to create routes, single vehicle trips, vehicle flows and more options to edit vehicle types and more.
+
+\putimage{figures/netedit-network.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the network of the simulation.}{fig:netedit-network}{1.0}
+\putimage{figures/netedit-demand.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the transit demand of the simulation.}{fig:netedit-demand}{1.0}
 
 \paragraph{Network}
 
 % Edges
-% Lanes
-% Intersections
-% Traffic Lights (and programs)
-% Roundabouts
-% Explain options as well
+SUMO transport networks are mainly composed of edges and intersections. An \textbf{edge} is defined with a \textit{source} and a \textit{sink} intersection, it has a \textit{priority} and a \textit{type}, which declares the edge role within the network. \textit{Normal} edges represents real roads, while \textit{internal} edges are an abstraction used within intersections to configure where an incoming vehicle can go to. This last concept will be explained better when talking about intersections. There are also \textit{crossing} and \textit{walkingarea} edges, which are useful when dealing with simulations involving an active role of pedestrians. Each edge contains more \textit{lanes}.
 
-\paragraph{Flows}
+% Lanes
+Each lane defines its \textit{shape} as a sequence of coordinates (must be enabled via parameter $customShape$), its maximum \textit{speed} in meters per second, its logical length and its set of \textit{allowed} or \textit{disallowed} vehicles. More will be said about vehicle types later on, but for now it suffices to say that this option is used to create bike lanes, tram ways and so on. Each lane also declares its ordinal \textit{index} with respect to its edge, which is useful when declaring connections between roads, junctions and lanes.
+
+\ref{fig:netedit-allowances}
+\putimage{figures/netedit-allowances.png}{A view of SUMO Net-edit utility. Setting allowances is possible with a dedicated panel on lanes and edges}{fig:netedit-allowances}{0.5}
+
+% Intersections
+Junctions are the nodes of the SUMO multi graph, and represent intersections (default) as well as other types of nodes. For example, a \textit{deadend} junction is used to represent an entry/exit point of the simulation. There are also \textit{internal} junctions which define a waiting position within the intersection. A junction has some \textit{incoming lanes} and some \textit{internal lanes}. The internal lanes, mentioned before, a the joints within the intersection which link an incoming lane with an internal edge and then an internal edge with an outcoming lane. Internal connections are highly customizable, as can be seen in figure \ref{fig:netedit-internal-connections}, in which left turns are forbidden entirely (as happens in real main roads like Viale Monza).
+
+\putimage{figures/netedit-internal-connections.png}{A view of SUMO Net-edit utility. The (editable) internal connections of an intersection are highlighted. In blue the selected lane, in green the enabled turns, in yellow the lanes which SUMO suggests not to enable to avoid directional conflicts.}{fig:netedit-internal-connections}{0.5}
+
+% Traffic Lights (and programs)
+By default, intersections are regulated with the precedence rule, but traffic lights may be created in order to optimize the transit. A traffic light has one or more programs but has exacly one active program. A program is a sequence of states which will be hold for a fixed amount of time before changing to the next one (repeated cyclically). A state is declared as a string of characters ("\textbf{r}" for \textit{red}, "\textbf{y}" for \textit{yellow}, "\textbf{g}" for \textit{green} and "\textbf{G}" for \textit{priority green}), one for each connection. It is strongly recommended to mix \textit{green} (G) and \textit{priority green} (G) in order to avoid deadlocks and reduce unrealistic conflicts. For example, in figure \ref{fig:netedit-tllogic} is shown an intersection in which straight and right directions are prioritized over left turns. Recalling what has been said about internal edges, a connection links an incoming lane and an outcoming lane in order to allow or disallow transits and turns. All the declared connections which are subject to a traffic light program are indexed with the ordinal parameter \textit{linkIndex}. This form of representation allows the user to reproduce any realistic scenario.
+
+\putimage{figures/netedit-tllogic.png}{A view of SUMO Net-edit utility. The (editable) program of a traffic light is highlighted.}{fig:netedit-tllogic}{0.5}
+
+% Roundabouts
+Intersections can also be regulated with roundabout, which can be created via SUMO Net-edit utility as can be seen in figure \ref{fig:netedit-roundabout}. These are not \textit{real} roundabouts, just a crooked representation of how a roundabout works. It sets some waiting positions inside a junction agglomerate in order to reproduce the cyclic behaviour of vehicles in roundabout.
+Interestingly, since those are created by blending more virtual junctions, one can have SUMO to add traffic lights to roundabout waiting positions, with questionable results.
+
+\putimage{figures/netedit-roundabout.png}{A view of SUMO Net-edit utility. SUMO also supports simulation of roundabout, but are coerced into crooked intersections.}{fig:netedit-roundabout}{0.5}
+
+\paragraph{Demands}
 
 % Vehicles
 % Routes
 % TAZ
 % Explain options as well
+
 
 \paragraph{Flexibility}
 
@@ -63,12 +85,3 @@ TraCI is a network application protocol used in order to query the simulation en
 % Plots metrics
 % Generates flows
 % Executes simulations
-
-\section{Figures}
-
-\putimage{figures/sumo-gui.png}{A view of SUMO simulator GUI interface loaded with a simulation scenario. The picture is centered over a few intersections in which the phases of traffic lights are highlighted.}{fig:sumo-gui}{1.0}
-\putimage{figures/netedit-network.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the network of the simulation.}{fig:netedit-network}{1.0}
-\putimage{figures/netedit-demand.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the transit demand of the simulation.}{fig:netedit-demand}{1.0}
-\putimage{figures/netedit-internal-connections.png}{A view of SUMO Net-edit utility. The (editable) internal connections of an intersection are highlighted.}{fig:netedit-internal-connections}{1.0}
-\putimage{figures/netedit-roundabout.png}{A view of SUMO Net-edit utility. SUMO also supports simulation of roundabout, but are coerced into crooked intersections.}{fig:netedit-roundabout}{1.0}
-\putimage{figures/netedit-tllogic.png}{A view of SUMO Net-edit utility. The (editable) program of a traffic light is highlighted.}{fig:netedit-tllogic}{1.0}

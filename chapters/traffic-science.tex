@@ -25,6 +25,8 @@ This partitioning activity is a form of transit regulation and characterizing ve
 
 The road network can be represented with a \textbf{directed multi-graph} of intersections and roads. Each road has one or more lanes, a maximum speed and vehicles allowances dictating which kind of vehicles are allowed to flow through it. While more simplistic models use undirected graph with labelled edges to represent lanes and one/two-way traffic, it should be noted that a simple directed graph wouldn't be sufficient as in real-world road networks the may be more different links between an intersection. While some network slices could be represented with a single edge, there are more complex situations as in figure \ref{fig:multigraph-is-better-than-nothing} (a slice of Viale Zara, Milan, Italy) in which two big intersections are linked with two main one-way three-lane roads, two side one-way one-lane roads ("controviali") and two dedicated links for tramway vehicles. These roads are physically separated with median strips and each link may allow for different turns within the intersections. Of course, the implementation model can be optimized for performance, but the logical model should remain a multi-graph because it better represents the features of the road network.
 
+\putimage{figures/multigraph-is-better-than-nothing.png}{A complex intersection pair which is connected with more different roads (Viale Zara. Milan. Italy). In \textit{green} the main lanes, in \textit{blue} the side lanes, in \textit{orange} the tramway. Source: Google Maps (2025)}{fig:multigraph-is-better-than-nothing}{0.5}
+
 \paragraph{Traffic}
 
 \textbf{Traffic} can be defined as a flow of vehicles on a network with peaks of density in some locations in which the average speed of those vehicles is significantly lower than the average of the entire network.
@@ -44,9 +46,13 @@ All the strategies presented in this section involve the usage of infrastructure
 
 What happens when among all the route that can be possibly be followed there is one which is faster and more convenient? Different streams are going to merge into a single huge flow which is slower than the other ones. A reasonable but ineffective action is to increase the number of lanes \ref{fig:atlanta-georgia-freeway}, but that adds only capacity to the system. It temporally fluidify traffic until other vehicles arrive into the system because it has become more convenient than their current route, and eventually traffic reemerges.
 
+\putimage{figures/atlanta-georgia-freeway.jpg}{A view of Atlanta Freeway, Georgia. Source: \href{https://www.cnu.org/publicsquare/2017/08/03/why-urban-freeway-expansion-futile}{cnu.org}}{fig:atlanta-georgia-freeway}{0.5}
+
 \paragraph{Bypasses, freeways, motorways}
 
 Freeways and motorways are an example of \textit{specialized roads} which can be used to segregate the flows of vehicles needing to travel long distances from the local/regional transit. Those are generally built far from urban areas and those are what prevented urban planners from extending local roads into ten-lanes wide monsters. A further example of specialized road are bypasses, which are used to cut travel times and reduce the number of vehicles that go through the city center, but can also be used in combination with motorways. For example, in image \ref{fig:bologna-bypass} are reported three alternatives proposed by authorities to build a bypass in the Bologna's motorway node to split the flow on the basis of whether those vehicles are going to Bologna or need to reach other destinations like Firenze and Ancona. Specialized roads are generally effective in reducing travel times and represent the more convenient way for traveling mid/long distances, however they require extensive land usage and are subject to increased demand. As they essentially only add capacity to the system, it's only a matter of time before vehicle density reaches jamming levels.
+
+\putimage{figures/bologna-bypass.jpg}{Highlight of alternatives for the Bologna node bypass. Source: Corriere della Sera}{fig:bologna-bypass}{0.5}
 
 \paragraph{Transit zones}
 
@@ -69,6 +75,8 @@ Where space isn't enough for two-way roads with dedicated lanes, often a good so
 \paragraph{Cloverleafs}
 
 Intersections can be built in the form of \textit{cloverleafs} to remove entirely conflicts from crossing flows. While this offer high capacity and speed, it requires excessive land usage (as can be seen in figure \ref{fig:houston-interchange-siena}) and cannot be built in urban context without erasing entire neighborhoods.
+
+\putimage{figures/houston-interchange-siena.png}{Comparison between a cloverleaf in Houston, USA, and the city center of Siena, Italy. Source: \href{https://www.reddit.com/r/geography/comments/193ryy5/siena_compared_to_highway_interchange_in_houston/}{r/geography}}{fig:houston-interchange-siena}{0.35}
 
 \paragraph{Precedence rule}
 
@@ -106,6 +114,8 @@ For example, the Lombardy region yearly analyze traffic and demand \cite{ODLomba
 It is useful that zones partition the area of interest without intersections, otherwise data could be distorted. This is often the case of urban contexts: for example Agenzia Mobilita' Ambiente e Territorio of Milan (AMAT) in 2010 \cite{ODMilano2010} had modeled the urban transit demand of the city of Milan but the zones used for OD matrix are not clearly distinguished (it can be seen in \ref{fig:odzones-milano-2010}) and therefore the matrix has to be taken with coarse-grain granularity.
 Nonetheless, counting vehicles and inferring their origin destination it not an easy activity \cite{bell1983estimation}.
 
+\putimage{figures/ODZones.Show.Milano2010.png}{OD Zones used within the 2010 Milan AMAT model.}{fig:odzones-milano-2010}{1.0}
+
 \subsection{When do vehicles depart?}
 
 Usually, mobility agencies create more than one OD matrix in order to capture how traffic levels change during a day.
@@ -117,40 +127,16 @@ Recently it has emerged also another phenomenon called \textit{third rush hour},
 Traffic peaks depend also on the day of the year. In those days before or after the weekend, an increase in trips is registered due to long-distance commutes and holidays in which people are used to travel between an home city and a work/holiday city. It can increase also in proximity of scheduled events like sport matches, concerts, strikes and political demonstrations.
 %% Creare un sketch grafico di come si comporta il traffico, magari da sovrapporre a quelli
 
+\putimage{figures/ODGraph.Mean.Lombardia2014.png}{Traffic levels from OD Matrix of Lombardy in 2014.}{fig:odmatrix-lombardy-2014}{1.0}
+\putimage{figures/ODGraph.Mean.Milano2010.png}{Traffic levels from OD Matrix of Milan in 2010.}{fig:odmatrix-milano-2010}{1.0}
+
 \section{Settings and assumptions}
 
 I will use transit flows made up of only private vehicles (in particular, cars) and settings will reflect the case of an urban area with one main road and more intersecting side roads. Another powerful assumption is that main/side actually reflect the demand from those directions: there is no hidden disequilibrium.
 The setting \textit{One} (figure \ref{fig:setting-breda}) is inspired by Viale Monza, Milan, and has a two-lane two-way main road and two intersecting one-lane two-way roads.
 The setting \textit{Two} (figure \ref{fig:setting-celoria}) is inspired by Via Bassini, Milan, and has a two-lane two-way main road and five intersecting one-lane two-way roads.
 Since settings are synthetic though inspired by real city slices, also flows will be synthetic. Moreover, the distribution of vehicles over time will follow the two-peak rush hour model presented in the previous section and will provide also anormal traffic conditions. Since the setting is a slice of a wider urban area, such slice is assumed to be tightly connected to neighbor slices as can be seen in figure \ref{fig:city-slice-of-a-whole}, therefore vehicles are assumed to be able to enter freely in the scenario but to face a "queue" when exiting. Intersections in the network are assumed to be regulated by traffic lights, which as by baseline are synchronized with the green-wave mode of operation presented before.
-% Assumptions
-%% Only cars
-%% Two peak rush hours
-%% Synthetic data
-%% Artificial queues
-%% Baseline traffic lights are using green-wave mode of operation
-% Settings
-%% Breda
-%% Celoria
 
-\section{Figures}
-
-\putimagecouple
-{\putsubimage{figures/multigraph-is-better-than-nothing.png}{A complex intersection pair which is connected with more different roads (Viale Zara. Milan. Italy). In \textit{green} the main lanes, in \textit{blue} the side lanes, in \textit{orange} the tramway. Source: Google Maps (2025)}{fig:multigraph-is-better-than-nothing}{0.45}{1.0}}
-{\putsubimage{figures/atlanta-georgia-freeway.jpg}{A view of Atlanta Freeway, Georgia. Source: \href{https://www.cnu.org/publicsquare/2017/08/03/why-urban-freeway-expansion-futile}{cnu.org}}{fig:atlanta-georgia-freeway}{0.45}{1.0}}
-
-\putimagecouple
-{\putsubimage{figures/bologna-bypass.jpg}{Highlight of alternatives for the Bologna node bypass. Source: Corriere della Sera}{fig:bologna-bypass}{0.45}{1.0}}
-{\putsubimage{figures/houston-interchange-siena.png}{Comparison between a cloverleaf in Houston, USA, and the city center of Siena, Italy. Source: \href{https://www.reddit.com/r/geography/comments/193ryy5/siena_compared_to_highway_interchange_in_houston/}{r/geography}}{fig:houston-interchange-siena}{0.45}{1.0}}
-
-\putimagecouple
-{\putsubimage{figures/ODZones.Show.Milano2010.png}{OD Zones used within the 2010 Milan AMAT model.}{fig:odzones-milano-2010}{0.45}{1.0}}
-{\putsubimage{figures/city-slice-of-a-whole.png}{The setting of simulation scenarios is a slice of a highly connected city.}{fig:city-slice-of-a-whole}{0.45}{1.0}}
-
-\putimagecouple
-{\putsubimage{figures/ODGraph.Mean.Lombardia2014.png}{Traffic levels from OD Matrix of Lombardy in 2014.}{fig:odmatrix-lombardy-2014}{0.45}{1.0}}
-{\putsubimage{figures/ODGraph.Mean.Milano2010.png}{Traffic levels from OD Matrix of Milan in 2010.}{fig:odmatrix-milano-2010}{0.45}{1.0}}
-
-\putimagecouple
-{\putsubimage{figures/setting-celoria.png}{The setting "One" with five intersections.}{fig:setting-celoria}{0.45}{1.0}}
-{\putsubimage{figures/setting-breda.png}{The setting "One" with two intersections.}{fig:setting-breda}{0.45}{1.0}}
+\putimage{figures/setting-breda.png}{The setting "One" with two intersections.}{fig:setting-breda}{1.0}
+\putimage{figures/setting-celoria.png}{The setting "Two" with five intersections.}{fig:setting-celoria}{1.0}
+\putimage{figures/city-slice-of-a-whole.png}{The setting of simulation scenarios is a slice of a highly connected city.}{fig:city-slice-of-a-whole}{0.45}
