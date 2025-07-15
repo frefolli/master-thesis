@@ -6,13 +6,14 @@
 
 - [ ] Introduction
 - [ ] Traffic Science
-  - [ ] Domain (Vehicles, Traffic, Traffic Lights)
-  - [ ] Demand Models (Rush hours, Origin-Destination Matrices)
-  - [ ] Assumptions and study scenarios
+  - [ ] Introduction
+  - [ ] Transit regulation
+  - [ ] Demand models
+  - [ ] Settings and assumptions
 - [ ] Traffic Simulation
   - [ ] SUMO
-  - [ ] Traffic lights as agents
-  - [ ] SUMO + RL
+  - [ ] Multi agent transit simulations
+  - [ ] SUMO-RL
 - [ ] Background on Reinforcement Learning
   - [ ] Reinforcement Learning
   - [ ] Curriculum Learning
