@@ -1,4 +1,4 @@
-# Failing to solve traffic with Reinforcement Learning and Curriculum approaches
+# Unconventional reinforcement learning on traffic lights with SUMO
 
 ## Thesis or Master Degree in Computer Science, academic year 2024/2025
 

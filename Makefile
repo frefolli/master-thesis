@@ -1,4 +1,6 @@
-@all:
+@all: thesis.pdf
+
+thesis.pdf: thesis.tex quotes.bib figures/*.jpg figures/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex
