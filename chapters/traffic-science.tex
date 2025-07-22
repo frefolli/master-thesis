@@ -19,7 +19,9 @@ A notable exception are fixed route vehicles (such as public transit) and in par
 In both cases, the whole journey is not required to be completed: a vehicle can override its route because of change of heart (the case of private vehicles), rescheduling (the case of public transit) or else.
 Depending on the goal of a simulation, the flow can be restricted to a small set of vehicle types, but in the real world, the vehicle flow can be heterogeneous: cars, trolleybuses, trams, emergency vehicles, trucks, bicycles, motorbikes and so on. Each vehicle has different physical properties and different allowances.
 Vehicles allowance rules can be defined by diving the flow with respect to origin/destination, vehicle type (cars \textit{mustn't} ride in bike lanes), local regulations (in some cities, taxis \textit{may} use public transit lanes), vehicle properties (\textit{only} motor vehicles able to reach at least 60 km/h can drive on the motorway) or even driver properties (\textit{limited traffic zones} are open only for residents).
-This partitioning activity is a form of transit regulation and characterizing vehicles by their properties rather than transparent objects helps (TODO: CITAZIONE) in managing their transit, resolving path conflicts and also enhancing the quality of life of residents (a bypass \textit{should} cut a significant amount of transit vehicles in city centers).
+This partitioning activity is a form of transit regulation and characterizing vehicles by their properties rather than transparent objects helps in managing their transit, resolving path conflicts and also enhancing the quality of life of residents (a bypass \textit{should} cut a significant amount of transit vehicles in city centers).
+For instance, a study of \citeauthor{schreiter2013vehicle} \cite{schreiter2013vehicle} has proven the effectiveness of differentiating vehicles subject to traffic management measures by class (such as cars and trucks).
+A further example comes from a study of \citeauthor{wang2012understanding} \cite{wang2012understanding}, which demonstrated that often a few set of driver sources are cause congestion into the whole network, the flaws of traffic analysis models based only on topological betweenness and how identifying troublemaker traffic sources enables transit authorities to plan effective actions and to fluidify traffic.
 
 \paragraph{Infrastructure}
 
@@ -74,9 +76,11 @@ Where space isn't enough for two-way roads with dedicated lanes, often a good so
 
 \paragraph{Cloverleafs}
 
-Intersections can be built in the form of \textit{cloverleafs} to remove entirely conflicts from crossing flows. While this offer high capacity and speed, it requires excessive land usage (as can be seen in figure \ref{fig:houston-interchange-siena}) and cannot be built in urban context without erasing entire neighborhoods.
+Intersections can be built in the form of \textit{cloverleafs} to remove entirely conflicts from crossing flows. While this offer high capacity and speed, it requires excessive land usage and cannot be built in urban context without erasing entire neighborhoods. For reader's amusement, the figure \ref{fig:milwaukee-interchange} shows that an stack intersection in Milwaukee is actually bigger than the whole city center of Piacenza, shown in figure \ref{fig:piacenza-city-center}. \footnote{In urbanist literature such a comparison is usually drawn between a Houston intersection and Siena. Since Piacenza is way bigger than Siena, this example is stronger.}
 
-\putimage{figures/houston-interchange-siena.png}{Comparison between a cloverleaf in Houston, USA, and the city center of Siena, Italy. Source: \href{https://www.reddit.com/r/geography/comments/193ryy5/siena_compared_to_highway_interchange_in_houston/}{r/geography}}{fig:houston-interchange-siena}{0.35}
+\putimagecouple
+{\putsubimage{figures/PiacenzaCityCenter.png}{The city center of Piacenza, Italy. Source: Google Maps}{fig:piacenza-city-center}{0.45}{1.0}}
+{\putsubimage{figures/MilwaukeeInterchange.png}{The I-91/I-41 ("Zoo") Interchange in Milkwaukee, USA. Source: Google Maps}{fig:milwaukee-interchange}{0.45}{1.0}}
 
 \paragraph{Precedence rule}
 

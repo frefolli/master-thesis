@@ -2,15 +2,17 @@
 
 \section{SUMO}
 
-SUMO (Simulation of Urban MObility) is an open source multi-modal, microscopic traffic simulator developed by the Institute of Transportation Systems at the German Aerospace Center. It accept a network description file ($*.net.xml$), a demand and flows description file ($*.rou.xml$). It comes with several utilities which enable the user to construct or edit a network or a simulation, generate demand from OD matrices, verify correctness of description files, dump slices of OpenStreetMap and more. The simulator can run headless or within a graphical user interface (which can be seen in figure \ref{fig:sumo-gui}), which let the user inspect details of network elements or vehicles at runtime and modify parameters at-fly. The user can also stop and resume the simulation as well as export its instant dump or change the simulation step.
+\paragraph{\textbf{S}imulation of \textbf{U}rban \textbf{MO}bility}
+
+SUMO is an open source multi-modal, microscopic traffic simulator developed by the Institute of Transportation Systems at the German Aerospace Center. It accept a network description file ($*.net.xml$), a demand and flows description file ($*.rou.xml$). It comes with several utilities which enable the user to construct or edit a network or a simulation, generate demand from OD matrices, verify correctness of description files, dump slices of OpenStreetMap and more. The simulator can run headless or within a graphical user interface (which can be seen in figure \ref{fig:sumo-gui}), which let the user inspect details of network elements or vehicles at runtime and modify parameters at-fly. The user can also stop and resume the simulation as well as export its instant dump or change the simulation step.
 
 \putimage{figures/sumo-gui.png}{A view of SUMO simulator GUI interface loaded with a simulation scenario. The picture is centered over a few intersections in which the phases of traffic lights are highlighted.}{fig:sumo-gui}{1.0}
 
-\paragraph{TraCI}
+\paragraph{\textbf{T}raffic \textbf{C}ommunication \textbf{I}nterface}
 
-Since the simulator has been thought as a standalone executable, there is not library to interact with and all has to be done with TraCI, a network application protocol defined as part of the SUMO project. Queries can be used to obtain data from the simulation, such as vehicles position, speed and route, lane density, traffic lights programs and state. A notable limitation is that there is no clear granularity for retrievable content. For example, it is possible to ask the \textit{mean waiting time of vehicles in a specific lane} but not the \textit{mean accumulated waiting time of vehicles of that lane}. The reason? Not a clue. Nonetheless, you may need to ask single informations a query at a time, which is rather slow. For that reason, I recommend to cache and compute "manually" data whenever it is possible in order to avoid costly network connections. Ten queries per vehicle or per lane don't sound a lot until one discovers to have twenty-five thousand vehicles and a hundred lanes per simulation step just for a simple five intersection scenario. In further chapters I will explain which metrics I track, what they represent and why I need them. TraCI also allows to \textbf{set} some data, such as traffic light program and current state. This is important for implementing traffic light agents on top of SUMO. In further sections I will introduce the concept of multi agent simulation and how a traffic light can be seen as a proper agent.
+Since the simulator has been thought as a standalone executable, there is not library to interact with and all has to be done with \textbf{TraCI}, a network application protocol defined as part of the SUMO project. Queries can be used to obtain data from the simulation, such as vehicles position, speed and route, lane density, traffic lights programs and state. A notable limitation is that there is no clear granularity for retrievable content. For example, it is possible to ask the \textit{mean waiting time of vehicles in a specific lane} but not the \textit{mean accumulated waiting time of vehicles of that lane}. The reason? Not a clue. Nonetheless, you may need to ask single informations a query at a time, which is rather slow. For that reason, I recommend to cache and compute "manually" data whenever it is possible in order to avoid costly network connections. Ten queries per vehicle or per lane don't sound a lot until one discovers to have twenty-five thousand vehicles and a hundred lanes per simulation step just for a simple five intersection scenario. In further chapters I will explain which metrics I track, what they represent and why I need them. TraCI also allows to \textbf{set} some data, such as traffic light program and current state. This is important for implementing traffic light agents on top of SUMO. In further sections I will introduce the concept of multi agent simulation and how a traffic light can be seen as a proper agent.
 
-\paragraph{Netedit}
+\paragraph{\textbf{NET}work \textbf{EDIT}or}
 
 SUMO has a scenario creation utility which enables the user to build and edit a network as well as demands and other additional data.
 In figure \ref{fig:netedit-network}, the graphical interface for shaping a network can be seen. It allows to create junctions and edges, editing intersection connections, adding traffic lights and TAZ and more.
@@ -19,7 +21,7 @@ In figure \ref{fig:netedit-demand}, the graphical interface for adding demands c
 \putimage{figures/netedit-network.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the network of the simulation.}{fig:netedit-network}{1.0}
 \putimage{figures/netedit-demand.png}{A view of SUMO Net-edit utility. This mode enables the user to modify the transit demand of the simulation.}{fig:netedit-demand}{1.0}
 
-\paragraph{Network}
+\paragraph{The network model}
 
 % Edges
 SUMO transport networks are mainly composed of edges and intersections. An \textbf{edge} is defined with a \textit{source} and a \textit{sink} intersection, it has a \textit{priority} and a \textit{type}, which declares the edge role within the network. \textit{Normal} edges represents real roads, while \textit{internal} edges are an abstraction used within intersections to configure where an incoming vehicle can go to. This last concept will be explained better when talking about intersections. There are also \textit{crossing} and \textit{walkingarea} edges, which are useful when dealing with simulations involving an active role of pedestrians. Each edge contains more \textit{lanes}.
@@ -45,7 +47,7 @@ Interestingly, since those are created by blending more virtual junctions, one c
 
 \putimage{figures/netedit-roundabout.png}{A view of SUMO Net-edit utility. SUMO also supports simulation of roundabout, but are coerced into crooked intersections.}{fig:netedit-roundabout}{0.5}
 
-\paragraph{Demands}
+\paragraph{The demand model}
 
 Demands is expressed in terms of vehicles trips or vehicles flows. For more realistic scenarios, it is recommended to use the first option if an exact timeline of vehicles is available or if one is testing a specific situation that could happen inside inside a network slice. For example, GTFS data can be used to reproduce one-to-one the behavior of a public service network. An important notice is that the actual demands implementation is then randomized by SUMO via its simulation seed, so in order to be reproducible one should hold a specific seed.
 
@@ -70,32 +72,31 @@ Once that vehicle types and routes are set, there are other options which can be
 
 \paragraph{Flexibility}
 
-% Explain general sumo-wide options
-%% Acceleration model
-%% Entering delays
-%% Lane change granularity
-%% Usage of junctions as TAZ
-%% Simulation step
-%% Deadlocks and recover (--ignore-junction-blocker)
+In SUMO every simulation detail is highly customizable.
+As an example, the user can create an ad-hoc \textit{vehicle type} with custom \textbf{acceleration}, \textbf{emergency deceleration}, \textbf{startup delay}, \textbf{maximum speed}, \textbf{space gap} kept when following another vehicle, \textbf{shape} and \textbf{color} (useful for graphic simulations), \textbf{dimensions} (length, width, height) and behaviour models such as the \textbf{lane-changing} and the \textbf{car-following}.
+
+But customizability isn't limited to vehicles: also other simulation parameters can be changed at will. For example, depending on the degree of realism required, the user can decide the granularity of events such as the \textbf{number of seconds} required to complete a \textbf{lane change}, the \textbf{delay of entrance} of vehicles provided by the demands configuration, the length in second of a \textbf{simulation step} and much more.
+
+There are also options which enable convenient behaviors. If the user wants to use junctions as TAZs (create demand flows between junctions), a specific option tells SUMO to insert a virtual TAZ for each intersection. Another useful option allows vehicles to ignore collisions when a deadlock happen in a intersection (which otherwise would result in a forever freezing state). The user can also set the number of seconds a vehicle may wait in a intersection until a deadlock is detected.
 
 \section{Multi-agent simulations}
 
-% Concept of Multi Agent Simulations
-% Agents of this simulation
-%% Vehicles as agents
-%%% Chaning lane is an action
-%%% Driving is an action
-%% Traffic light is an agent
-%%% Changing to other phases is its action
-%%% Its phase is its state
-%%% Incoming vehicles and lanes are its observation
-%% Learning agents
+\paragraph{M.A.S.}
+
+A Multi Agent System is composed of agents laying in an environment, sensing its state through observation and interacting with it through actions. Agents can be stateless or stateful, intelligent or statically programmed, and have different degree of autonomy. Agents can also influence each other with mediated or direct interactions. With SUMO, the simulation involves vehicles agents (such as cars, buses, pedestrians) and infrastructure agents (such as traffic lights).
+
+\paragraph{Vehicles}
+
+Vehicles observe the road, its occupancy and infrastructure signals in order to drive through an allocated route or in general go from a point A to a point B. They can make decisions whether to accelerate, decelerate, steer or change lane and they can base their actions on preference, knowledge or convenience. In SUMO, vehicles are usually assigned to a previously defined route, but can also made (through options) free to use an arbitrary lane or to re-route in case of traffic and persistent delays.
+
+\paragraph{Traffic Lights}
+
+Traffic lights have a state, which is the signal phase, and their only action is changing to another phase or maintaining the current one. Each phase usually decides which incoming lanes vehicles are allowed to enter the intersection and where they can exit. These agents can based their decision using occupancy and waiting time data from incoming and outcoming lanes. In SUMO, a traffic light entity manages a whole intersection.
 
 \section{A control plane of SUMO agents}
 
-% Enabling device for simulation with traffic light agents
-% Blends reinforcement learning into agents
-% Gather metrics from vehicles and lanes in order
-% Plots metrics
-% Generates flows
-% Executes simulations
+In SUMO the agents have a fixed behaviour, but in multi agent system is common to have agents which are able to learn over time. Moreover, as SUMO supports only fixed cycle traffic lights, it can be useful to be able to customize their mode of operation in order to experiment different traffic management strategies in advance, thus avoiding to implement ruinous or useless schemas. Programmable control planes for SUMO over TraCI have been implemented for all these reasons.
+
+A notable example of such control plane is \textbf{SUMO-RL} \cite{sumorl}, developed by Lucas Alegre. This is Python library designed to easily implement \textit{reinforcement learning} agents for managing SUMO traffic lights. It should be noted that the same interface can be used to implement deterministic and ''dumb`` agents.
+
+A fork of this library (available in this \href{repo}{https://github.com/frefolli/sumo-rl}) has been created in order to clean the architecture and implement more models useful for the present research experiments. Furthermore, I've implemented some utilities in order to convert data coming from other sources (such as CityFlow \cite{10.1145/3308558.3314139}, another free and open source, but abandoned, traffic simulator used as alternative to SUMO in literature), generate traffic data, analyze road networks, execute in batch a simulation experiment and track down multiple evaluation metrics. The contents and algorithms of this library will be explained in chapter 6. %TODO CHAPTER REF
