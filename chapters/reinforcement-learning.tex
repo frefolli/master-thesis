@@ -1,0 +1,51 @@
+\chapter{Background on Reinforcement Learning}
+
+This chapter introduces the concept of Reinforcement Learning, along with its differences from traditional machine learning approaches, its advantages and disadvantages, and its mathematical foundation.
+
+\section{A new perspective}
+
+Machine Learning (ML) is a branch of Artificial Intelligence concerning all those statistical techniques and algorithms that can be used to learn a task from an existing data and generalize this knowledge to unseen data. Depending on how the agents learns and what task it learns, ML can be divided into three paradigms: supervised, unsupervised and reinforcement learning.
+
+\paragraph{Learning by example}
+
+Supervised learning (SL) is perhaps the most intuitive and widely used learning paradigm.
+The agent is given an input and returns an output. Its output is then compared with the expected output (provided along with the input) using a \textit{Loss Function}, which measures the error between the two values.
+This loss is then used to update the agent's model in order to improve its accuracy.
+Since the quality of the agent is defined by the similitude between its output and the reference (``correct'') output, it is essentially learning to replicate a behaviour of which the labelled dataset is an example.
+
+Despite its simplicity, this paradigm take two strong assumptions.
+1) The current output of the agent doesn't influence the goodness of a future output. That is to say: each decision or value emitted from the agent is independent temporally from other values emitted over time.
+Tasks involving classification or labelling, such as identifying the class of a dry bean or spam detection, fall naturally into this category.
+2) A dataset of input-output pairs is available and, more importantly, a correct output value exists and it is priorly known or computable. This restriction automatically excludes all problems involving uncertainty, long-term consequences, or scenarios in which the optimal decision depends on a sequence of past and future actions. However, it accommodates a lot of problems for which knowledge about past is available, as in prediction tasks like stock forecasting and language models.
+
+\paragraph{Learning by inference}
+
+Unsupervised learning (US) removes the need of labelled data, as the goal here is not to imitate known outcomes but to find hidden structure within the data itself.
+Usually, this activity involves partitioning the input dataset into k classes, which result can be then applied to further processing.
+Although the ultimate goal is to ensure that items within the same group resemble each other more than they resemble those in other groups, different approaches to achieve such partitioning exist, ranging from distance-based algorithms (such as K-Means) to hashing-based algorithms (such as Locality Sensitive Hashing).
+In both cases, the agent is inferring an hidden connection between elements of the dataset using its features.
+However, it should be noted that the resulting classification carries no semantic beyond element similarity and, in particular, there is no concept as intrinsic partitioning correctness. Which means that US cannot be applied directly in decision making problems and can only be used for aggregation tasks such as ancestral reconstruction (useful in phylogenetics) and feature extraction.
+
+\paragraph{Learning by experience}
+
+% Paradigm: <<please, toddler, come to me>>
+% In Reinforcement Learning, the agent is lying in an environment with which it can interact.
+% The environment has a global state but the agent usually can only see a subset (called observation) and given this observation decides an action.
+% The action has an effect on the state of the environment which afterwards updates itself with a transition function which maps the old state and the action to the new state.
+% A reward is also computed with a Reward Function based on the goodness of the action with respect to the initial state and the new state.
+% The agent then evaluates itself with respect of the given reward and corrects itself to improve its action policy.
+% This is the case of sequential tasks where the right move is not known a priori and it is easier to express the reward function than to give the agent an example of good behaviour.
+% RL is more psychologically realistic as for example, the toddler learns to walk with a parent that puts the baby in one corner of the room and he places himself in the opposite corner. The non-verbal communication of the parent is the reward signal of the toddler, in which a smile means "good boy" and a glare means "bad body". The parent cannot tell the toddler how to properly walk since he is on two foots and the baby cannot interpret human verbal language yet. The baby is also unable to replicate the standing motion of an adult. Intuitively, the baby learns by trial and error. RL is exactly learning by trial and error.
+
+A useful analogy comes from early human development. Consider a toddler learning to walk. The parent may encourage the child by standing across the room and using gestures or facial expressions (such as smiles or glares) to signal success or failure. The toddler does not receive explicit instructions or labelled examples of correct foot placement. Instead, learning unfolds through trial and error, with the child gradually discovering which patterns of movement lead to praise or comfort. Reinforcement learning (RL) mirrors this process: knowledge is acquired not through imitation or discovery of structure, but through experience and consequence.
+
+The agent is acknowledged to lie into an environment, which has an internal logic and an internal state but those are not exposed to the agent.
+The agent can only observe the environment with an \textit{Observation Function}, which returns a partial view (``observation'') of its state.
+This observation is then used by the agent's decision-making process (``policy'') to take an action.
+The environment updates its state with a \textit{Transition Function} which applies the effects of the agent's action to the current state and computes the next state.
+The agent then collects the new observation and the reward released by the \textit{Reward Function} in order to improve its action.
+
+Therefore, instead of learning from a static dataset, the agent learns by the experience gained when interacting with the environment.
+Another key intuition is that the focus of RL is not on the single action, but on the outcome of a sequence of interactions. Thus, the agents aims to maximize the cumulative reward.
+For that reason, RL is applicable in all those tasks in which the quality of an action is defined also by past and future actions, such as traffic light management.
+
