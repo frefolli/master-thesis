@@ -1,0 +1,35 @@
+direction: right
+
+S0: A
+S1: B
+S2: C
+S0a0: a0
+S0a1: a1
+S1a0: a0
+S1a1: a1
+S2a0: a0
+S2a1: a1
+
+S0 -> S0a0
+S0 -> S0a1
+S0a0 -> S0: 0.5 {style: {stroke: green}}
+S0a0 -> S1: 0.5 {style: {stroke: green}}
+S0a1 -> S1: 1.0 {style: {stroke: green}}
+
+S1 -> S1a0
+S1 -> S1a1
+
+S1a0 -> S0: 0.7 {style: {stroke: green}}
+S1a0 -> S1: 0.1 {style: {stroke: green}}
+S1a0 -> S2: 0.2 {style: {stroke: red}}
+S1a1 -> S1: 0.95 {style: {stroke: green}}
+S1a1 -> S2: 0.05 {style: {stroke: red}}
+
+S2 -> S2a0
+S2 -> S2a1
+
+S2a0 -> S0: 0.4 {style: {stroke: green}}
+S2a0 -> S2: 0.6 {style: {stroke: red}}
+S2a1 -> S0: 0.3 {style: {stroke: green}}
+S2a1 -> S1: 0.3 {style: {stroke: green}}
+S2a1 -> S2: 0.4 {style: {stroke: red}}

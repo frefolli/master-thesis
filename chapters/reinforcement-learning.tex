@@ -28,15 +28,6 @@ However, it should be noted that the resulting classification carries no semanti
 
 \paragraph{Learning by experience}
 
-% Paradigm: <<please, toddler, come to me>>
-% In Reinforcement Learning, the agent is lying in an environment with which it can interact.
-% The environment has a global state but the agent usually can only see a subset (called observation) and given this observation decides an action.
-% The action has an effect on the state of the environment which afterwards updates itself with a transition function which maps the old state and the action to the new state.
-% A reward is also computed with a Reward Function based on the goodness of the action with respect to the initial state and the new state.
-% The agent then evaluates itself with respect of the given reward and corrects itself to improve its action policy.
-% This is the case of sequential tasks where the right move is not known a priori and it is easier to express the reward function than to give the agent an example of good behaviour.
-% RL is more psychologically realistic as for example, the toddler learns to walk with a parent that puts the baby in one corner of the room and he places himself in the opposite corner. The non-verbal communication of the parent is the reward signal of the toddler, in which a smile means "good boy" and a glare means "bad body". The parent cannot tell the toddler how to properly walk since he is on two foots and the baby cannot interpret human verbal language yet. The baby is also unable to replicate the standing motion of an adult. Intuitively, the baby learns by trial and error. RL is exactly learning by trial and error.
-
 A useful analogy comes from early human development. Consider a toddler learning to walk. The parent may encourage the child by standing across the room and using gestures or facial expressions (such as smiles or glares) to signal success or failure. The toddler does not receive explicit instructions or labelled examples of correct foot placement. Instead, learning unfolds through trial and error, with the child gradually discovering which patterns of movement lead to praise or comfort. Reinforcement learning (RL) mirrors this process: knowledge is acquired not through imitation or discovery of structure, but through experience and consequence.
 
 The agent is acknowledged to lie into an environment, which has an internal logic and an internal state but those are not exposed to the agent.
@@ -49,3 +40,30 @@ Therefore, instead of learning from a static dataset, the agent learns by the ex
 Another key intuition is that the focus of RL is not on the single action, but on the outcome of a sequence of interactions. Thus, the agents aims to maximize the cumulative reward.
 For that reason, RL is applicable in all those tasks in which the quality of an action is defined also by past and future actions, such as traffic light management.
 
+\section{Mathematics}
+
+\subsection{Markov Chains}
+
+The evolution of RL environment could be roughly described as a \textbf{Markov Chain}, which is is a tuple $MC = (S, P)$ where $S$ is the set of all states and $P$ is a transition function such that $P(S_n | S_{n-1})$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$. An example of Markov chain is shown in figure \ref{fig:markov-chain}. Intuitively, any episode of an environment is a sequence of states and there is some kind of transition function which moves the environment from one state to another.
+
+Notably, an important property of Markov Chains is that \textit{past and future are mutually independent}. This may sound like a contradiction to the concept of Markov Chain, but it is in fact a simplification over statistics which allows to model an environment more easily. The appearance of the current state is assumed to be influenced only by the appearance of the previous state. This principle can be summarized as $P(S_n | S_{n-1}) = P(S_n | S_{n-1}, S_{n-2}, S_{n-3}, S_{n-4})$.
+
+Markov chains are a powerful tool for modelling stochastic environments, such as weather conditions. Supposing to have a dataset of daily weather (sunny, cloudy, rain, thunderstorm), one could compute an approximation of $P(S_n | S_{n-1})$ and use it for weather forecasting.
+
+Now, recalling the Markov property and seeing this implementation, a valid argument against this practise of course could be that one precedent weather record isn't enough for predicting future records with sufficient accuracy. But states can also be aggregate or complex objects: Markov chains allow defining a state as the previous k records of weather data.
+
+A more subtle detail resides in what it actually models: a Markov chain doesn't take into account the \textit{external forces} (agents' actions). For example, whether or not the Government decides to start \textit{cloud seeding} is already a game changer variable which radically changes the weather model.
+
+\putimage{figures/markov-chain.png}{An example of three state Markov Chain}{fig:markov-chain}{0.99}
+
+\subsection{Markov Decision Processes}
+
+A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where S is the set of all states, $A$ is the set of all actions, $P$ is a transition function such that $P(S_n | S_{n-1}, a)$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$ with the action $a$, and $R$ is a reward function such that $R(S_{n}, a, S_{n-1})$ denotes the immediate reward of the transition from state $S_{n-1}$ to state $S_n$ with the action $a$. An example of MDP is shown in figure \ref{fig:markov-decision-process}.
+
+This model not only accounts for agents' actions, but also provides an abstraction for expressing the quality of an action or the desirability of a certain state transition. Moreover, it allows the definition of a \textbf{policy} $\pi$ as a mapping from the state set to the action set and the definition of functions for evaluating the optimality of a policy. In particular, a policy $\pi _ o$ is \textit{purely optimal} if $\forall \pi \neq \pi _ o$ holds that the accumulated reward over time of $\pi _ o$ is higher than the one of $\pi$. But how can the accumulated rewards be computed?
+
+\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.99}
+
+\subsection{State Value Function}
+
+\subsection{Action Value Function}
