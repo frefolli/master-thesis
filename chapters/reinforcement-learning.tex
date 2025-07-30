@@ -54,15 +54,19 @@ Now, recalling the Markov property and seeing this implementation, a valid argum
 
 A more subtle detail resides in what it actually models: a Markov chain doesn't take into account the \textit{external forces} (agents' actions). For example, whether or not the Government decides to start \textit{cloud seeding} is already a game changer variable which radically changes the weather model.
 
-\putimage{figures/markov-chain.png}{An example of three state Markov Chain}{fig:markov-chain}{0.99}
+\putimage{figures/markov-chain.png}{An example of three state Markov Chain}{fig:markov-chain}{0.5}
 
 \subsection{Markov Decision Processes}
 
 A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where S is the set of all states, $A$ is the set of all actions, $P$ is a transition function such that $P(S_n | S_{n-1}, a)$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$ with the action $a$, and $R$ is a reward function such that $R(S_{n}, a, S_{n-1})$ denotes the immediate reward of the transition from state $S_{n-1}$ to state $S_n$ with the action $a$. An example of MDP is shown in figure \ref{fig:markov-decision-process}.
 
-This model not only accounts for agents' actions, but also provides an abstraction for expressing the quality of an action or the desirability of a certain state transition. Moreover, it allows the definition of a \textbf{policy} $\pi$ as a mapping from the state set to the action set and the definition of functions for evaluating the optimality of a policy. In particular, a policy $\pi _ o$ is \textit{purely optimal} if $\forall \pi \neq \pi _ o$ holds that the accumulated reward over time of $\pi _ o$ is higher than the one of $\pi$. But how can the accumulated rewards be computed?
+This model not only accounts for agents' actions, but also provides an abstraction for expressing the quality of an action or the desirability of a certain state transition.
+Moreover, the agent behaviour can be defined with a \textbf{policy} $\pi$, which is a deterministic or stochastic mapping from the state set to the action set.
+The behaviour of an agent can then be evaluated by evaluating its policy: a policy $\pi _ a$ is \textit{better} than a policy $\pi _ b$ if the accumulated reward over time of $\pi _ a$ is higher than the one of $\pi _ b$.
+In particular, a policy $\pi _ o$ is defined \textit{optimal} if $\forall \pi _ i \neq \pi _ o$, it holds that $\pi _o $ is \textit{better} than $\pi _ i$.
+If the relative quality of a policy if defined by a scalar value, how can the accumulated rewards be computed?
 
-\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.99}
+\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.5}
 
 \subsection{State Value Function}
 

@@ -4,12 +4,7 @@ Reinforcement Learning (RL) provides a framework for agents to learn optimal beh
 
 \subsection{Markov Decision Processes}
 
-An MDP is typically defined as a 5-tuple $\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, R, \gamma)$, where $\mathcal{S}$ is the set of all possible states, $\mathcal{A}$ is the set of available actions, $P(s'|s, a)$ denotes the transition probability of moving to state $s'$ when taking action $a$ in state $s$, $R(s, a)$ is the expected immediate reward received for taking action $a$ in state $s$, and $\gamma \in [0,1)$ is the discount factor that models the agent’s preference for immediate versus future rewards.
-
-A fundamental assumption in MDPs is the \textit{Markov property}, which states that the future is conditionally independent of the past given the present state. Mathematically, this implies that:
-\[
-\mathbb{P}(s_{t+1} \mid s_0, a_0, \dots, s_t, a_t) = \mathbb{P}(s_{t+1} \mid s_t, a_t).
-\]
+$\gamma \in [0,1)$ is the discount factor that models the agent’s preference for immediate versus future rewards.
 
 The agent's behavior is governed by a \textit{policy}, denoted by $\pi$. A policy can be deterministic, mapping each state to a specific action $\pi(s) = a$, or stochastic, defined as a probability distribution over actions given states, $\pi(a|s)$.
 
