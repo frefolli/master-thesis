@@ -58,16 +58,51 @@ A more subtle detail resides in what it actually models: a Markov chain doesn't 
 
 \subsection{Markov Decision Processes}
 
-A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where S is the set of all states, $A$ is the set of all actions, $P$ is a transition function such that $P(S_n | S_{n-1}, a)$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$ with the action $a$, and $R$ is a reward function such that $R(S_{n}, a, S_{n-1})$ denotes the immediate reward of the transition from state $S_{n-1}$ to state $S_n$ with the action $a$. An example of MDP is shown in figure \ref{fig:markov-decision-process}.
+A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where S is the set of all states, $A$ is the set of all actions, $P$ is a transition function such that $P(S_n | S_{n-1}, a)$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$ with the action $a$, and $R$ is a reward function such that $R(S_{n-1}, a, S_{n})$ denotes the immediate reward of the transition from state $S_{n-1}$ to state $S_n$ with the action $a$. An example of MDP is shown in figure \ref{fig:markov-decision-process}.
 
 This model not only accounts for agents' actions, but also provides an abstraction for expressing the quality of an action or the desirability of a certain state transition.
-Moreover, the agent behaviour can be defined with a \textbf{policy} $\pi$, which is a deterministic or stochastic mapping from the state set to the action set.
+
+\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.5}
+
+\subsection{Policies}
+
+The agent behaviour in a MDP environment can be defined with a \textbf{policy} $\pi$, which is a deterministic or stochastic mapping from the state set to the action set.
+A deterministic policy $\pi_{det}$ is a function $\pi_{det} \; : \; S \rightarrow A$, while a stochastic policy $\pi_{sto}$ is a function $\pi _ {S} \; : \; S \times A \rightarrow [0, 1]$, denoted as $\pi _ {S}(a | s)$, where $\sum_{a \in A} \pi _ {sto} (s, a) = 1$.
+
 The behaviour of an agent can then be evaluated by evaluating its policy: a policy $\pi _ a$ is \textit{better} than a policy $\pi _ b$ if the accumulated reward over time of $\pi _ a$ is higher than the one of $\pi _ b$.
 In particular, a policy $\pi _ o$ is defined \textit{optimal} if $\forall \pi _ i \neq \pi _ o$, it holds that $\pi _o $ is \textit{better} than $\pi _ i$.
 If the relative quality of a policy if defined by a scalar value, how can the accumulated rewards be computed?
 
-\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.5}
-
 \subsection{State Value Function}
+\label{sub:state-value-function}
+
+The \textbf{state-value} function $V^{\pi}(s)$ evaluates the amount of expected reward obtained by following a policy $\pi$ from the state $s$.
+Since both the environment and the agent's policy can be stochastic, an abstract formula to compute this concept reuses the expected value operator $\mathbb{E}$ from probability theory.
+An slice of the episode of an MDP can be represented as a process graph starting from a node $s_i$, developing into a chain of states and actions. The value of this computation is given by a weighted sum of the rewards of tis transitions.
+Since the same node and action can lead to different nodes, the process becomes a sequential, ramified structure as all possible transitions are recursively considered.
+The expected reward of the state $s_i$ can be thought as the weighted sum of rewards of the average path along this ramified process, which leads to the following formula:
+
+\begin{equation} \label{eq:v-pi-E}
+V^\pi(s) = \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t + 1}) \mid s_0 = s \right]
+\end{equation}
+
+Here, \textbf{$\gamma$} is discount factor used for weighting the sum of gained rewards. If $0 < \gamma < 1$, then $lim ^ {t \rightarrow +\infty} \gamma ^ t = 0$ and the immediate rewards have priority over long-term rewards. Otherwise, if $\gamma > 1$, then $lim ^ {t \rightarrow +\infty} \gamma ^ t = +\infty$ and the long-term rewards have priority over immediate rewards. The value of $\gamma$ should reflect the desirability of state transitions and the end goal of the agent learning in this environment. For this reason, it may also be the case for $\gamma = 1$ if immediate rewards and long-term rewards have the same importance in defining the goodness of the agent behaviour. For practical reasons, the abstract $V^{\pi}(s)$ formula can be rewritten to a more manageble recursive form:
+
+\begin{equation} \label{eq:v-pi-bellman}
+V^{\pi}(s) = \sum _ {a \in A} \pi (a | s) \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma V^{\pi}(s') \right]
+\end{equation}
 
 \subsection{Action Value Function}
+
+The \textbf{action-value} function $Q^{\pi}(s, a)$ evaluates the amount of expected reward obtained by following a policy $\pi$ from the state $s$ using the action $a$.
+Reusing the reasoning of Subsection \ref{sub:state-value-function}, the abstract formula can be written as:
+
+\begin{equation} \label{eq:Q-pi-E}
+Q^\pi(s, a) = \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t+1}) \mid s_0 = s, a_0 = a \right]
+\end{equation}
+
+Again, for practical reasons, the abstract $Q^{\pi}(s, a)$ formula can be rewritten to a more manageble recursive form:
+
+\begin{equation} \label{eq:Q-pi-bellman}
+Q^{\pi}(s, a) = \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma \sum _ {a' \in A} \pi (a' | s') Q^{\pi}(s', a') \right]
+\end{equation}
