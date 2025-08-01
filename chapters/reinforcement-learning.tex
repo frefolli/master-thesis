@@ -112,7 +112,7 @@ Q^{\pi}(s, a) = \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma \sum 
 
 \paragraph{Usefulness of value functions}
 
-Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, than the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$. This type of approach is called \textit{model-free} reinforcement learning.
+Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, then the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$. This type of approach is called \textit{model-free} reinforcement learning.
 
 \subsection{Model-based and Model-free learning}
 
