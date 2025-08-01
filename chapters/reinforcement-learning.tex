@@ -73,8 +73,10 @@ The behaviour of an agent can then be evaluated by evaluating its policy: a poli
 In particular, a policy $\pi _ o$ is defined \textit{optimal} if $\forall \pi _ i \neq \pi _ o$, it holds that $\pi _o $ is \textit{better} than $\pi _ i$.
 If the relative quality of a policy if defined by a scalar value, how can the accumulated rewards be computed?
 
-\subsection{State Value Function}
-\label{sub:state-value-function}
+\subsection{Value Functions}
+
+\paragraph{State-value function}
+\label{par:state-value-function}
 
 The \textbf{state-value} function $V^{\pi}(s)$ evaluates the amount of expected reward obtained by following a policy $\pi$ from the state $s$.
 Since both the environment and the agent's policy can be stochastic, an abstract formula to compute this concept reuses the expected value operator $\mathbb{E}$ from probability theory.
@@ -86,23 +88,34 @@ The expected reward of the state $s_i$ can be thought as the weighted sum of rew
 V^\pi(s) = \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t + 1}) \mid s_0 = s \right]
 \end{equation}
 
-Here, \textbf{$\gamma$} is discount factor used for weighting the sum of gained rewards. If $0 < \gamma < 1$, then $lim ^ {t \rightarrow +\infty} \gamma ^ t = 0$ and the immediate rewards have priority over long-term rewards. Otherwise, if $\gamma > 1$, then $lim ^ {t \rightarrow +\infty} \gamma ^ t = +\infty$ and the long-term rewards have priority over immediate rewards. The value of $\gamma$ should reflect the desirability of state transitions and the end goal of the agent learning in this environment. For this reason, it may also be the case for $\gamma = 1$ if immediate rewards and long-term rewards have the same importance in defining the goodness of the agent behaviour. For practical reasons, the abstract $V^{\pi}(s)$ formula can be rewritten to a more manageble recursive form:
+Here, \textbf{$\gamma$} is discount factor used for weighting the sum of gained rewards. If $0 < \gamma < 1$, then $lim ^ {t \rightarrow +\infty} \gamma ^ t = 0$ and the immediate rewards have priority over long-term rewards. Otherwise, if $\gamma > 1$, then $lim ^ {t \rightarrow +\infty} \gamma ^ t = +\infty$ and the long-term rewards have priority over immediate rewards. The value of $\gamma$ should reflect the desirability of state transitions and the end goal of the agent learning in this environment. For this reason, it may also be the case for $\gamma = 1$ if immediate rewards and long-term rewards have the same importance in defining the goodness of the agent behaviour. For practical reasons, the abstract $V^{\pi}(s)$ formula can be rewritten to a more manageable recursive form:
 
 \begin{equation} \label{eq:v-pi-bellman}
 V^{\pi}(s) = \sum _ {a \in A} \pi (a | s) \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma V^{\pi}(s') \right]
 \end{equation}
 
-\subsection{Action Value Function}
+\paragraph{Action-value function}
+\label{par:action-value-function}
 
 The \textbf{action-value} function $Q^{\pi}(s, a)$ evaluates the amount of expected reward obtained by following a policy $\pi$ from the state $s$ using the action $a$.
-Reusing the reasoning of Subsection \ref{sub:state-value-function}, the abstract formula can be written as:
+Reusing the reasoning of Subsection \ref{par:state-value-function}, the abstract formula can be written as:
 
 \begin{equation} \label{eq:Q-pi-E}
 Q^\pi(s, a) = \mathbb{E} \left[ \sum_{t=0}^{\infty} \gamma^t R(s_t, a_t, s_{t+1}) \mid s_0 = s, a_0 = a \right]
 \end{equation}
 
-Again, for practical reasons, the abstract $Q^{\pi}(s, a)$ formula can be rewritten to a more manageble recursive form:
+Again, for practical reasons, the abstract $Q^{\pi}(s, a)$ formula can be rewritten to a more manageable recursive form:
 
 \begin{equation} \label{eq:Q-pi-bellman}
 Q^{\pi}(s, a) = \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma \sum _ {a' \in A} \pi (a' | s') Q^{\pi}(s', a') \right]
 \end{equation}
+
+\paragraph{Usefulness of value functions}
+
+Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, than the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$. This type of approach is called \textit{model-free} reinforcement learning.
+
+\subsection{Model-based and Model-free learning}
+
+\subsection{On-policy and off-policy}
+
+\subsection{Temporal Difference Learning}
