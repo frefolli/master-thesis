@@ -112,10 +112,24 @@ Q^{\pi}(s, a) = \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma \sum 
 
 \paragraph{Usefulness of value functions}
 
-Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, then the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$. This type of approach is called \textit{model-free} reinforcement learning.
+Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, then the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$.
 
-\subsection{Model-based and Model-free learning}
+\subsection{Actually learning agents}
 
-\subsection{On-policy and off-policy}
+\paragraph{Model-Based/Free learning}
 
-\subsection{Temporal Difference Learning}
+A \textit{model} is a representation of the internal logic of the Markov Decision Process. This model can also be a learned approximation. In fact, all algorithms in which the agent learns this representation are called \textbf{model-based}. Conversely, a \textbf{model-free} algorithm doesn't estimate the transition probabilities and reward function of the MDP. Instead, it directly learns an approximated optimal policy through trial and error, requiring no prior knowledge on the environment other than the shapes of the state and action sets.
+In the present research, the focus is on \textit{model-free} learning agents, as the used RL algorithms will be explained in further sections.
+
+\paragraph{On/Off-Policy learning}
+
+As the model-free agent should gain experience interacting with environment, a question arise? Which policy should it use? A \textbf{on-policy} algorithm uses the currently known best policy which is being updated at every interaction. A \textbf{off-policy} algorithm uses the consolidated optimal policy to interact with the environment and gain experience (tuples state-action-reward, for example) which will be used at a later time to update the consolidated policy, building the new optimal policy. It is also possible to use a \textbf{on-policy} strategy combined with a greedy exploration of the state-action cross space.
+
+For example, the \textbf{Epsilon-Greedy} (EG) balances exploration (finding variants of a policy) and exploitation (using the optimal policy) phases using an decaying $\epsilon$ coefficient.
+Every time an inference is needed, the EG algorithm peeks a random decimal number $x \in [0, 1]$. If $x \leq \epsilon$ then is chooses randomly an action to perform, otherwise it selects the current best action given by the policy.
+Over time the $\epsilon$ coefficient lowers using a decaying factor $d$ so that $\epsilon_{t + 1} = \epsilon_{t} d$. This simple but effective algorithm allows to \textit{on-policy} algorithms (and also \textit{off-policy} ones) to explore the state-action space, since they otherwise risk of getting stuck to local optimums.
+An important notice is that the EG algorithm is not by any degree a reinforcement learning algorithm by itself, it only enhance other RL algorithms.
+
+\paragraph{Monte Carlo methods}
+
+\paragraph{Temporal Difference methods}
