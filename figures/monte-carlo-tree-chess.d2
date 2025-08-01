@@ -1,0 +1,18 @@
+direction: down
+
+S0: "Start"
+
+S0 -> A4: {style: {stroke: red}}
+S0 -> B4
+S0 -> C4
+S0 -> "..."
+
+A4 -> A4 A5: {style: {stroke: green}}
+A4 -> A4 B5
+A4 -> A4 C5
+A4 -> "A4 ..."
+
+A4 A5 -> A4 A5 B4: {style: {stroke: red}}
+A4 A5 -> A4 A5 C4
+A4 A5 -> A4 A5 D4
+A4 A5 -> "A4 A5 ..."

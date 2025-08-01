@@ -132,4 +132,13 @@ An important notice is that the EG algorithm is not by any degree a reinforcemen
 
 \paragraph{Monte Carlo methods}
 
+A \textbf{Monte Carlo} (MC) method exploits random exploration and averages the complete rewards obtained by those paths to update the approximation of the value functions.
+As an example consider a Chess board in a given configuration $s_t$ at a time $t$. From this state there are multiple possible actions. A MC approach explores each one (as shown in Figure \ref{fig:monte-carlo-tree-chess}) with $k$ random walks and then computes averages in order to updates its action/state-value function approximation.
+
+The Monte Carlo method is historically an impactful evolution of exhaustive recursive search which used a similar approach for exploring the state-action space but not randomness-driven. As can be easily imagined, many "games" such as Chess have a gazillion of possible states, and in general if the number of possible actions at each state is k, then number of possible state-action sequences after n moves is $\Omega(k^n)$. It should be noted that in case of stochastic environment, the number of possible paths is likely much higher. Using random walks and averaging results, MC manages to dominate the \textit{curse of dimensionality} while maintaining a decent accuracy.
+
+Usually updates happen on a episode-by-episode basis, using only the cumulative reward for averages. Thus, MC doesn't account for distance in time of immediate rewards and in general it doesn't case of short-term rewards. As a consequence, MC is unable to update the value function for intermediate states.
+
+\putimage{figures/monte-carlo-tree-chess.png}{An example of Monte Carlo random sampling for Chess}{fig:monte-carlo-tree-chess}{0.5}
+
 \paragraph{Temporal Difference methods}
