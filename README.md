@@ -5,33 +5,33 @@
 ## Index
 
 - [ ] Introduction
-- [ ] Traffic Science
-  - [ ] Introduction
-  - [ ] Transit regulation
-  - [ ] Demand models
-  - [ ] Settings and assumptions
-- [ ] Traffic Simulation
-  - [ ] SUMO
-  - [ ] Multi agent transit simulations
-  - [ ] SUMO-RL
+- [x] Traffic Science
+  - [x] Introduction
+  - [x] Transit regulation
+  - [x] Demand models
+  - [x] Settings and assumptions
+- [x] Traffic Simulation
+  - [x] SUMO
+  - [x] Multi agent transit simulations
+  - [x] SUMO-RL
 - [ ] Background on Reinforcement Learning
-  - [ ] A new perspective
-    - [ ] Learning by example
-    - [ ] Learning by inference
-    - [ ] Learning by experience
-  - [ ] Mathematics foundation of Environment Modeling and Reinforcement Learning
-    - [ ] Markov Chains
-    - [ ] Markov Decision Processes
-    - [ ] Policies
-    - [ ] Value Functions
-      - [ ] State-value function
-      - [ ] Action-value function
-      - [ ] Usefulness of value functions
+  - [x] A new perspective
+    - [x] Learning by example
+    - [x] Learning by inference
+    - [x] Learning by experience
+  - [x] Mathematics foundation of Environment Modeling and Reinforcement Learning
+    - [x] Markov Chains
+    - [x] Markov Decision Processes
+    - [x] Policies
+    - [x] Value Functions
+      - [x] State-value function
+      - [x] Action-value function
+      - [x] Usefulness of value functions
   - [ ] Learning to learn
     - [ ] Learning techniques
-      - [ ] Model-Based/Free learning
-      - [ ] On/Off-Policy learning
-      - [ ] Monte Carlo methods
+      - [x] Model-Based/Free learning
+      - [x] On/Off-Policy learning
+      - [x] Monte Carlo methods
       - [ ] Temporal Difference methods
     - [ ] Environment design
       - [ ] The state space
