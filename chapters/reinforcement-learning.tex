@@ -110,6 +110,10 @@ Again, for practical reasons, the abstract $Q^{\pi}(s, a)$ formula can be rewrit
 Q^{\pi}(s, a) = \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma \sum _ {a' \in A} \pi (a' | s') Q^{\pi}(s', a') \right]
 \end{equation}
 
+\paragraph{Advantage function}
+
+The \textbf{advantage} function $A^\pi(s, a)$ evaluates the potential advantage of choosing an action $a$ in terms of reward with respect to the average action reward from the state $s$. This is equivalent to computing $A^\pi(s, a) = Q^\pi(s, a) - V^\pi(s)$.
+
 \paragraph{Usefulness of value functions}
 
 Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, then the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$.
@@ -135,7 +139,7 @@ An important notice is that the EG algorithm is not by any degree a reinforcemen
 \paragraph{Monte Carlo methods}
 
 A \textbf{Monte Carlo} (MC) method exploits random exploration and averages the complete rewards obtained by those paths to update the approximation of the value functions.
-As an example consider a Chess board in a given configuration $s_t$ at a time $t$. From this state there are multiple possible actions. A MC approach explores each one (as shown in Figure \ref{fig:monte-carlo-tree-chess}) with $k$ random walks and then computes averages in order to updates its action/state-value function approximation.
+As an example consider a Chess board in a given configuration $s_t$ at a time $t$. From this state there are multiple possible actions. A MC approach explores each one (as shown in Figure \ref{fig:monte-carlo-tree-chess}) with $k$ complete random walks and then computes averages in order to updates its action/state-value function approximation.
 
 The Monte Carlo method is historically an impactful evolution of exhaustive recursive search which used a similar approach for exploring the state-action space but not randomness-driven. As can be easily imagined, many "games" such as Chess have a gazillion of possible states, and in general if the number of possible actions at each state is k, then number of possible state-action sequences after n moves is $\Omega(k^n)$. It should be noted that in case of stochastic environment, the number of possible paths is likely much higher. Using random walks and averaging results, MC manages to dominate the \textit{curse of dimensionality} while maintaining a decent accuracy.
 
@@ -144,6 +148,41 @@ Usually updates happen on a episode-by-episode basis, using only the cumulative 
 \putimage{figures/monte-carlo-tree-chess.png}{An example of Monte Carlo random sampling for Chess}{fig:monte-carlo-tree-chess}{0.5}
 
 \paragraph{Temporal Difference methods}
+
+While Monte Carlo methods update value function estimates at the end of the episode, a \textit{temporal difference} (TD) method achieve the same results with incremental step-by-step updates.
+In practise that means computing the next estimate for the action-value function $Q^\pi(s, a)$ (or the state-value function $V^\pi(s)$) with a weighted sum of the current estimate and of the immediate rewards.
+
+For example, the tabular $TD(0)$ algorithm produces an approximation of the state-value function $V^\pi(s)$ using a simple update formula:
+
+\begin{equation} \label{eq:TD0-update}
+  V\pi'(s) = (1 - \alpha) V\pi(s) + \alpha \left[ R(s, a, s') + \gamma V\pi(s') \right]
+\end{equation}
+
+A clearer picture of what is happening behind the courtains can be seen by rewriting the equation:
+
+\begin{equation} \label{eq:TD0-update-rewritten}
+  V\pi'(s) = V\pi(s) + \alpha \left[ \underbrace{R(s, a, s') + \gamma V\pi(s')}_{hint} - \underbrace{V\pi(S)}_{estimate} \right]
+\end{equation}
+
+A reader who is familiar with supervised learning techniques is probably recognizing a similarity with the general function approximation formula: $w \rightarrow $.
+He would be right. TD methods use immediate rewards and current estimates of value functions to get a hint for approximating better those value functions.
+That said, the precise nature of the hint may be speculated by specific RL algorithms. Approximating the state-value function $V\pi(s)$ is more trivial than updating the action-value $Q^\pi(s, a)$ function, which is however more effective for learning a policy. In the following section, some model-free TD algorithms are presented as they are used in the present research.
+
+\paragraph{Policy-Gradient methods}
+
+\paragraph{Actor Critic methods}
+
+\section{Reinforcement Learning Algorithms}
+
+\subsection{SARSA}
+
+\subsection{Q Learning}
+
+\subsection{DQN}
+
+\subsection{PPO}
+
+\section{Design Considerations}
 
 \subsection{Environment design}
 
@@ -163,4 +202,6 @@ Usually updates happen on a episode-by-episode basis, using only the cumulative 
 
 \paragraph{Curriculum learning}
 
-\subsection{Reinforcement Learning Algorithms}
+\paragraph{Real-time learning}
+
+\paragraph{Simulated learning}
