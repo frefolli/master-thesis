@@ -164,13 +164,41 @@ A clearer picture of what is happening behind the courtains can be seen by rewri
   V\pi'(s) = V\pi(s) + \alpha \left[ \underbrace{R(s, a, s') + \gamma V\pi(s')}_{hint} - \underbrace{V\pi(S)}_{estimate} \right]
 \end{equation}
 
-A reader who is familiar with supervised learning techniques is probably recognizing a similarity with the general function approximation formula: $w \rightarrow $.
+A reader who is familiar with supervised learning techniques is probably recognizing a similarity with the general function approximation formula: $x \leftarrow x + \alpha \nabla f(x)$.
 He would be right. TD methods use immediate rewards and current estimates of value functions to get a hint for approximating better those value functions.
 That said, the precise nature of the hint may be speculated by specific RL algorithms. Approximating the state-value function $V\pi(s)$ is more trivial than updating the action-value $Q^\pi(s, a)$ function, which is however more effective for learning a policy. In the following section, some model-free TD algorithms are presented as they are used in the present research.
 
 \paragraph{Policy-Gradient methods}
 
+Policy-gradient methods offer a direct way to learn policies without needing to estimate value functions first. These methods represent the policy as a parameterized function $\pi_\theta(a \mid s)$, where $\theta$ are the parameters (typically the weights of a neural network). The goal is to adjust these parameters to increase the expected reward the agent receives over time.
+
+Instead of learning how good each state or action is, policy-gradient methods aim to increase the probability of actions that lead to better outcomes. This is done using the gradient of the expected return with respect to the policy parameters, known as the policy gradient. The agent collects experience, estimates how good the taken actions were (often using returns or advantages), and updates the policy in the direction that would make these actions more likely in the future.
+
+In summary, policy-gradient methods:
+\begin{itemize}
+  \item Learn the policy directly, without relying on a value function.
+  \item Use collected experience to compute an estimate of the gradient.
+  \item Update the policy to make good actions more likely.
+\end{itemize}
+
 \paragraph{Actor Critic methods}
+
+Actor-Critic methods combine the strengths of policy-gradient and value-based approaches. They consist of two interacting components:
+\begin{itemize}
+  \item The \textbf{actor}, which represents the policy $\pi_\theta(a \mid s)$ and decides which action to take.
+  \item The \textbf{critic}, which estimates a value function (such as $V(s)$ or $Q(s, a)$) to evaluate how good the actor's actions are.
+\end{itemize}
+
+The critic provides feedback to the actor (essentially telling it how good its decisions were) so that the actor can update the policy more effectively. This setup reduces variance in learning and leads to more stable updates compared to basic policy-gradient methods.
+
+In practice, the critic usually estimates either the value function or the advantage function. The actor then uses this information to adjust the policy parameters in a direction that improves performance.
+
+In summary, Actor-Critic methods:
+\begin{itemize}
+  \item Use a value function (the critic) to guide policy updates.
+  \item Directly learn the policy (the actor) using gradient ascent.
+  \item Benefit from lower variance and better learning stability.
+\end{itemize}
 
 \section{Reinforcement Learning Algorithms}
 
