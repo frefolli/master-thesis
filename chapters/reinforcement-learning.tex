@@ -40,7 +40,7 @@ Therefore, instead of learning from a static dataset, the agent learns by the ex
 Another key intuition is that the focus of RL is not on the single action, but on the outcome of a sequence of interactions. Thus, the agents aims to maximize the cumulative reward.
 For that reason, RL is applicable in all those tasks in which the quality of an action is defined also by past and future actions, such as traffic light management.
 
-\section{Mathematics}
+\section{Mathematics foundation of Environment Modeling and Reinforcement Learning}
 
 \subsection{Markov Chains}
 
@@ -114,7 +114,9 @@ Q^{\pi}(s, a) = \sum _ {s' \in S} P(s' | s, a) \left[ R(s, a, s') + \gamma \sum 
 
 Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-function} and the \textit{action-value} function $Q^{\pi}(s, a)$ \ref{par:action-value-function} allow to compare different policies in order to find the most advantageous one at a certain point of time. Moreover, putting $s = s_0$ also allows to obtain an overall picture of quality of a policy. However, the function $Q^{\pi}(s, a)$ is also useful when constructing a winning policy. If a good approximation of $Q^{\pi}(s, a)$ is known, then the agent can choose the best performing action $a_o \in A$ using a simple comparison: $\forall a \in A \; | \; Q^{\pi}(s, a) \leq Q^{\pi}(s, a_o)$.
 
-\subsection{Actually learning agents}
+\section{Learning to learn}
+
+\subsection{Learning techniques}
 
 \paragraph{Model-Based/Free learning}
 
@@ -142,3 +144,23 @@ Usually updates happen on a episode-by-episode basis, using only the cumulative 
 \putimage{figures/monte-carlo-tree-chess.png}{An example of Monte Carlo random sampling for Chess}{fig:monte-carlo-tree-chess}{0.5}
 
 \paragraph{Temporal Difference methods}
+
+\subsection{Environment design}
+
+\paragraph{The state space}
+
+\paragraph{The action space}
+
+\paragraph{The observation function}
+
+\paragraph{The reward function}
+
+\subsection{Experience design}
+
+\paragraph{Frankenstein learning}
+
+\paragraph{Incremental learning}
+
+\paragraph{Curriculum learning}
+
+\subsection{Reinforcement Learning Algorithms}

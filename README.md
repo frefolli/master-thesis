@@ -15,8 +15,37 @@
   - [ ] Multi agent transit simulations
   - [ ] SUMO-RL
 - [ ] Background on Reinforcement Learning
-  - [ ] Reinforcement Learning
-  - [ ] Curriculum Learning
+  - [ ] A new perspective
+    - [ ] Learning by example
+    - [ ] Learning by inference
+    - [ ] Learning by experience
+  - [ ] Mathematics foundation of Environment Modeling and Reinforcement Learning
+    - [ ] Markov Chains
+    - [ ] Markov Decision Processes
+    - [ ] Policies
+    - [ ] Value Functions
+      - [ ] State-value function
+      - [ ] Action-value function
+      - [ ] Usefulness of value functions
+  - [ ] Learning to learn
+    - [ ] Learning techniques
+      - [ ] Model-Based/Free learning
+      - [ ] On/Off-Policy learning
+      - [ ] Monte Carlo methods
+      - [ ] Temporal Difference methods
+    - [ ] Environment design
+      - [ ] The state space
+      - [ ] The action space
+      - [ ] The observation function
+      - [ ] The reward function
+    - [ ] Experience design
+      - [ ] Frankenstein learning
+      - [ ] Incremental learning
+      - [ ] Curriculum learning
+    - [ ] Reinforcement Learning Algorithms
+      - [ ] Q Learning
+      - [ ] DQN
+      - [ ] PPO
 - [ ] Agents
   - [ ] Q Learning
   - [ ] DQN
