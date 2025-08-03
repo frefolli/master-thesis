@@ -221,45 +221,41 @@ The critic provides feedback to the actor (essentially telling it how good its d
 
 \subsection{SARSA}
 
-SARSA (State-Action-Reward-State-Action) is an on-policy Temporal Difference (TD) control algorithm that updates its action-value function based on the action actually taken by the current policy. The update rule is defined as:
+SARSA (State-Action-Reward-State-Action) is an on-policy Temporal Difference (TD) algorithm that updates its action-value function based on the action actually taken by the current policy. The update rule is defined as:
 
 \[
-Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \right]
+  Q^\pi(s, a) \leftarrow Q^\pi(s, a) + \alpha \left[ R(s, a, s') + \gamma Q^\pi(s', a') - Q^\pi(s, a) \right]
 \]
 
 Here, $(s_t, a_t, r_{t+1}, s_{t+1}, a_{t+1})$ is a complete SARSA quintuple. The algorithm’s on-policy nature means that the action $a_{t+1}$ is drawn from the current behavior policy, typically $\epsilon$-greedy. SARSA converges under standard stochastic approximation conditions if all state-action pairs are visited infinitely often. Because it learns the value of the policy it is following, SARSA naturally incorporates the exploratory behavior into its updates, which can be advantageous in risky environments.
+The values of $Q^\pi(s, a)$ are initialized with very low values instead of random values or zeros for better convergence.
 
-\vspace{0.5em}
-SARSA balances exploration and exploitation in a way that accounts for the actual transitions observed, making it sensitive to the policy's risk profile.
+It is very easy to implement and is effective for low dimensional state spaces, but its convergence is slow and scales badly over big state spaces.
+Also, it is important to notice that a state presented to the agent which he has not seen before are a \textit{miss} even if it already saw \textit{similar} states.
+Moreover, SARSA (as other TD methods) lacks support for continuous action/state spaces.
 
 \subsection{Q-Learning}
 
-Q-Learning is an off-policy TD control method that seeks to learn the optimal policy independently of the agent’s actions. The core update rule is:
+Q-Learning is an off-policy TD method that seeks to learn the optimal policy independently of the agent’s actions. The core update rule is:
 
 \[
-Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_{a} Q(s_{t+1}, a) - Q(s_t, a_t) \right]
+  Q^\pi(s, a) \leftarrow Q^\pi(s, a) + \alpha \left[ R(s, a, s') + \gamma \max_{a'} Q^\pi(s', a') - Q^\pi(s, a) \right]
 \]
 
 The key difference from SARSA is the use of the greedy action in the update, regardless of the action actually taken. This makes Q-Learning an off-policy method, capable of learning optimal behavior while exploring with a different policy. It has strong convergence guarantees under suitable learning rate decay and sufficient exploration.
-
-\vspace{0.5em}
-Q-Learning is particularly powerful when used with function approximation and experience replay, forming the basis for more advanced algorithms like DQN.
+However, it suffers the same problems as SARSA due to its tabular nature, even if Q-learning does converge faster than SARSA and it allows to initialize simply to zeros the values of $Q^\pi(s, a)$.
 
 \subsection{DQN}
 
 DQN (Deep Q-Networks) extends Q-Learning to high-dimensional state spaces by using deep neural networks to approximate the $Q$-function. The learning update becomes:
 
 \[
-\mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[ \left( y - Q(s,a;\theta) \right)^2 \right], \quad y = r + \gamma \max_{a'} Q(s', a'; \theta^{-})
+L(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[ \left( y - Q(s,a;\theta) \right)^2 \right], \quad y = r + \gamma \max_{a'} Q(s', a'; \theta^{-})
 \]
 
-Here, $\theta$ are the parameters of the online network and $\theta^{-}$ are the parameters of a target network, updated periodically to stabilize learning. DQN also incorporates:
-\begin{itemize}
-  \item \textbf{Experience Replay:} Stores past transitions in a buffer $\mathcal{D}$ and samples minibatches to decorrelate updates.
-  \item \textbf{Target Network:} A separate network used to compute stable targets $y$.
-\end{itemize}
+Here, $\theta$ are the parameters of the online network and $\theta^{-}$ are the parameters of a target network, updated periodically to stabilize learning.
+DQN also incorporates a separate network used to compute stable targets $y$.
 
-\vspace{0.5em}
 These innovations address the instability of training neural networks with non-i.i.d.\ data and bootstrapped targets. DQN performs well in complex environments such as Atari games, though it can struggle with continuous action spaces or long-term credit assignment.
 
 \subsection{PPO}
@@ -267,15 +263,12 @@ These innovations address the instability of training neural networks with non-i
 PPO (Proximal Policy Optimization) is a policy gradient method that improves upon standard policy optimization by ensuring stable updates through a clipped surrogate objective. The clipped objective function is:
 
 \[
-\mathcal{L}^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min \left( r_t(\theta) \hat{A}_t, \text{clip}(r_t(\theta), 1 - \epsilon, 1 + \epsilon) \hat{A}_t \right) \right]
+L^{\text{CLIP}}(\theta) = \mathbb{E} \left[ \min \left( r(\theta) \hat{A}, \text{clip}(r(\theta), 1 - \epsilon, 1 + \epsilon) \hat{A} \right) \right]
 \]
 
-where $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}$ is the probability ratio, and $\hat{A}_t$ is an estimate of the advantage function. The clipping prevents large policy updates that could degrade performance, striking a balance between exploration and stability.
+where $r(\theta) = \frac{\pi_\theta(s, a)}{\pi_{\theta_{\text{old}}}(s, a)}$ is the probability ratio, and $\hat{A}$ is an estimate of the advantage function. The clipping prevents large policy updates that could degrade performance, striking a balance between exploration and stability.
 
-\vspace{0.5em}
-PPO can be seen as a first-order approximation to Trust Region Policy Optimization (TRPO), with significantly reduced complexity. It uses multiple epochs of minibatch updates with data collected from a single policy rollout, making it highly sample-efficient and practical for large-scale problems.
-
-\vspace{0.5em}
+PPO can be seen as a first-order approximation to Trust Region Policy Optimization (TRPO) \cite{schulman2015trust}, with significantly reduced complexity. It uses multiple epochs of minibatch updates with data collected from a single policy rollout, making it highly sample-efficient and practical for large-scale problems.
 PPO is widely used in continuous control tasks (e.g., MuJoCo), robotics, and real-world RL applications due to its robustness and simplicity.
 
 \section{Design Considerations}
