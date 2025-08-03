@@ -131,14 +131,14 @@ In the present research, the focus is on \textit{model-free} learning agents, as
 
 As the model-free agent should gain experience interacting with environment, a question arise? Which policy should it use? A \textbf{on-policy} algorithm uses the currently known best policy which is being updated at every interaction. A \textbf{off-policy} algorithm uses the consolidated optimal policy to interact with the environment and gain experience (tuples state-action-reward, for example) which will be used at a later time to update the consolidated policy, building the new optimal policy. It is also possible to use a \textbf{on-policy} strategy combined with a greedy exploration of the state-action cross space.
 
-For example, the \textbf{Epsilon-Greedy} (EG) balances exploration (finding variants of a policy) and exploitation (using the optimal policy) phases using an decaying $\epsilon$ coefficient.
+For example, the \textbf{Epsilon-Greedy} (EG) \cite{liu2021improving} balances exploration (finding variants of a policy) and exploitation (using the optimal policy) phases using an decaying $\epsilon$ coefficient.
 Every time an inference is needed, the EG algorithm peeks a random decimal number $x \in [0, 1]$. If $x \leq \epsilon$ then is chooses randomly an action to perform, otherwise it selects the current best action given by the policy.
 Over time the $\epsilon$ coefficient lowers using a decaying factor $d$ so that $\epsilon_{t + 1} = \epsilon_{t} d$. This simple but effective algorithm allows to \textit{on-policy} algorithms (and also \textit{off-policy} ones) to explore the state-action space, since they otherwise risk of getting stuck to local optimums.
 An important notice is that the EG algorithm is not by any degree a reinforcement learning algorithm by itself, it only enhance other RL algorithms.
 
 \paragraph{Monte Carlo methods}
 
-A \textbf{Monte Carlo} (MC) method exploits random exploration and averages the complete rewards obtained by those paths to update the approximation of the value functions.
+A \textbf{Monte Carlo} (MC) \cite{NIPS2014_88bf0c64} method exploits random exploration and averages the complete rewards obtained by those paths to update the approximation of the value functions.
 As an example consider a Chess board in a given configuration $s_t$ at a time $t$. From this state there are multiple possible actions. A MC approach explores each one (as shown in Figure \ref{fig:monte-carlo-tree-chess}) with $k$ complete random walks and then computes averages in order to updates its action/state-value function approximation.
 
 The Monte Carlo method is historically an impactful evolution of exhaustive recursive search which used a similar approach for exploring the state-action space but not randomness-driven. As can be easily imagined, many "games" such as Chess have a gazillion of possible states, and in general if the number of possible actions at each state is k, then number of possible state-action sequences after n moves is $\Omega(k^n)$. It should be noted that in case of stochastic environment, the number of possible paths is likely much higher. Using random walks and averaging results, MC manages to dominate the \textit{curse of dimensionality} while maintaining a decent accuracy.
@@ -149,19 +149,19 @@ Usually updates happen on a episode-by-episode basis, using only the cumulative 
 
 \paragraph{Temporal Difference methods}
 
-While Monte Carlo methods update value function estimates at the end of the episode, a \textit{temporal difference} (TD) method achieve the same results with incremental step-by-step updates.
+While Monte Carlo methods update value function estimates at the end of the episode, a \textit{temporal difference} (TD) \cite{sutton1988learning} method achieve the same results with incremental step-by-step updates.
 In practise that means computing the next estimate for the action-value function $Q^\pi(s, a)$ (or the state-value function $V^\pi(s)$) with a weighted sum of the current estimate and of the immediate rewards.
 
 For example, the tabular $TD(0)$ algorithm produces an approximation of the state-value function $V^\pi(s)$ using a simple update formula:
 
 \begin{equation} \label{eq:TD0-update}
-  V\pi'(s) = (1 - \alpha) V\pi(s) + \alpha \left[ R(s, a, s') + \gamma V\pi(s') \right]
+  {V_+}^\pi(s) = (1 - \alpha) V^\pi(s) + \alpha \left[ R(s, a, s') + \gamma V^\pi(s') \right]
 \end{equation}
 
 A clearer picture of what is happening behind the courtains can be seen by rewriting the equation:
 
 \begin{equation} \label{eq:TD0-update-rewritten}
-  V\pi'(s) = V\pi(s) + \alpha \left[ \underbrace{R(s, a, s') + \gamma V\pi(s')}_{hint} - \underbrace{V\pi(S)}_{estimate} \right]
+  {V_+}^\pi(s) = V^\pi(s) + \alpha \left[ \underbrace{R(s, a, s') + \gamma V^\pi(s')}_{hint} - \underbrace{V^\pi(S)}_{estimate} \right]
 \end{equation}
 
 A reader who is familiar with supervised learning techniques is probably recognizing a similarity with the general function approximation formula: $x \leftarrow x + \alpha \nabla f(x)$.
@@ -170,35 +170,52 @@ That said, the precise nature of the hint may be speculated by specific RL algor
 
 \paragraph{Policy-Gradient methods}
 
-Policy-gradient methods offer a direct way to learn policies without needing to estimate value functions first. These methods represent the policy as a parameterized function $\pi_\theta(a \mid s)$, where $\theta$ are the parameters (typically the weights of a neural network). The goal is to adjust these parameters to increase the expected reward the agent receives over time.
+\textbf{Policy-Gradient} (PG) \cite{sutton1999policy} methods offer a direct way to learn policies without needing to estimate value functions first. These methods represent the policy as a parameterized function $\pi_\theta(a \mid s)$, where $\theta$ are the parameters (typically the weights of a neural network). The goal is to adjust these parameters to increase the expected reward the agent receives over time.
 
-Instead of learning how good each state or action is, policy-gradient methods aim to increase the probability of actions that lead to better outcomes. This is done using the gradient of the expected return with respect to the policy parameters, known as the policy gradient. The agent collects experience, estimates how good the taken actions were (often using returns or advantages), and updates the policy in the direction that would make these actions more likely in the future.
+Instead of learning how good each state or action is, policy-gradient methods aim to increase the probability of actions that lead to better outcomes. This is done using the gradient of the expected return with respect to the policy parameters, known as the policy gradient. The agent collects experience, estimates how good the taken actions were, and updates the policy in the direction that would make these actions more likely in the future.
 
-In summary, policy-gradient methods:
-\begin{itemize}
-  \item Learn the policy directly, without relying on a value function.
-  \item Use collected experience to compute an estimate of the gradient.
-  \item Update the policy to make good actions more likely.
-\end{itemize}
+Using a MC-like exploration, it uses the current policy to draft N paths and then use them to infer the gradient descent.
+The following is the equation for computing the gradient ($\nabla_\theta J(\theta)$) of the target function $J(\theta)$ with REINFORCE \cite{Sewak2019}, one of the first GB algorithms.
+
+\begin{equation}
+  \label{eq:policy-gradient-equation}
+  \nabla _ {\theta} J(\theta) = \mathbb{E}
+    \left[
+      \sum _ {t \in [0, T]} \overbrace{\nabla _ {\theta} log \pi _ \theta (s_t, a_t)}^{\Delta} \overbrace{\sum _ {\tau \in [t, T]} (\gamma ^ {\tau - t} R _ \tau)}^{\mathbb{G}}
+    \right]
+\end{equation}
+
+The expected value operator $\mathbb {E}$ averages the sum of an infinite amount of the gradient computed each on a single agent trail (driven by the policy or by randomness), therefore it can be approximated to a mean of a finite number of trails when N is \textit{big} (arbitrary, but a batch of $~1000$ samples is experimentally sufficient). In the equation two components are also highlighted. The gradient of log probabilities $\mathbb{\Delta}$ is the gradient of $log \pi _ \theta (s, a)$, which is $\Delta = \frac {\nabla _ \theta \pi _ \theta (s, a)} {\pi _ \theta (s, a)}$.
+
+The function under the gradient operator $\nabla _ \theta$ is $\pi _ \theta (s, a)$, which is the distribution of probabilities (the stochastic policy) and its gradient is the direction of increment for the probability of the action $a$ in state $s$. Since $\pi _ \theta (s,a)$ is usually a neural network, its gradient can be seen as the gradient for expecting a one-hot vector as output with all zeros expect with the $1$ in correspondence of the action $a$.
+
+Moreover, the gain quantity $\mathbb{G}$ is the estimated gain of the action $a$, which can be computed with full Monte Carlo interactions or can be learned (see Actor-Critic methods). Thus, the equation is essentially performing a weighted sum of gradients with respect of the expected gain of following the respective action.
+
+Finally, the gradient is applied as usual with gradient descent methods. In the following formula uses the aforementioned gradient $\alpha \nabla _ {\theta} J(\theta)$ and a learning rate $\alpha$ to update the current policy.
+
+\begin{equation}
+  \theta \leftarrow \theta + \alpha \nabla _ {\theta} J(\theta)
+\end{equation}
 
 \paragraph{Actor Critic methods}
 
-Actor-Critic methods combine the strengths of policy-gradient and value-based approaches. They consist of two interacting components:
+\textbf{Actor-Critic} (AC) \cite{grondman2012survey} methods combine the strengths of policy-gradient and value-based approaches. They consist of two interacting components:
 \begin{itemize}
   \item The \textbf{actor}, which represents the policy $\pi_\theta(a \mid s)$ and decides which action to take.
   \item The \textbf{critic}, which estimates a value function (such as $V(s)$ or $Q(s, a)$) to evaluate how good the actor's actions are.
 \end{itemize}
 
-The critic provides feedback to the actor (essentially telling it how good its decisions were) so that the actor can update the policy more effectively. This setup reduces variance in learning and leads to more stable updates compared to basic policy-gradient methods.
+The critic provides feedback to the actor (essentially telling it how good its decisions were) so that the actor can update the policy more effectively, as shown in Figure \ref{fig:actor-critic-diagram}. This setup reduces variance in learning and leads to more stable updates compared to basic policy-gradient methods. In practice, the critic usually estimates either the value function or the advantage function. The actor then uses this information to adjust the policy parameters in a direction that improves performance. Basically, Equation \ref{eq:policy-gradient-equation} can be modified to replace the $\mathbb{G}$ component with the value function (such as the action-value function $Q^\pi(s, a)$) approximation learned by the critic:
 
-In practice, the critic usually estimates either the value function or the advantage function. The actor then uses this information to adjust the policy parameters in a direction that improves performance.
+\begin{equation}
+  \label{eq:actor-critic-equation}
+  \nabla _ {\theta} J(\theta) = \mathbb{E}
+    \left[
+      \sum _ {t \in [0, T]} \overbrace{\nabla _ {\theta} log \pi _ \theta (s_t, a_t)}^{\Delta} \overbrace{Q^\pi(s_t, a_t)}^{\mathbb{G}}
+    \right]
+\end{equation}
 
-In summary, Actor-Critic methods:
-\begin{itemize}
-  \item Use a value function (the critic) to guide policy updates.
-  \item Directly learn the policy (the actor) using gradient ascent.
-  \item Benefit from lower variance and better learning stability.
-\end{itemize}
+\putimage{figures/actor-critic-diagram.png}{The workflow of an Actor-Critic RL system. Source: "Actor-critic reinforcement learning leads decision-making in energy systems optimization—steam injection optimization", Abdalla et al, Springer \cite{abdalla2023actor}.}{fig:actor-critic-diagram}{0.5}
 
 \section{Reinforcement Learning Algorithms}
 

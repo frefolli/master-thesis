@@ -28,11 +28,13 @@
       - [x] Action-value function
       - [x] Usefulness of value functions
   - [ ] Learning to learn
-    - [ ] Learning techniques
+    - [x] Learning techniques
       - [x] Model-Based/Free learning
       - [x] On/Off-Policy learning
       - [x] Monte Carlo methods
-      - [ ] Temporal Difference methods
+      - [x] Temporal Difference methods
+      - [x] Policy-gradient methods
+      - [x] Actor-Critic methods
     - [ ] Environment design
       - [ ] The state space
       - [ ] The action space
