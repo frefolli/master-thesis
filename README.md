@@ -27,7 +27,7 @@
       - [x] State-value function
       - [x] Action-value function
       - [x] Usefulness of value functions
-  - [ ] Learning to learn
+  - [x] Learning to learn
     - [x] Learning techniques
       - [x] Model-Based/Free learning
       - [x] On/Off-Policy learning
@@ -35,19 +35,22 @@
       - [x] Temporal Difference methods
       - [x] Policy-gradient methods
       - [x] Actor-Critic methods
-    - [ ] Environment design
-      - [ ] The state space
-      - [ ] The action space
-      - [ ] The observation function
-      - [ ] The reward function
-    - [ ] Experience design
-      - [ ] Frankenstein learning
-      - [ ] Incremental learning
-      - [ ] Curriculum learning
-    - [ ] Reinforcement Learning Algorithms
-      - [ ] Q Learning
-      - [ ] DQN
-      - [ ] PPO
+    - [x] Reinforcement Learning Algorithms
+      - [x] SARSA
+      - [x] Q Learning
+      - [x] Double Q Learning
+      - [x] DQN
+      - [x] PPO
+  - [x] Design considerations
+    - [x] Environment design
+      - [x] The state space
+      - [x] The action space
+      - [x] The observation function
+      - [x] The reward function
+    - [x] Experience design
+      - [x] Incremental learning
+      - [x] Curriculum learning
+      - [x] Simulated learning
 - [ ] Agents
   - [ ] Q Learning
   - [ ] DQN

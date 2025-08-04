@@ -40,7 +40,7 @@ Therefore, instead of learning from a static dataset, the agent learns by the ex
 Another key intuition is that the focus of RL is not on the single action, but on the outcome of a sequence of interactions. Thus, the agents aims to maximize the cumulative reward.
 For that reason, RL is applicable in all those tasks in which the quality of an action is defined also by past and future actions, such as traffic light management.
 
-\section{Mathematical foundation of Environment Modeling and Reinforcement Learning}
+\section{Mathematical foundations}
 
 This section presents the theoretical concepts useful for understanding Reinforcement Learning models and algorithms.
 
@@ -307,50 +307,102 @@ The state space can contain continuous values as well as discrete values. For ex
 \paragraph{The observation function}
 
 The environment exposes its state (often only partially observable, such as in a Poker simulation), the observation function takes this state and transforms it into the observation that is fed into the agent.
-The state can be left as is or transformed, depending on the agent architecture but also on other factors. For example, if the state contains continuous values and the agent is driven by a tabular learning model (which gives its best discrete inputs), the observation function could discretize the state using \textit{quantization} or \textit{feature-extraction}.
+The state can be left as is or transformed, depending on the agent architecture but also on other factors. For example, if the state contains continuous values \footnote{Yes, a floating point number is \textit{usually} encoded with IEEE Standard for Floating-Point Arithmetic (IEEE 754) as a 32/64/128bit number, and thus it is ``\textit{discrete}''. Still, $2^{64}$ states for a single decimal number is too high to be manipulated by a tabular method. Not to mention the sparsity of recurring states, which also depend on the environment and the domain.} and the agent is driven by a tabular learning model (which gives its best discrete inputs), the observation function could discretize the state using \textit{quantization} or \textit{feature-extraction}.
 
-With \textbf{quantization}, a continuous value is mapped into a discrete value by transforming the value to the ``nearest'' discrete value. For example, the decimal number $3.14$ could be \textit{truncated} to $3$ or rounded to $4$. Often is it also necessary to scale the value, which can be integrated in the quantization process relatively easily, as shown in Equation {}. $D_{min}$ and $D_{max}$ are the domain max/min values, $C_{min}$ and $C_{max}$ are the min/max values of the discrete co-domain.
+With \textbf{quantization}, a continuous value is mapped into a discrete value by transforming the value to the ``nearest'' discrete value. For example, the decimal number $3.14$ could be \textit{truncated} to $3$ or rounded to $4$. Often is it also necessary to scale the value, which can be integrated in the quantization process relatively easily, as shown in Equation {eq:quantization}. $D_{min}$ and $D_{max}$ are the domain max/min values, $C_{min}$ and $C_{max}$ are the min/max values of the discrete co-domain.
 
 \begin{equation}
-  \label{}
-  quant(x) =
-  \left{
-    \begin{split}
-
-    \begin{split}
-  \right}
+  \label{eq:quantization}
+  quant(x) = \left\{
+  \begin{array}{cl}
+  C_{min} & x < D_{min} \\
+  (x - D_{min}) \frac{C_{max} - C_{min}} {D_{max} - D_{min}} + C_{min} & D_{min} < x < D_{max} \\
+  C_{max} & x > D_{max}
+  \end{array}
+  \right\}
 \end{equation}
 
-      On the other hand, \textbf{feature-extraction} extracts a ``meaningful'' discrete value from a ``raw'' continuous value. Given an environment for Blackjack, the state are the cards on the desk (or their values). The observation function could ``extract'' a discrete feature $x_f$ which represents whether or not the player's pile has reached the sum of $14$, thus a ${0,1}$ discrete value. 
-
+      On the other hand, \textbf{feature-extraction} extracts a ``meaningful'' discrete value from a ``raw'' continuous value. Given an environment for Blackjack, the state are the cards on the desk (or their values). The observation function could ``extract'' a discrete feature $x_f$ which represents whether or not the player's pile has reached the sum of $14$, thus a ${0,1}$ discrete value. This technique also applies to already discrete raw state, since the RL engineer may choose to feed the agent with meaningful data. For a card game such as Aces Up, the usage of feature-extraction can mean having a bit for the information ``can i discard a card from the top of i-th pile?''. It should be clear that feeding such features into the agent has the effect of letting it learn to recognize these signals, while feeding raw data leads to learning to identify such patterns in the state. Moreover, a feature-extraction function can also be learned by a NNs model through supervised machine-learning if labelled features are available only in trivial cases or within a finite training set.
 
 \paragraph{The action space}
 
-The action space $\mathcal{A}$ defines what the agent is capable of doing at any given state. This can be discrete (e.g., move left/right) or continuous (e.g., apply force vector). The granularity of the action space affects both the difficulty of the learning task and the precision of control. Proper discretization or abstraction is often required for effective learning.
+The action space defines what the agent is capable of doing, which can be represented as a discrete value (e.g., move left) or continuous (e.g. apply a rotation).
+The granularity of the action space affects both the difficulty of the learning task and the precision of control.
+Since with tabular methods the action is a discrete quantity, the usage of \textbf{quantization} can help out also in the state space because it can approximate a continuous action value by inverting the Equation \ref{eq:quantization}. Therefore, recalling the example of CartPole, the actions of the agent can be expressed by discrete actions in range and they be transformed back into continuous value by rescaling a $[C_{min}, C_{max}]$ to the range $[D_{min}, D_{max}]$. An alternative is decreasing the step size so that the agent can take discrete actions of small value.
+NNs based methods obviously don't have such problem since the output of a NN is inherently a continuous value.
+
 \paragraph{The reward function}
 
-The reward function $R(s, a, s')$ drives learning by quantifying the desirability of state transitions. A well-shaped reward encourages the intended behavior and reduces exploration ambiguity. Sparse or poorly aligned rewards can result in slow convergence or unintended strategies. Reward shaping, penalties, and potential-based methods are common tools to refine reward signal quality.
+The reward function $R(s, a, s')$ drives learning by quantifying the desirability of state transitions.
+A possible design is triggering a reward every time that the agent does something \textit{interesting}, such as winning, loosing or completing a minor achievement.
+For example, consider a card game such as Briscola. The agent could be rewarded with a positive reward if he wins a game and a negative if he looses a game.
+But also capturing opponent cards is important (it is a minor achievement of the game itself), thus the agent could also be rewarded with a small positive reward if he captures or a small negative reward if its opponent captures.
+
+The reward function can also be chosen to release a small positive or negative reward at each step, to stimulate to ``survive'' to the simulation or to choose the most quick way out. Depending on the environment, these choices can also have an opposite effect. For example, if the agent is given a small positive reward just for surviving the step, it may learn to just move indefinitely (as in a loop), thus accumulating an infinite reward without completing the task (such as reaching the end of a race). The case of small negative rewards is more interesting, as the agent is observed to sometimes learn instead to die in the quickest way as possible. This suicide tendency is probably due to the goal (big positive reward) being too far in time. Reinforcement Learning literature is full of agents learning creative ways to minimize penalties or maximize prizes, whatever it takes \cite{10.1162/artl_a_00319}.
+
+Another important design variables are domain and scale.
+The reward function could be strictly non-positive, negative, non-positive, positive or unlimited.
+This choice have a radical impact also on evaluation graphs that can be drawn after the agent training/evaluation process.
+The cumulative reward graph is widely used to show the evolution of the quality of the agent over training time.
+If the reward function is non-positive, then the cumulative reward graph will show an initial negative peak and over time the agent will reach a plateau because the majority of rewards will be close to zero.
+Whereas, if the reward function is non-negative, then the cumulative reward graph will show an initial plateau and over time the agent will reach a peak because the majority of rewards will be high positive values.
+
+A often misunderstood point on reward functions is that they cannot be simply compared by their reward throughput (their cumulative reward graphs).
+It is pretty obvious that if a reward function $f$ giving two times the reward of a function $g$, $f$ will have better numbers than $g$.
+Instead, what can be done is to use a set of different reward functions (hopefully measuring different properties instead of just scale or negativity) or a set of different metrics to verify \textit{which} reward function being used has the best impact on the other reward functions/metrics.
+
+\paragraph{Action availability}
+
+Consider a maze as environment and an agent which should navigate through it to reach a prize. The agent can move up, left, down and right.
+What if not all actions are available every time? If the agent is near a wall, it cannot move towards it (without cheating, of course).
+The developer of the system can do several things to address this special case:
+
+\begin{itemize}
+  \item The game ends and the agent looses and the environment releases a negative reward.
+  \item The environment \textit{ignores} the action and gives a small negative reward.
+  \item The environment \textit{ignores} the action and gives a null reward.
+\end{itemize}
+
+It is up to the environment designer to choose what should happen. In the first two cases, the agent will probably learn to avoid those actions since they give a negative reward.
+In the last case, the agent may eventually learn that other actions lead to rewards, but it is possible that it will just continue to choose that action since it gives no penalties.
+Another possibility is for the agent designer to know in advance or for the environment designer to send back a signal whether the action is doable or not.
+With this information, the agent may take another random valid action or the most promising (guided by action values) valid action.
+This way, the agent will probably never learn that an action if invalid, but will instead rely on a external stimulus.
+This is by no means a bad design choice, since an agent can be hybrid and comprise multiple layers.
+The upper layer may trigger a special event whenever conditions are met, while a lower layer carries out normal states.
+It is obvious that such an agent will depend on external help or on prior (maybe hardcoded) knowledge.
+There rewards driven availability is usually chosen when the environment is uncertain and an action \textit{can} be ineffective.
+When the number of available actions change drastically over time, another solution is to have an agent to learn to choose between two of them and therefore choose the best one from a set of N elements with N comparisons driven by the agent. It is also possible to let the agent output a discrete or continuous value from a couple of state and action, so that those actions can be ranked. All those approaches are similar (if not identical) to those applied in Learning to Rank (L2R) \cite{akiyama2016learning}.
 
 \subsection{Experience Design}
 
-Beyond the environment, how the agent accumulates and uses experience plays a pivotal role in learning success. Experience design strategies aim to scaffold or accelerate the agent’s learning journey.
-
-\paragraph{Frankenstein learning}
-
-Frankenstein learning combines experiences, components, or behaviors learned in different contexts into a unified policy or model. This approach is useful in modular or multi-task settings where different capabilities are developed in isolation and later integrated.
+An agent interacts with the environment in order to acquire experience, which it can use for learning.
+The environment is the context of the simulation, now the problem is the content of the simulation.
+In other words, where the agent spawns, how it is initialized, what it will find in the environment, when the simulation will end and what the agent should do.
+This subsection is concerned with choices about how scenarios are created and presented to the agent.
+These are by no means disjunctive choices, as they are simply orthogonal advises.
 
 \paragraph{Incremental learning}
 
-Incremental learning gradually introduces task complexity, allowing the agent to build up its capabilities step by step. This method avoids overwhelming the agent early on and supports more stable learning trajectories, especially in high-dimensional or long-horizon tasks.
+Incremental learning arranges the training experience in a sequence of increasingly difficult tasks or environments.
+Inspired by human learning, this strategy improves convergence and generalization by guiding exploration and avoiding premature failures.
 
 \paragraph{Curriculum learning}
 
-Curriculum learning arranges the training experience in a sequence of increasingly difficult tasks or environments. Inspired by human learning, this strategy improves convergence and generalization by guiding exploration and avoiding premature failures.
+Curriculum learning is another interpretation of how humans learn.
+Humans, usually learn skills individually. In a math class, a student learns about equations, inequalities, logarithms, trigonometry and so on. Then, he is expected to cumulate its knowledge in order to solve complex problems requiring the combination of all those skills. As a side note, other than math class, students attend English class, history class, Italian class and so on. Depending on local regulation, the student may be required to apply interdisciplinary knowledge to pass the graduation exam.
+Curriculum learning translates this learning process to reinforcement learning.
 
-\paragraph{Real-time learning}
-
-In real-time learning, the agent updates its policy on-the-fly as it interacts with the environment, often under latency or performance constraints. This setup is common in robotics and real-world systems, where delayed or batch learning is infeasible. Ensuring stability, responsiveness, and safety is critical.
+It is easier to explain this porting with an example: a pedestrian agent is learning how to walk into an environment.
+There can be multiple obstacles and situations combined, but the learning process presents them one at a time instead of combinations of obstacles.
+Hopefully, the agent will then be able to combine the knowledge obtained by learning on those obstacles individually and reach the goal in a scenario in which there are multiple different obstacles combined.
+Curriculum learning is a more feasible approach for those problems in which there are many variables and presenting scenarios with all the possible combinations of them (``\textit{Frankenstein}'' learning) is simply not possible.
 
 \paragraph{Simulated learning}
 
-Simulated learning allows the agent to explore and train in a virtual environment, often at high speed and without physical risk. While enabling rapid experimentation, the main challenge lies in the simulation-to-reality gap. Techniques such as domain randomization and fine-tuning help bridge this gap and improve transferability.
+An agent can also learn via \textbf{simulated learning}.
+A collection of tuples $(s_t, a_t, s_{t+1}, r_t)$ can be created as an agent interacts with the environment.
+Then this collection can used to train another agent without requiring direct interaction with the environment.
+Reinforcement Learning agents sometimes also stumble across memory loss problems, since over time they may loose knowledge gained some time ago.
+This collection can also be used to tackle memory.
+Obviously, those tuples where added as a consequence of the policy being followed by the agent, so this collection cannot be intended as an exhaustive training samples set.
