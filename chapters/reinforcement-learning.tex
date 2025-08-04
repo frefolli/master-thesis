@@ -40,7 +40,9 @@ Therefore, instead of learning from a static dataset, the agent learns by the ex
 Another key intuition is that the focus of RL is not on the single action, but on the outcome of a sequence of interactions. Thus, the agents aims to maximize the cumulative reward.
 For that reason, RL is applicable in all those tasks in which the quality of an action is defined also by past and future actions, such as traffic light management.
 
-\section{Mathematics foundation of Environment Modeling and Reinforcement Learning}
+\section{Mathematical foundation of Environment Modeling and Reinforcement Learning}
+
+This section presents the theoretical concepts useful for understanding Reinforcement Learning models and algorithms.
 
 \subsection{Markov Chains}
 
@@ -120,7 +122,7 @@ Both the \textit{state-value} function $V^{\pi}(s)$ \ref{par:state-value-functio
 
 \section{Learning to learn}
 
-\subsection{Learning techniques}
+This section introduces reinforcement learning patterns and principles for designing a good RL algorithm.
 
 \paragraph{Model-Based/Free learning}
 
@@ -141,7 +143,7 @@ An important notice is that the EG algorithm is not by any degree a reinforcemen
 A \textbf{Monte Carlo} (MC) \cite{NIPS2014_88bf0c64} method exploits random exploration and averages the complete rewards obtained by those paths to update the approximation of the value functions.
 As an example consider a Chess board in a given configuration $s_t$ at a time $t$. From this state there are multiple possible actions. A MC approach explores each one (as shown in Figure \ref{fig:monte-carlo-tree-chess}) with $k$ complete random walks and then computes averages in order to updates its action/state-value function approximation.
 
-The Monte Carlo method is historically an impactful evolution of exhaustive recursive search which used a similar approach for exploring the state-action space but not randomness-driven. As can be easily imagined, many "games" such as Chess have a gazillion of possible states, and in general if the number of possible actions at each state is k, then number of possible state-action sequences after n moves is $\Omega(k^n)$. It should be noted that in case of stochastic environment, the number of possible paths is likely much higher. Using random walks and averaging results, MC manages to dominate the \textit{curse of dimensionality} while maintaining a decent accuracy.
+The Monte Carlo method is historically an impactful evolution of exhaustive recursive search which used a similar approach for exploring the state-action space but not randomness-driven. As can be easily imagined, many ``games'' such as Chess have a gazillion of possible states, and in general if the number of possible actions at each state is k, then number of possible state-action sequences after n moves is $\Omega(k^n)$. It should be noted that in case of stochastic environment, the number of possible paths is likely much higher. Using random walks and averaging results, MC manages to dominate the \textit{curse of dimensionality} while maintaining a decent accuracy.
 
 Usually updates happen on a episode-by-episode basis, using only the cumulative reward for averages. Thus, MC doesn't account for distance in time of immediate rewards and in general it doesn't case of short-term rewards. As a consequence, MC is unable to update the value function for intermediate states.
 
@@ -158,7 +160,7 @@ For example, the tabular $TD(0)$ algorithm produces an approximation of the stat
   {V_+}^\pi(s) = (1 - \alpha) V^\pi(s) + \alpha \left[ R(s, a, s') + \gamma V^\pi(s') \right]
 \end{equation}
 
-A clearer picture of what is happening behind the courtains can be seen by rewriting the equation:
+A clearer picture of what is happening behind the curtains can be seen by rewriting the equation:
 
 \begin{equation} \label{eq:TD0-update-rewritten}
   {V_+}^\pi(s) = V^\pi(s) + \alpha \left[ \underbrace{R(s, a, s') + \gamma V^\pi(s')}_{hint} - \underbrace{V^\pi(S)}_{estimate} \right]
@@ -215,19 +217,21 @@ The critic provides feedback to the actor (essentially telling it how good its d
     \right]
 \end{equation}
 
-\putimage{figures/actor-critic-diagram.png}{The workflow of an Actor-Critic RL system. Source: "Actor-critic reinforcement learning leads decision-making in energy systems optimization—steam injection optimization", Abdalla et al, Springer \cite{abdalla2023actor}.}{fig:actor-critic-diagram}{0.5}
+\putimage{figures/actor-critic-diagram.png}{The workflow of an Actor-Critic RL system. Source: ``Actor-critic reinforcement learning leads decision-making in energy systems optimization—steam injection optimization'', Abdalla et al, Springer \cite{abdalla2023actor}.}{fig:actor-critic-diagram}{0.5}
 
 \section{Reinforcement Learning Algorithms}
 
+In this section are covered the main RL algorithms that will be used in the experiments.
+
 \subsection{SARSA}
 
-SARSA (State-Action-Reward-State-Action) is an on-policy Temporal Difference (TD) algorithm that updates its action-value function based on the action actually taken by the current policy. The update rule is defined as:
+\textbf{SARSA} (State-Action-Reward-State-Action), previously known as \textit{Modified Connectionist Q-Learning} (MCQ-L) \cite{rummery1994line}, is an on-policy Temporal Difference (TD) algorithm that updates its action-value function based on the action actually taken by the current policy. The update rule is defined as:
 
 \[
   Q^\pi(s, a) \leftarrow Q^\pi(s, a) + \alpha \left[ R(s, a, s') + \gamma Q^\pi(s', a') - Q^\pi(s, a) \right]
 \]
 
-Here, $(s_t, a_t, r_{t+1}, s_{t+1}, a_{t+1})$ is a complete SARSA quintuple. The algorithm’s on-policy nature means that the action $a_{t+1}$ is drawn from the current behavior policy, typically $\epsilon$-greedy. SARSA converges under standard stochastic approximation conditions if all state-action pairs are visited infinitely often. Because it learns the value of the policy it is following, SARSA naturally incorporates the exploratory behavior into its updates, which can be advantageous in risky environments.
+Here, $(s_t, a_t, r_{t+1}, s_{t+1}, a_{t+1})$ is a complete SARSA quintuple. The algorithm’s on-policy nature means that the action $a_{t+1}$ is drawn from the current behavior policy, typically $\epsilon$-greedy. SARSA converges under standard stochastic approximation conditions if all state-action pairs are visited infinitely often.
 The values of $Q^\pi(s, a)$ are initialized with very low values instead of random values or zeros for better convergence.
 
 It is very easy to implement and is effective for low dimensional state spaces, but its convergence is slow and scales badly over big state spaces.
@@ -236,7 +240,7 @@ Moreover, SARSA (as other TD methods) lacks support for continuous action/state 
 
 \subsection{Q-Learning}
 
-Q-Learning is an off-policy TD method that seeks to learn the optimal policy independently of the agent’s actions. The core update rule is:
+\textbf{Q-Learning} (QL) \cite{watkins1992q} is an off-policy TD method that seeks to learn the optimal policy independently of the agent’s actions. The core update rule is:
 
 \[
   Q^\pi(s, a) \leftarrow Q^\pi(s, a) + \alpha \left[ R(s, a, s') + \gamma \max_{a'} Q^\pi(s', a') - Q^\pi(s, a) \right]
@@ -245,52 +249,108 @@ Q-Learning is an off-policy TD method that seeks to learn the optimal policy ind
 The key difference from SARSA is the use of the greedy action in the update, regardless of the action actually taken. This makes Q-Learning an off-policy method, capable of learning optimal behavior while exploring with a different policy. It has strong convergence guarantees under suitable learning rate decay and sufficient exploration.
 However, it suffers the same problems as SARSA due to its tabular nature, even if Q-learning does converge faster than SARSA and it allows to initialize simply to zeros the values of $Q^\pi(s, a)$.
 
+As a side note, it is important to remember that tabular methods have the advantage to be translatable to hardware-driven solutions when an agent has learned enough. For example, a QL agent in a \textbf{low dimensional state space} can be translated to a digital circuit for better efficiency and scalability. However, since the environment can change over time (e.g. car drivers habits can change over time), those circuits may need to be modified if the agent's policy changes drastically over time. This can be solved with technologies such as FPGA which, at the cost of hardware complexity, allows change the circuit design when needed on every board.
+
+\subsection{Double Q-Learning}
+
+\textbf{Double Q-Learning} (DQL) \cite{hasselt2010double} is a variant of \textit{Q-Learning} which approximate two separate and mutually learning value functions: $Q^{\pi A}$ and $Q^{\pi B}$. The reason behind this choice is that approximating the future maximum reward with the same Q function that is being learned, in noisy environments, can lead to overestimates of action values, slowing convergence and worsening the quality of the learned policy.
+
+To solve this problem, DQL learns two separate functions, which update works as usual except from the fact that the future maximum reward is driven by the other function. In practice, this means that in order to update $Q^{\pi A}$, the maximum future reward is computed with $Q^{\pi B}$ on the ending state $s'$ with the action $a'$ taken greedily from $Q^{\pi A}$. The update phase will then look like Equations \ref{eq:dql-update-formula}.
+
+\begin{equation}
+  \label{eq:dql-update-formula}
+  \begin{split}
+    Q^{\pi A}(s, a) & \leftarrow Q^{\pi A}(s, a) + \alpha \left[ R(s, a, s') + \gamma Q^{\pi B}(s', \max_{a'} Q^{\pi A}(s', a')) - Q^{\pi A}(s, a) \right] \\
+    Q^{\pi B}(s, a) & \leftarrow Q^{\pi B}(s, a) + \alpha \left[ R(s, a, s') + \gamma Q^{\pi A}(s', \max_{a'} Q^{\pi B}(s', a')) - Q^{\pi B}(s, a) \right]
+  \end{split}
+\end{equation}
+
 \subsection{DQN}
 
-DQN (Deep Q-Networks) extends Q-Learning to high-dimensional state spaces by using deep neural networks to approximate the $Q$-function. The learning update becomes:
+\textbf{DQN} (Deep Q-Networks) \cite{osband2016deep} extends Q-Learning to high-dimensional state spaces by using deep neural networks to approximate the $Q$-function.
+DQN also incorporates a separate network used to compute stable maximum future reward values. This second network is called \textit{target network} and it is updated periodically to stabilize learning.
+The update pass then becomes:
 
 \[
-L(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[ \left( y - Q(s,a;\theta) \right)^2 \right], \quad y = r + \gamma \max_{a'} Q(s', a'; \theta^{-})
+  Q^{\theta}(s, a) \leftarrow Q^{\theta}(s, a) + \alpha \left[ R(s, a, s') + \gamma \max_{a'} Q^{\theta ^ -}(s', a') - Q^{\theta}(s, a) \right]
 \]
 
-Here, $\theta$ are the parameters of the online network and $\theta^{-}$ are the parameters of a target network, updated periodically to stabilize learning.
-DQN also incorporates a separate network used to compute stable targets $y$.
-
-These innovations address the instability of training neural networks with non-i.i.d.\ data and bootstrapped targets. DQN performs well in complex environments such as Atari games, though it can struggle with continuous action spaces or long-term credit assignment.
+Here, $\theta$ are the parameters of the online network and $\theta^{-}$ are the parameters of a target network.
+These innovations address the instability of training neural networks with non independent-and-identically-distributed (\textit{IID}) data and bootstrapped targets.
+DQN performs well in complex environments such as Atari games, though it can struggle with continuous action spaces or long-term credit assignment.
+However, it must be regarded that all algorithms employing neural networks (NNs) dominate the curse of dimensionality by sacrificing on efficiency. Thus, even if DQN can manage more complex tasks than \textit{simple} and tabular methods such as QL, it is extremely slow in comparison on those less sophisticated methods. 
 
 \subsection{PPO}
 
-PPO (Proximal Policy Optimization) is a policy gradient method that improves upon standard policy optimization by ensuring stable updates through a clipped surrogate objective. The clipped objective function is:
+\textbf{PPO} (Proximal Policy Optimization) \cite{pmlr-v115-wang20b} is a policy gradient method that improves upon standard policy optimization by ensuring stable updates through a clipped surrogate objective. The clipped objective function is:
 
 \[
 L^{\text{CLIP}}(\theta) = \mathbb{E} \left[ \min \left( r(\theta) \hat{A}, \text{clip}(r(\theta), 1 - \epsilon, 1 + \epsilon) \hat{A} \right) \right]
 \]
 
-where $r(\theta) = \frac{\pi_\theta(s, a)}{\pi_{\theta_{\text{old}}}(s, a)}$ is the probability ratio, and $\hat{A}$ is an estimate of the advantage function. The clipping prevents large policy updates that could degrade performance, striking a balance between exploration and stability.
+$r(\theta) = \frac{\pi_\theta(s, a)}{\pi_{\theta_{\text{old}}}(s, a)}$ is the probability ratio, and $\hat{A}$ is an estimate of the advantage function. The clipping prevents large policy updates that could degrade performance, striking a balance between exploration and stability.
 
 PPO can be seen as a first-order approximation to Trust Region Policy Optimization (TRPO) \cite{schulman2015trust}, with significantly reduced complexity. It uses multiple epochs of minibatch updates with data collected from a single policy rollout, making it highly sample-efficient and practical for large-scale problems.
-PPO is widely used in continuous control tasks (e.g., MuJoCo), robotics, and real-world RL applications due to its robustness and simplicity.
+PPO is widely used in continuous control tasks, robotics and real-world RL applications due to its robustness and effectiveness.
+However, PPO as other methods employing NNs are way slower than simpler algorithms and may not be recommended (or feasible) on small hardware applications.
 
 \section{Design Considerations}
 
-\subsection{Environment design}
+Designing an effective reinforcement learning (RL) system involves careful planning of both the environment in which the agent operates and the structure of the experiences through which it learns. Proper design directly affects learning efficiency, convergence, generalization and real-world applicability.
+
+\subsection{Environment Design}
 
 \paragraph{The state space}
 
-\paragraph{The action space}
+The state space can contain continuous values as well as discrete values. For example, a chess environment will use discrete values for representing the cells whereas a cart pole \cite{nagendra2017comparison} simulator may use a continuous value for the rotation angle. In general it depends on the domain element that is being simulated but it also depend on the degree of realism of the simulation. A pedestrian's position can be represented either with a discrete cell coordinates on a grid or with floating point coordinates.
 
 \paragraph{The observation function}
 
+The environment exposes its state (often only partially observable, such as in a Poker simulation), the observation function takes this state and transforms it into the observation that is fed into the agent.
+The state can be left as is or transformed, depending on the agent architecture but also on other factors. For example, if the state contains continuous values and the agent is driven by a tabular learning model (which gives its best discrete inputs), the observation function could discretize the state using \textit{quantization} or \textit{feature-extraction}.
+
+With \textbf{quantization}, a continuous value is mapped into a discrete value by transforming the value to the ``nearest'' discrete value. For example, the decimal number $3.14$ could be \textit{truncated} to $3$ or rounded to $4$. Often is it also necessary to scale the value, which can be integrated in the quantization process relatively easily, as shown in Equation {}. $D_{min}$ and $D_{max}$ are the domain max/min values, $C_{min}$ and $C_{max}$ are the min/max values of the discrete co-domain.
+
+\begin{equation}
+  \label{}
+  quant(x) =
+  \left{
+    \begin{split}
+
+    \begin{split}
+  \right}
+\end{equation}
+
+      On the other hand, \textbf{feature-extraction} extracts a ``meaningful'' discrete value from a ``raw'' continuous value. Given an environment for Blackjack, the state are the cards on the desk (or their values). The observation function could ``extract'' a discrete feature $x_f$ which represents whether or not the player's pile has reached the sum of $14$, thus a ${0,1}$ discrete value. 
+
+
+\paragraph{The action space}
+
+The action space $\mathcal{A}$ defines what the agent is capable of doing at any given state. This can be discrete (e.g., move left/right) or continuous (e.g., apply force vector). The granularity of the action space affects both the difficulty of the learning task and the precision of control. Proper discretization or abstraction is often required for effective learning.
 \paragraph{The reward function}
 
-\subsection{Experience design}
+The reward function $R(s, a, s')$ drives learning by quantifying the desirability of state transitions. A well-shaped reward encourages the intended behavior and reduces exploration ambiguity. Sparse or poorly aligned rewards can result in slow convergence or unintended strategies. Reward shaping, penalties, and potential-based methods are common tools to refine reward signal quality.
+
+\subsection{Experience Design}
+
+Beyond the environment, how the agent accumulates and uses experience plays a pivotal role in learning success. Experience design strategies aim to scaffold or accelerate the agent’s learning journey.
 
 \paragraph{Frankenstein learning}
 
+Frankenstein learning combines experiences, components, or behaviors learned in different contexts into a unified policy or model. This approach is useful in modular or multi-task settings where different capabilities are developed in isolation and later integrated.
+
 \paragraph{Incremental learning}
+
+Incremental learning gradually introduces task complexity, allowing the agent to build up its capabilities step by step. This method avoids overwhelming the agent early on and supports more stable learning trajectories, especially in high-dimensional or long-horizon tasks.
 
 \paragraph{Curriculum learning}
 
+Curriculum learning arranges the training experience in a sequence of increasingly difficult tasks or environments. Inspired by human learning, this strategy improves convergence and generalization by guiding exploration and avoiding premature failures.
+
 \paragraph{Real-time learning}
 
+In real-time learning, the agent updates its policy on-the-fly as it interacts with the environment, often under latency or performance constraints. This setup is common in robotics and real-world systems, where delayed or batch learning is infeasible. Ensuring stability, responsiveness, and safety is critical.
+
 \paragraph{Simulated learning}
+
+Simulated learning allows the agent to explore and train in a virtual environment, often at high speed and without physical risk. While enabling rapid experimentation, the main challenge lies in the simulation-to-reality gap. Techniques such as domain randomization and fine-tuning help bridge this gap and improve transferability.
