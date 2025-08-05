@@ -133,8 +133,8 @@ In the present research, the focus is on \textit{model-free} learning agents, as
 
 As the model-free agent should gain experience interacting with environment, a question arise? Which policy should it use? A \textbf{on-policy} algorithm uses the currently known best policy which is being updated at every interaction. A \textbf{off-policy} algorithm uses the consolidated optimal policy to interact with the environment and gain experience (tuples state-action-reward, for example) which will be used at a later time to update the consolidated policy, building the new optimal policy. It is also possible to use a \textbf{on-policy} strategy combined with a greedy exploration of the state-action cross space.
 
-For example, the \textbf{Epsilon-Greedy} (EG) \cite{liu2021improving} balances exploration (finding variants of a policy) and exploitation (using the optimal policy) phases using an decaying $\epsilon$ coefficient.
-Every time an inference is needed, the EG algorithm peeks a random decimal number $x \in [0, 1]$. If $x \leq \epsilon$ then is chooses randomly an action to perform, otherwise it selects the current best action given by the policy.
+For example, the \textbf{Epsilon-Greedy} (EG) \cite{liu2021improving} algorithm balances exploration (finding variants of a policy) and exploitation (using the optimal policy) phases using an decaying $\epsilon$ coefficient.
+Every time an inference is needed, EG peeks a random decimal number $x \in [0, 1]$. If $x \leq \epsilon$ then is chooses randomly an action to perform, otherwise it selects the current best action given by the policy.
 Over time the $\epsilon$ coefficient lowers using a decaying factor $d$ so that $\epsilon_{t + 1} = \epsilon_{t} d$. This simple but effective algorithm allows to \textit{on-policy} algorithms (and also \textit{off-policy} ones) to explore the state-action space, since they otherwise risk of getting stuck to local optimums.
 An important notice is that the EG algorithm is not by any degree a reinforcement learning algorithm by itself, it only enhance other RL algorithms.
 
@@ -328,7 +328,7 @@ With \textbf{quantization}, a continuous value is mapped into a discrete value b
 
 The action space defines what the agent is capable of doing, which can be represented as a discrete value (e.g., move left) or continuous (e.g. apply a rotation).
 The granularity of the action space affects both the difficulty of the learning task and the precision of control.
-Since with tabular methods the action is a discrete quantity, the usage of \textbf{quantization} can help out also in the state space because it can approximate a continuous action value by inverting the Equation \ref{eq:quantization}. Therefore, recalling the example of CartPole, the actions of the agent can be expressed by discrete actions in range and they be transformed back into continuous value by rescaling a $[C_{min}, C_{max}]$ to the range $[D_{min}, D_{max}]$. An alternative is decreasing the step size so that the agent can take discrete actions of small value.
+Since with tabular methods the action is a discrete quantity, the usage of \textbf{quantization} can help out also in the action space because it can approximate a continuous action value by inverting the Equation \ref{eq:quantization}. Therefore, recalling the example of CartPole, the actions of the agent can be expressed by discrete actions in range and they be transformed back into continuous value by rescaling a $[C_{min}, C_{max}]$ to the range $[D_{min}, D_{max}]$. An alternative is decreasing the step size so that the agent can take discrete actions of small value.
 NNs based methods obviously don't have such problem since the output of a NN is inherently a continuous value.
 
 \paragraph{The reward function}
@@ -348,7 +348,7 @@ If the reward function is non-positive, then the cumulative reward graph will sh
 Whereas, if the reward function is non-negative, then the cumulative reward graph will show an initial plateau and over time the agent will reach a peak because the majority of rewards will be high positive values.
 
 A often misunderstood point on reward functions is that they cannot be simply compared by their reward throughput (their cumulative reward graphs).
-It is pretty obvious that if a reward function $f$ giving two times the reward of a function $g$, $f$ will have better numbers than $g$.
+It is pretty obvious that if a reward function $f$ is giving two times the reward of a function $g$, $f$ will have better numbers than $g$.
 Instead, what can be done is to use a set of different reward functions (hopefully measuring different properties instead of just scale or negativity) or a set of different metrics to verify \textit{which} reward function being used has the best impact on the other reward functions/metrics.
 
 \paragraph{Action availability}
@@ -365,13 +365,16 @@ The developer of the system can do several things to address this special case:
 
 It is up to the environment designer to choose what should happen. In the first two cases, the agent will probably learn to avoid those actions since they give a negative reward.
 In the last case, the agent may eventually learn that other actions lead to rewards, but it is possible that it will just continue to choose that action since it gives no penalties.
+
 Another possibility is for the agent designer to know in advance or for the environment designer to send back a signal whether the action is doable or not.
 With this information, the agent may take another random valid action or the most promising (guided by action values) valid action.
 This way, the agent will probably never learn that an action if invalid, but will instead rely on a external stimulus.
+
 This is by no means a bad design choice, since an agent can be hybrid and comprise multiple layers.
 The upper layer may trigger a special event whenever conditions are met, while a lower layer carries out normal states.
 It is obvious that such an agent will depend on external help or on prior (maybe hardcoded) knowledge.
-There rewards driven availability is usually chosen when the environment is uncertain and an action \textit{can} be ineffective.
+
+The rewards driven availability is usually chosen when the environment is uncertain and an action \textit{can} be ineffective.
 When the number of available actions change drastically over time, another solution is to have an agent to learn to choose between two of them and therefore choose the best one from a set of N elements with N comparisons driven by the agent. It is also possible to let the agent output a discrete or continuous value from a couple of state and action, so that those actions can be ranked. All those approaches are similar (if not identical) to those applied in Learning to Rank (L2R) \cite{akiyama2016learning}.
 
 \subsection{Experience Design}
