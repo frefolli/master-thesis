@@ -14,7 +14,7 @@
   - [x] SUMO
   - [x] Multi agent transit simulations
   - [x] SUMO-RL
-- [ ] Background on Reinforcement Learning
+- [x] Background on Reinforcement Learning
   - [x] A new perspective
     - [x] Learning by example
     - [x] Learning by inference
@@ -51,28 +51,85 @@
       - [x] Incremental learning
       - [x] Curriculum learning
       - [x] Simulated learning
-- [ ] Agents
-  - [ ] Q Learning
-  - [ ] DQN
-  - [ ] PPO
-  - [ ] Fixed Cycle
 - [ ] Fasteners and tools
-  - [ ] Observation functions
-  - [ ] Reward functions
-  - [ ] Traffic generation
+  - [ ] The Core
+    - [ ] The Architecture
+    - [ ] The Environment
+    - [ ] The Observation Functions
+      - [ ] ObservationFunction
+      - [ ] DefaultObservationFunction
+      - [ ] DensityObservationFunction
+      - [ ] QueueObservationFunction
+      - [ ] SpeedObservationFunction
+      - [ ] PhaseObservationFunction
+      - [ ] SharedVisionObservationFunction
+    - [ ] The Reward Functions
+      - [ ] RewardFunction
+      - [ ] AverageSpeedRewardFunction
+      - [ ] DiffWaitingTimeRewardFunction
+      - [ ] PressureRewardFunction
+      - [ ] QueueLengthRewardFunction
+      - [ ] DiffQueueLengthRewardFunction
+      - [ ] MixedRewardFunction
+      - [ ] SharedVisionRewardFunction
+    - [ ] The Agents
+      - [ ] Agent
+      - [ ] Learning Agents
+        - [ ] SARSAAgent
+        - [ ] QLAgent
+        - [ ] DQLAgent
+        - [ ] DQNAgent
+        - [ ] PPOAgent
+      - [ ] Fixed Cycle Agents
+        - [ ] FixedCycleAgent
+        - [ ] Fixed15
+        - [ ] Fixed30
+        - [ ] Fixed45
+        - [ ] Fixed60
+  - [ ] The Tools
+    - [ ] Importing from external sources
+      - [ ] amma2cityflow
+      - [ ] amma2sumo
+      - [ ] cityflow2sumo
+    - [ ] Generating topologies
+      - [ ] generate-topology
+    - [ ] Generating traffic
+      - [ ] flows
+      - [ ] generate-flows
+      - [ ] generate-datasets
+    - [ ] Executing experiments
+      - [ ] executor
+    - [ ] Extracting metrics
+      - [ ] extract-directional-metrics
+      - [ ] extract-global-metrics
+    - [ ] Plotting metrics
+      - [ ] plot-global-metrics
+      - [ ] plot-smoothed-metrics
+      - [ ] plot-directional-metrics
+    - [ ] Comparing metrics
+      - [ ] merge-experiments
+      - [ ] compare-global-metrics
+      - [ ] compare-directional-metrics
+    - [ ] Generating reports
+      - [ ] generate-report
 - [ ] Experiments and findings
-  - [ ] Metrics
-  - [ ] 0) Picking a Reward function
-  - [ ] 1) Training only on NORMAL settings
-  - [ ] 2) Training with a bit of ABNORMAL settings
-  - [ ] 3) Picking an Observation function
-  - [ ] 4) kickstarting a self-adapting system
-  - [ ] -) Impact of cycle time in fixed cycle agents
-  - [ ] -) Impact of resizing quantization of states
-  - [ ] -) Impact of resizing neural networks
-  - [ ] -) Impact of agent expertise levels during multi-agent system training
-  - [ ] -) Transfer learning between agents of same shape (modularization and idempotence)
-  - [ ] -) Transfer learning between agents of different shape (mutation and adaptation)
+  - [ ] Q0: Acquire a baseline
+    - [ ] E0: Find Best Reward Function
+    - [ ] E1: Find Best Observation Function
+  - [ ] Q1: Curriculum vs Frankestein
+    - [ ] E2: Find The Best Dataset
+  - [ ] Q2: Find the best agent model
+    - [ ] E3A: Find The Best Tabular Agent
+    - [ ] E3B: Find The Best Deep Agent
+    - [ ] E3C: Find The Best Fixed Agent
+    - [ ] E7: Try Unattended
+    - [ ] E8: Try Unquantized
+  - [ ] Q3: Self-Adaptive
+    - [ ] E4: Try Self Adaptive
+  - [ ] Q4: Single Agent vs Multi Agent
+    - [ ] E5: Try Marl On Observation
+    - [ ] E6: Try Marl On Reward
+    - [ ] E9: Try Partition
 - [ ] Threats to Validity
   - [ ] Internal threats
     - [ ] Simplistic simulation model
