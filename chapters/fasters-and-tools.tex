@@ -1,1 +1,94 @@
 \chapter{Fasteners and Tools}
+
+This chapter showcases and explains the architecture of the extended reinforcement learning framework \textit{sumo-rl}, along with its components, tools and algorithms.
+
+\section{The Core}
+
+\subsection{The Architecture}
+
+\subsection{The Environment}
+
+\subsection{The Observation Functions}
+
+\paragraph{ObservationFunction}
+\paragraph{DefaultObservationFunction}
+\paragraph{DensityObservationFunction}
+\paragraph{QueueObservationFunction}
+\paragraph{SpeedObservationFunction}
+\paragraph{PhaseObservationFunction}
+\paragraph{SharedVisionObservationFunction}
+
+\subsection{The Reward Functions}
+
+\paragraph{RewardFunction}
+\paragraph{AverageSpeedRewardFunction}
+\paragraph{DiffWaitingTimeRewardFunction}
+\paragraph{PressureRewardFunction}
+\paragraph{QueueLengthRewardFunction}
+\paragraph{DiffQueueLengthRewardFunction}
+\paragraph{MixedRewardFunction}
+\paragraph{SharedVisionRewardFunction}
+
+\subsection{The Agents}
+
+\paragraph{Agent}
+
+\subsubsection{Learning Agents}
+
+\paragraph{SARSAAgent}
+\paragraph{QLAgent}
+\paragraph{DQLAgent}
+\paragraph{DQNAgent}
+\paragraph{PPOAgent}
+
+\subsubsection{Fixed Cycle Agents}
+
+\paragraph{FixedCycleAgent}
+\paragraph{Fixed15}
+\paragraph{Fixed30}
+\paragraph{Fixed45}
+\paragraph{Fixed60}
+
+\section{The Tools}
+
+\subsection{Importing from external sources}
+
+\paragraph{amma2cityflow}
+\paragraph{amma2sumo}
+\paragraph{cityflow2sumo}
+
+\subsection{Generating topologies}
+
+\paragraph{generate-topology}
+
+\subsection{Generating traffic}
+
+\paragraph{flows}
+\paragraph{generate-flows}
+\paragraph{generate-datasets}
+
+\subsection{Executing experiments}
+
+\paragraph{executor}
+
+\subsection{Extracting metrics}
+
+\paragraph{extract-directional-metrics}
+\paragraph{extract-global-metrics}
+
+\subsection{Plotting metrics}
+
+\paragraph{plot-global-metrics}
+\paragraph{plot-smoothed-metrics}
+\paragraph{plot-directional-metrics}
+
+\subsection{Comparing metrics}
+
+\paragraph{merge-experiments}
+
+\paragraph{compare-global-metrics}
+\paragraph{compare-directional-metrics}
+
+\subsection{Generating reports}
+
+\paragraph{generate-report}

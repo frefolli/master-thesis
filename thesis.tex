@@ -1,5 +1,5 @@
 % TODO: change font size to 11pt, 12pt or 13pt
-\documentclass[a4paper,10pt,oneside]{extbook}
+\documentclass[a4paper,10pt,twoside]{book}
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{graphicx}
 \usepackage{float}
@@ -10,7 +10,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{setspace}
 % TODO: change margin to 1in, 1.5in or 2in
-\usepackage[paper=a4paper,margin=1in]{geometry}
+\usepackage[paper=a4paper,margin=0.5in]{geometry}
 \usepackage{imakeidx}
 \usepackage{tikz}
 \usepackage{fancyvrb}
@@ -124,7 +124,7 @@
             \large{Matricola 865955} 
         \end{flushright}
         
-        \vspace{40mm}
+        \vspace{35mm}
         \begin{center}
             {\large{\bf Academic Year 2024-2025}}
         \end{center}
@@ -136,12 +136,11 @@
     \include{abstract}
     \printindex
     \tableofcontents
-    \renewcommand{\baselinestretch}{1.5} 
+    \renewcommand{\baselinestretch}{2.5} 
 
     \include{chapters/traffic-science}
     \include{chapters/traffic-simulations}
     \include{chapters/reinforcement-learning}
-    \include{chapters/agents}
     \include{chapters/fasters-and-tools}
     \include{chapters/experiments}
     
