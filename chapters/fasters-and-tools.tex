@@ -4,7 +4,27 @@ This chapter showcases and explains the architecture of the extended reinforceme
 
 \section{The Core}
 
+This section is concerned with the core of the reinforcement learning framework, containing software for implementing agents, functions and other enabling components.
+
 \subsection{The Architecture}
+
+SUMO-RL has a \textbf{modular} architecture (it can be seen in figure \ref{fig:sumo-rl-architecture}) that allows developers and researchers to replace a-la-carte almost all its components if needed.
+
+The \textit{Environment} object get created through settings supplied by both command line arguments and a configuration file.
+These settings select which functions, agents, scenario to use in the simulation, as well as feature flags for tuning SUMO and changing other aspects of the experiments.
+The Environment is then equipped with an \textit{ObservationFunction}, a \textit{RewardFunction}, a dataframe for collecting \textit{Metrics} about agents and the simulations, an object for caching data about vehicles, lanes and intersections called \textit{Datastore}, and a dictionary of \textit{TrafficSignal}s.
+Each \textit{TrafficSignal} instance represents a controlled intersection in the scenario that has been loaded in the \textit{Environment}. Upon creation, it queries SUMO to extract valuable data about the shape of the intersection and the traffic light program logic (that is to say \textit{the clock cycle and its phases}). It identifies its \textit{green phases} and represents the act of switching to one of those as an action of the Action Space.
+
+Along with the environment, also a set of \textit{Agent}s are created which can observe the state of the simulation through the output of the \textit{ObservationFunction} and get rewarded with the output of the \textit{RewardFunction}, both of which are mediated by the \textit{Environment}.
+
+In most of the literature works either the is only one intersection in the scenario or each agent instance is controlled strictly one of the intersections. As such, also the original SUMO-RL framework \cite{sumorl} developed by Lucas Alegre supported an agent to control only one traffic light intersection.
+The architecture has been revised to allow agents to control more than one intersection by modifying both the agent trait and how the environment works.
+In particular, SUMO-RL has been equipped with an algorithm for partitioning the set of controllable traffic lights intersections on the basis of the number of input lanes or the State Space shape.
+By default, it assigns an distinct instance of agent to each one of the intersections in the network. If needed, it will group intersections based on the aforementioned similarities and assign a single agent instance for each group.
+While the architecture allows for different agent types to act in the simulation at the same time, the system is actually instructed to use only one agent type at a time, because the goals of this research don't require to analyze the behaviour of different agent types on the same network.
+
+
+\putimage{figures/sumo-rl-architecture.png}{The SUMO-RL Architecture}{fig:sumo-rl-architecture}{0.75}
 
 \subsection{The Environment}
 

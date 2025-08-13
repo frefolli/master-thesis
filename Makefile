@@ -9,6 +9,9 @@
 ./figures/markov-decision-process.png: ./figures/markov-decision-process.d2
 	d2 ./figures/markov-decision-process.d2 ./figures/markov-decision-process.png
 
+./figures/sumo-rl-architecture.png: ./figures/sumo-rl-architecture.d2
+	d2 ./figures/sumo-rl-architecture.d2 ./figures/sumo-rl-architecture.png
+
 thesis.pdf: thesis.tex quotes.bib figures/*.jpg figures/*.d2 figures/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
