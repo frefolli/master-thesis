@@ -1,6 +1,6 @@
 \chapter{Fasteners and Tools}
 
-This chapter showcases and explains the architecture of the extended reinforcement learning framework \textit{sumo-rl}, along with its components, tools and algorithms.
+This chapter showcases and explains the architecture of the extended reinforcement learning framework \textit{SUMO-RL}, along with its components, tools and algorithms.
 
 \section{The Core}
 
@@ -21,26 +21,152 @@ In most of the literature works either the is only one intersection in the scena
 The architecture has been revised to allow agents to control more than one intersection by modifying both the agent trait and how the environment works.
 In particular, SUMO-RL has been equipped with an algorithm for partitioning the set of controllable traffic lights intersections on the basis of the number of input lanes or the State Space shape.
 By default, it assigns an distinct instance of agent to each one of the intersections in the network. If needed, it will group intersections based on the aforementioned similarities and assign a single agent instance for each group.
-While the architecture allows for different agent types to act in the simulation at the same time, the system is actually instructed to use only one agent type at a time, because the goals of this research don't require to analyze the behaviour of different agent types on the same network.
+Furthermore, while the architecture allows for different agent types to act in the simulation at the same time, the system is actually instructed to use only one agent type at a time, because the goals of this research don't require to analyze the behaviour of different agent types on the same network.
 
-
-\putimage{figures/sumo-rl-architecture.png}{The SUMO-RL Architecture}{fig:sumo-rl-architecture}{0.75}
+\putimage{figures/sumo-rl-architecture.png}{The SUMO-RL Architecture}{fig:sumo-rl-architecture}{1.0}
 
 \subsection{The Environment}
+
+%% TODO: inserire citazione a Gymnasium
+
+\paragraph{Loading the scenario}
+
+The Environment component, upon creation, starts a connection with SUMO loading the scenario that has been selected. Then, it queries SUMO for IDs of traffic lights and creates and instance of TrafficSignal for each one of them passing their ID and a copy of the connection with SUMO.
+The TrafficSignal constructor also accepts parameters for changing the minimum green-light duration, the maximum green-light duration and the yellow-light duration.
+This way, the TrafficSignal component is able to query SUMO for its shape and traffic light control program.
+Therefore it acquires the list of incoming lanes, the list of output lanes and it caches the lengths of its lanes (which will be used afterwards in computations).
+It also sets its \textit{Action Space} with a \textit{gymnasium}'s Discrete space which is parametrized on the number of green phases.
+The action on a traffic light is the green phase it should enable, then its up to the TrafficSignal component to enforce that phases by using the correct yellow-light transition and the correct phase in the simulations.
+
+\paragraph{Acquiring traffic light phases}
+
+A TrafficSignal doesn't use the program hard-coded in the SUMO scenario but construct an appropriate program analyzing the hard-coded one.
+It starts fetching all phases and filling an array \textit{green-phases} with all the phases which contain at least on of green-light encoding characters (\textit{"gG"}).
+The green-phases are added also to the list of output \textit{phases}.
+Then, it iterates on couples of sequential green phases to build the yellow phases which are a transition from a green phases $A$ and a green phase $B$. It essentially copies the phase of $A$ replacing all occurrences of green-light characters with the yellow-light character (\textit{"y"}).
+It also keep a map \textit{yellow-dict} of transitions which can be indexed by a tuple of indices ($<i, j>$) and returns the corresponding yellow phase index.
+
+\paragraph{Running the simulation}
+
+Before running each simulation the environment should be reset through the \textit{reset()} method.
+Every time it is reset, it reloads SUMO with the previously selected scenario, the selected routes file and the input seed (important for ensuring that a performed simulation is replicable).
+At each iteration of a simulation, the agents are fed with the observations granted from the Environment and their actions are collected and fed in the Environment with its \textit{step()} method.
+Afterwards, some other methods can be called depending of what data is needed. At least \textit{gather\_data\_from\_sumo()} and {compute\_observations()} are needed for running a simulation but using also \textit{compute\_rewards()} allows agents to learn and the researcher to investigate results.
+
+\begin{itemize}
+  \item the \textit{gather\_data\_from\_sumo()} method essentially queries SUMO for data concerning vehicles and lanes. For each vehicle the following metrics are extracted:
+  \begin{itemize}
+    \item \textit{awt}: Accumulated Waiting Time is the amount of time of the last $1000$ seconds that a vehicle has spent being at full-stop.
+  \end{itemize}
+  For each lane, the following data are extracted:
+  \begin{itemize}
+      \item \textit{lsvn}: LastStepVehicleNumber is the number of vehicles present in the lane in the last step of the simulation.
+      \item \textit{lshn}: LastStepHaltingNumber is the number of full-stop vehicles in the lane in the last step of the simulation.
+      \item \textit{lsms}: LastSteoMeanSpeed is the average speed of vehicles in the lane in the last step of the simulation.
+      \item \textit{lso}: LastStepOccupancy is the occupancy level in the lane in the last step of the simulation.
+      \item \textit{lswt}: LastStepWaitingTime is the average waiting time of vehicles in the lane in the last step of the simulation.
+      \item \textit{vehs}: LastStepVehicleIDs is the list of vehicles present in the lane in the last step of the simulation.
+      \item \textit{mawt}: the MeanAccumulatedWaitingTime is computed by averaging accumulated waiting times of vehicles in a lane.
+      \item \textit{tawt}: the TotalAccumulatedWaitingTime is computed by summing accumulated waiting times of vehicles in a lane.
+  \end{itemize}
+  \item the \textit{compute\_observations()} method construct observations for each traffic light with the selected ObservationFunction and stores them inside an Environment field.
+  \item the \textit{compute\_rewards()} method constructs the rewards using the selected RewardFunction and stores them inside an Environment field.
+  \item the \textit{compute\_metrics()} method computes the following metrics:
+  \begin{itemize}
+    \item \textit{step}: the current simulation step
+    \item \textit{total\_running}: the number of vehicles which speed is not zero.
+    \item \textit{total\_backlogged}: the number of vehicles which are enqueued and waiting to enter the simulation.
+    \item \textit{total\_stopped}: the number of vehicles at full-stop.
+    \item \textit{total\_arrived}: the number of vehicles which have arrived at their destination in the last step.
+    \item \textit{total\_departed}: the number of vehicles which have departed in the last step (this is the same as \textit{entering the simulation}).
+    \item \textit{total\_waiting\_time}: the sum of waiting time of all lanes.
+    \item \textit{mean\_waiting\_time}: the mean of waiting time of all lanes.
+    \item \textit{total\_accumulated\_waiting\_time}: the sum of accumulated waiting time of all lanes.
+    \item \textit{mean\_accumulated\_waiting\_time}: the mean of accumulated waiting time of all lanes.
+    \item \textit{mean\_speed}: the average of speed of all lanes.
+    \item \textit{total\_reward}: the total of rewards released by the environment in the last step.
+  \end{itemize}
+  These are written to CSV files and can be analyzed to compute the performance of models as well as evaluating their fairness with respect of directions. This last option is available by setting to True a parameter called \textit{advanced\_metrics} which enables tracking the aforementioned metrics for each direction of the network (each pair of origin-destination inside the network).
+\end{itemize}
 
 \subsection{The Observation Functions}
 
 \paragraph{ObservationFunction}
+
+The ObservationFunction is an functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}. It supports quantization of continuous values to a configurable number of fixed levels. This operation is performed in conformity with equation \ref{eq:quantization}. By default, the number of levels is $16$, but this value can be changed by command line as needed and if it's set to zero, then no quantization is performed (this is useful for testing models with continuous spaces).
+The State Space is defined by a $gymnasyum$'s Box of floating point values in range $[0, 1]$ of length \textit{observation\_space\_size()}.
+Figure \ref{fig:sumo-rl-observation-functions} shows its subclasses which inherit its behaviour.
+
+\putimage{figures/sumo-rl-observation-functions.png}{The SUMO-RL Observation Functions}{fig:sumo-rl-observation-functions}{1.0}
+
 \paragraph{DefaultObservationFunction}
+
+The DefaultObservationFunction includes the following data:
+\begin{itemize}
+  \item A one-hot representation of the current traffic light phase (all zeros but the current phase index which is one).
+  \item A boolean value which is True iff the time since the last phase change exceeds the sum of minimum green duration and yellow duration.
+  \item The vector of occupancy levels of its lanes.
+  \item The vector of mean speeds of its lanes which are divided by the actual maximum speed allowed in those lanes.
+  \item The vector of the number of queued vehicles multiplied by the occupancy level for each lane.
+\end{itemize}
+
 \paragraph{DensityObservationFunction}
+
+The DensityObservationFunction includes the following data:
+\begin{itemize}
+  \item The vector of occupancy levels of its lanes.
+\end{itemize}
+
 \paragraph{QueueObservationFunction}
+
+The QueueObservationFunction includes the following data:
+\begin{itemize}
+  \item The vector of the number of queued vehicles multiplied by the occupancy level for each lane.
+\end{itemize}
+
 \paragraph{SpeedObservationFunction}
+
+SThe peedObservationFunction includes the following data:
+\begin{itemize}
+  \item The vector of mean speeds of its lanes which are divided by the actual maximum speed allowed in those lanes.
+\end{itemize}
+
 \paragraph{PhaseObservationFunction}
+
+The PhaseObservationFunction includes the following data:
+\begin{itemize}
+  \item A one-hot representation of the current traffic light phase (all zeros but the current phase index which is one).
+\end{itemize}
+
 \paragraph{SharedVisionObservationFunction}
+
+The SharedVisionObservationFunction accepts two other ObservationFunction instances which represent the observation of a traffic light $A$ and the observation of each traffic light $B \in neighbour(A)$.
+The observations of the two ObservationFunctions are concatenated to form the output observation.
+
+\paragraph{The selectable options}
+
+From command line is is possible to instruct SUMO-RL to use the following combinations by name:
+
+\begin{itemize}
+  \item \textit{default}: Default
+  \item \textit{s}: Speed
+  \item \textit{d}: Density
+  \item \textit{q}: Queue
+  \item \textit{sv}: SharedVision { Default + Default }
+  \item \textit{svs}: SharedVision { Default + Speed }
+  \item \textit{svp}: SharedVision { Default + Phase }
+  \item \textit{svd}: SharedVision { Default + Density }
+  \item \textit{svq}: SharedVision { Default + Queue }
+\end{itemize}
 
 \subsection{The Reward Functions}
 
 \paragraph{RewardFunction}
+
+Figure \ref{fig:sumo-rl-reward-functions} shows its subclasses which inherit its behaviour.
+
+\putimage{figures/sumo-rl-reward-functions.png}{The SUMO-RL Reward Functions}{fig:sumo-rl-reward-functions}{1.0}
+
 \paragraph{AverageSpeedRewardFunction}
 \paragraph{DiffWaitingTimeRewardFunction}
 \paragraph{PressureRewardFunction}
