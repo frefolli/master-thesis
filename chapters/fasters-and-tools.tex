@@ -91,89 +91,104 @@ Afterwards, some other methods can be called depending of what data is needed. A
 
 \subsection{The Observation Functions}
 
-\paragraph{ObservationFunction}
-
 The ObservationFunction is an functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}. It supports quantization of continuous values to a configurable number of fixed levels. This operation is performed in conformity with equation \ref{eq:quantization}. By default, the number of levels is $16$, but this value can be changed by command line as needed and if it's set to zero, then no quantization is performed (this is useful for testing models with continuous spaces).
 The State Space is defined by a $gymnasyum$'s Box of floating point values in range $[0, 1]$ of length \textit{observation\_space\_size()}.
-Figure \ref{fig:sumo-rl-observation-functions} shows its subclasses which inherit its behaviour.
 
-\putimage{figures/sumo-rl-observation-functions.png}{The SUMO-RL Observation Functions}{fig:sumo-rl-observation-functions}{1.0}
+In Table \ref{tbl:observation-features} the features which can be extracted for composing the observation of an agent are listed and detailed.
+Moreover, a \textit{shared-view} mechanism has been implemented so that a traffic light agent can see not only its state through a observation function (called "me-function") but also a view over its neighbour traffic lights through a second observation function (called "you-function").
 
-\paragraph{DefaultObservationFunction}
+It was chosen not to include output lane information in the observable features in order to keep the state space small. Literature works on the same topic usually keep this convention and adopts similar state features \cite{wei2019presslight} \cite{han2023leveraging}. The novelty is the inclusion of neighbour data, which also makes up for the lack of output lane data since a output lane of a intersection A can be an input lane of a neighbour intersection B.
 
-The DefaultObservationFunction includes the following data:
-\begin{itemize}
-  \item A one-hot representation of the current traffic light phase (all zeros but the current phase index which is one).
-  \item A boolean value which is True iff the time since the last phase change exceeds the sum of minimum green duration and yellow duration.
-  \item The vector of occupancy levels of its lanes.
-  \item The vector of mean speeds of its lanes which are divided by the actual maximum speed allowed in those lanes.
-  \item The vector of the number of queued vehicles multiplied by the occupancy level for each lane.
-\end{itemize}
+In Table \ref{tbl:observation-functions} the available configurations for observation functions are listed by what features they allow the agent to see and if they are \textit{shared-views}. The output State Space shape is also displayed assuming that a traffic light agent has $N$ phases, $M$ incoming lanes and $K$ neighbours.
 
-\paragraph{DensityObservationFunction}
 
-The DensityObservationFunction includes the following data:
-\begin{itemize}
-  \item The vector of occupancy levels of its lanes.
-\end{itemize}
+\begin{table}[h]
+  \captionof{table}{Summary of implemented observation features}
+  \label{tbl:observation-features}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|l|c|}
+      \hline
+      Name & ID & Description & Formula \\
+      \hline
+      Current Phase Encoding     & \textbf{CPE} & \makecell[l]{the current traffic light phase ($CP$) encoded as one-hot vector.} &
+      \makecell{$
+        CPE = \left<
+          \left\{
+          \begin{array}{cl}
+            1 & CP = P_i \\
+            0 & CP \ne P_i
+          \end{array}
+          \right\}
+          | \; \forall i \in [0, N)
+        \right>
+      $} \\
+      \hline
+      Minumum Green Time Reached & \textbf{MGR} & \makecell[l]{a boolean value which is $1$ if and only if the time since \\
+                                                               when the traffic light completed a phase change ($TSLC$) has surpassed \\
+                                                               the environment configured minimum green time ($MGT$).} &
+      \makecell{$
+        MGR = \left\{
+          \begin{array}{cl}
+            1 & TSLC > MGT \\
+            0 & TSLC \leq MGT
+          \end{array}
+        \right\}
+      $} \\
+      \hline
+      Lane Speed Percentage      & \textbf{LSP} & \makecell[l]{for each lane the average speed ($S(v)$) of vehicles in it ($V(L_i)$) is \\
+                                                               divided by the maximum allowed speed on such lane ($MAS(L_i)$).} &
+      \makecell{$LSP = \left< \frac {\sum _ {v \in V(L_i)} S(v)} {|V(L_i)| \; \cdot \; MAS(L_i)} \; | \; \forall i \in [0, M) \right>$} \\
+      \hline
+      Lane Occupancy             & \textbf{LOC} & \makecell[l]{for each lane, the percentage of its occupancy \\
+                                                               is retrieved from SUMO. It is equivalent to summing \\
+                                                               the lengths ($|v|$) of vehicles in a lane ($V(L_i)$) \\
+                                                               divided by the length of that lane ($|L_i|$)} &
+      \makecell{$LOC = \left< \frac {\sum _ {v \in V(L_i)} |v|}  {|L_i|} \; | \; \forall i \in [0, M) \right>$} \\
+      \hline
+      Lane Queuing Percentage    & \textbf{LQP} & \makecell[l]{for each lane, its occupancy ($LOC_i$) is multiplied by \\
+                                                               the number of vehicles in such lane being at full-stop ($FSV(L_i)$) \\
+                                                               and divided by the number of vehicles in that lane ($V(L_i)$).} &
+      \makecell{$LQP = \left< \frac{{LOC}_i \; \cdot \; |FSV(L_i)|} {|V(L_i)|} \; | \; \forall i \in [0, M) \right>$} \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
-\paragraph{QueueObservationFunction}
-
-The QueueObservationFunction includes the following data:
-\begin{itemize}
-  \item The vector of the number of queued vehicles multiplied by the occupancy level for each lane.
-\end{itemize}
-
-\paragraph{SpeedObservationFunction}
-
-SThe peedObservationFunction includes the following data:
-\begin{itemize}
-  \item The vector of mean speeds of its lanes which are divided by the actual maximum speed allowed in those lanes.
-\end{itemize}
-
-\paragraph{PhaseObservationFunction}
-
-The PhaseObservationFunction includes the following data:
-\begin{itemize}
-  \item A one-hot representation of the current traffic light phase (all zeros but the current phase index which is one).
-\end{itemize}
-
-\paragraph{SharedVisionObservationFunction}
-
-The SharedVisionObservationFunction accepts two other ObservationFunction instances which represent the observation of a traffic light $A$ and the observation of each traffic light $B \in neighbour(A)$.
-The observations of the two ObservationFunctions are concatenated to form the output observation.
-
-\paragraph{The selectable options}
-
-From command line is is possible to instruct SUMO-RL to use the following combinations by name:
-
-\begin{itemize}
-  \item \textit{default}: Default
-  \item \textit{s}: Speed
-  \item \textit{d}: Density
-  \item \textit{q}: Queue
-  \item \textit{sv}: SharedVision { Default + Default }
-  \item \textit{svs}: SharedVision { Default + Speed }
-  \item \textit{svp}: SharedVision { Default + Phase }
-  \item \textit{svd}: SharedVision { Default + Density }
-  \item \textit{svq}: SharedVision { Default + Queue }
-\end{itemize}
+\begin{table}[h]
+  \captionof{table}{Summary of implemented observation functions}
+  \label{tbl:observation-functions}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      ID & \multicolumn{5}{|c|}{Itself} & \multicolumn{5}{|c|}{Neighborhood} & State Space Shape \\
+      \hline
+      & CPE & MGR & LSP & LOC & LQP & CPE & MGR & LSP & LOC & LQP & \\
+      \hline
+      default & \FilledCircle & \FilledCircle & \FilledCircle & \FilledCircle & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {log _ 2 {N} + 1 + 3 \cdot M}$ \\
+      \hline
+      s       & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {M}$ \\
+      \hline
+      d       & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {M}$ \\
+      \hline
+      q       & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {M}$ \\
+      \hline
+      sv      & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \FilledCircle & \FilledCircle & \FilledCircle & \FilledCircle & \FilledCircle & ${[0,1]} ^ {log _ 2 {N} + 1 + (3 + K) \cdot M}$ \\
+      \hline
+      svs     & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {(K + 1) \cdot M}$ \\
+      \hline
+      svp     & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {(K + 1) \cdot M}$ \\
+      \hline
+      svd     & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & ${[0,1]} ^ {(K + 1) \cdot M}$ \\
+      \hline
+      svq     & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & ${[0,1]} ^ {(K + 1) \cdot M}$ \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
 \subsection{The Reward Functions}
 
 \paragraph{RewardFunction}
-
-Figure \ref{fig:sumo-rl-reward-functions} shows its subclasses which inherit its behaviour.
-
-\putimage{figures/sumo-rl-reward-functions.png}{The SUMO-RL Reward Functions}{fig:sumo-rl-reward-functions}{1.0}
-
-\paragraph{AverageSpeedRewardFunction}
-\paragraph{DiffWaitingTimeRewardFunction}
-\paragraph{PressureRewardFunction}
-\paragraph{QueueLengthRewardFunction}
-\paragraph{DiffQueueLengthRewardFunction}
-\paragraph{MixedRewardFunction}
-\paragraph{SharedVisionRewardFunction}
 
 \subsection{The Agents}
 
