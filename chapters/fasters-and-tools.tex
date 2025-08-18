@@ -108,7 +108,7 @@ The reason behind the choice of using the Density ("d") observation function as 
   \captionof{table}{Summary of implemented observation features}
   \label{tbl:observation-features}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|l|l|c|}
+    \begin{tabular}{|l|l|c|c|}
       \hline
       Name & ID & Description & Formula \\
       \hline
@@ -216,7 +216,7 @@ The reason behind the choice of using the DiffWaitingTime ("dwt") reward functio
   \captionof{table}{Summary of implemented reward features}
   \label{tbl:reward-features}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|l|l|c|}
+    \begin{tabular}{|l|l|c|c|}
       \hline
       Name & ID & Description & Formula \\
       \hline
@@ -288,23 +288,39 @@ The reason behind the choice of using the DiffWaitingTime ("dwt") reward functio
 
 \subsection{The Agents}
 
-\paragraph{Agent}
+The agents which have been implemented are listed in Table \ref{tbl:agents}.
+The agents \textit{fixed15}, \textit{fixed30}, \textit{fixed45}, \textit{fixed60} follow a fixed cycle algorithm, switching phase every $k$ seconds.
+Those are the baseline for comparing RL algorithms with the currently employed system. Since all agents start synchronized in the same phase, they are operated in \textit{green wave} mode.
 
-\subsubsection{Learning Agents}
-
-\paragraph{SARSAAgent}
-\paragraph{QLAgent}
-\paragraph{DQLAgent}
-\paragraph{DQNAgent}
-\paragraph{PPOAgent}
-
-\subsubsection{Fixed Cycle Agents}
-
-\paragraph{FixedCycleAgent}
-\paragraph{Fixed15}
-\paragraph{Fixed30}
-\paragraph{Fixed45}
-\paragraph{Fixed60}
+\begin{table}[H]
+  \captionof{table}{Summary of implemented agents}
+  \label{tbl:agents}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+      \hline
+      ID      & Agent Type  & Cycle Time & Learning Algorithm           & Learning Method & Learning Policy                & Notes \\
+      \hline
+      fixed15 & Fixed Cycle & 15 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      \hline
+      fixed30 & Fixed Cycle & 30 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      \hline
+      fixed45 & Fixed Cycle & 45 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      \hline
+      fixed60 & Fixed Cycle & 60 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      \hline
+      sarsa   & RL Agent    & \xmark     & SARSA                        & Tabular         & On-Policy                      &       \\
+      \hline
+      ql      & RL Agent    & \xmark     & Q Learning                   & Tabular         & Off-Policy ($\epsilon$-Greedy) &       \\
+      \hline
+      dql     & RL Agent    & \xmark     & Double Q Learning            & Tabular         & Off-Policy ($\epsilon$-Greedy) &       \\
+      \hline
+      dqn     & RL Agent    & \xmark     & Deep Q Networks              & Neural          & Off-Policy (Buffer-based)      &       \\
+      \hline
+      ppo     & RL Agent    & \xmark     & Proximal Policy Optimization & Neural          & Off-Policy (Buffer-based)      &       \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
 \section{The Tools}
 
