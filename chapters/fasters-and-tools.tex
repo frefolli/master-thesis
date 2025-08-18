@@ -96,13 +96,15 @@ The State Space is defined by a $gymnasyum$'s Box of floating point values in ra
 
 In Table \ref{tbl:observation-features} the features which can be extracted for composing the observation of an agent are listed and detailed.
 Moreover, a \textit{shared-view} mechanism has been implemented so that a traffic light agent can see not only its state through a observation function (called "me-function") but also a view over its neighbour traffic lights through a second observation function (called "you-function").
+The shared-view is implemented with a cache so that the observation of a traffic light isn't computed two or more times for each time step.
+Each agent has a owned observation and if the shared-view is active, then it imports in the resulting observation also the owned observation of neighbour agents.
 
 It was chosen not to include output lane information in the observable features in order to keep the state space small. Literature works on the same topic usually keep this convention and adopts similar state features \cite{wei2019presslight} \cite{han2023leveraging}. The novelty is the inclusion of neighbour data, which also makes up for the lack of output lane data since a output lane of a intersection A can be an input lane of a neighbour intersection B.
 
 In Table \ref{tbl:observation-functions} the available configurations for observation functions are listed by what features they allow the agent to see and if they are \textit{shared-views}. The output State Space shape is also displayed assuming that a traffic light agent has $N$ phases, $M$ incoming lanes and $K$ neighbours.
+The reason behind the choice of using the Density ("d") observation function as base for the shared-views will be more clear in the next chapter.
 
-
-\begin{table}[h]
+\begin{table}[H]
   \captionof{table}{Summary of implemented observation features}
   \label{tbl:observation-features}
   \resizebox{\linewidth}{!}{
@@ -154,7 +156,7 @@ In Table \ref{tbl:observation-functions} the available configurations for observ
   }
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
   \captionof{table}{Summary of implemented observation functions}
   \label{tbl:observation-functions}
   \resizebox{\linewidth}{!}{
@@ -188,7 +190,101 @@ In Table \ref{tbl:observation-functions} the available configurations for observ
 
 \subsection{The Reward Functions}
 
-\paragraph{RewardFunction}
+The RewardFunction is an functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}.
+
+In Table \ref{tbl:reward-features} the features which can be extracted for composing the reward of an agent are listed and detailed.
+Moreover, a \textit{shared-view} mechanism has been implemented so that a traffic light agent can be rewarded also with its neighbour rewards.
+The shared-view is implemented with a cache so that the reward of a traffic light isn't computed two or more times for each time step.
+Each agent has a owned reward and if the shared-view is active, then it imports in the resulting reward also the owned reward of neighbour agents.
+
+The DWT measures how much the accumulated waiting time has decreased. If $DWT > 0$ then the accumulated waiting time is lower than before and it delivers a positive reward.
+
+The SPD measures if vehicles are flowing at a higher speed than half the maximum allowed speed. Intuitively, if this quantity is positive, then it leads to a positive reward.
+
+The QLE without negative sign would be non-negative number. Since its measuring the amount of halted vehicles, a negative reward is released when the absolute value of this quantity is greater then 0. This way, the agents will minimize the length of queues in controlled lanes.
+Moreover, since DQL is using QLE are reference, it doesn't need to be inverted.
+
+Finally, PRE is based on the concept of Pressure \cite{wei2019presslight}, which expresses the disequilibrium between the outcoming flow and the incoming flow.
+The original formula, shown in equation \ref{eq:original-pressure}, was the difference of incoming and outcoming vehicles ($V(L_i)$) weighted by the capacity of lanes ($LC(L_i)$), which in PRE has been simplified by removing the divisions and inverting the involved quantities to deliver a positive reward whenever the outcoming flow surpasses the incoming flow.
+Intuitively this means that the number of vehicles which have passed the intersection is higher than the one of queued and incoming vehicles.
+More will be said in the following sections about how the capacity of a road can be calculated, but in the present research I'm assuming that all lanes have similar capacity due to the fact that the context is urban tissue which usually have $30-50$ km/h speed limits on the whole road network.
+
+In Table \ref{tbl:reward-functions} the available configurations for reward functions are listed by what features are used and if they are \textit{shared-views}. The output Reward Space shape is also displayed assuming that a traffic light agent has $N$ incoming lanes, $M$ outcoming lanes and $K$ neighbours.
+The reason behind the choice of using the DiffWaitingTime ("dwt") reward function as base for the shared-views will be more clear in the next chapter.
+
+\begin{table}[H]
+  \captionof{table}{Summary of implemented reward features}
+  \label{tbl:reward-features}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|l|c|}
+      \hline
+      Name & ID & Description & Formula \\
+      \hline
+      Diff Accumulated Waiting Time  & \textbf{DWT} & \makecell[l]{the difference between the total accumulated waiting time ($TAWT$) \\
+                                                                   of vehicles in its input lanes in the previous time step and the TAWT \\
+                                                                   in the current time step. The DWT is divided by 100 to avoid unstable \\
+                                                                   rewards due to the TAWT having an upper bound of $1000$.}
+                                                    & \makecell{$ \frac {{TAWT}_{t-1} - {TAWT}_{t}} {100} $} \\
+      \hline
+      Average Speed                  & \textbf{SPD} & \makecell[l]{the mean of average speeds of vehicles in its input lanes $AS(L_i)$ \\
+                                                                   divided by the maximum allowed speed ($MAS(L_i)$) minus $\frac {1} {2}$.}
+                                                    & \makecell{$\sum _ {i \in [0, N)} \frac {AS(L_i)} {MAX(L_i)} - \frac {1} {2}$} \\
+      \hline
+      Queue Lengths                  & \textbf{QLE} & \makecell[l]{the mean of length of queues (as number of full-stop vehicles $FSV(L_i)$) \\
+                                                                   in its input lanes multiplied by $-1$.}
+                                                    & \makecell{$- \frac {\sum _ {i \in [0, N)} FSV(L_i)} {N}$} \\
+      \hline
+      Diff Queue Lengths             & \textbf{DQL} & \makecell[l]{the difference between the QLE in the current time step and \\
+                                                                   the QLE in the previous \\ time step.} & \makecell{${QLE}_{t} - {QLE}_{t-1}$} \\
+      \hline
+      Pressure                       & \textbf{PRE} & \makecell[l]{for each lane, the negative pressure is defined as the difference between \\
+                                                                   the number of outcoming vehicles and the number of incoming vehicles}
+                                                                   & \makecell{$P = \left[ \sum _ {i \in [0, N)} V(L_i) \right] - \left[ \sum _ {i \in [0, M)} V(L_i) \right]$} \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+\begin{equation} \label{eq:original-pressure}
+  P =
+  \left[ \sum _ {i \in [0, N)} \frac {V(L_i)} {LC(L_i)} \right]
+  -
+  \left[ \sum _ {i \in [0, M)} \frac {V(L_i)} {LC(L_i)} \right]
+\end{equation}
+
+\begin{table}[H]
+  \captionof{table}{Summary of implemented reward functions}
+  \label{tbl:reward-functions}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      ID & \multicolumn{5}{|c|}{Itself} & \multicolumn{5}{|c|}{Neighborhood} \\
+      \hline
+      & DWT & SPD & QLE & DQL & PRE & DWT & SPD & QLE & DQL & PRE \\
+      \hline
+      dwt   & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      as    & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      ql    & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      dql   & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      p     & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      svdwt & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      svas  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      svql  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  \\
+      \hline
+      svdql & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  \\
+      \hline
+      svp   & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \FilledCircle \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
 \subsection{The Agents}
 
