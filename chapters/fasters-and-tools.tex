@@ -91,8 +91,11 @@ Afterwards, some other methods can be called depending of what data is needed. A
 
 \subsection{The Observation Functions}
 
-The ObservationFunction is an functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}. It supports quantization of continuous values to a configurable number of fixed levels. This operation is performed in conformity with equation \ref{eq:quantization}. By default, the number of levels is $16$, but this value can be changed by command line as needed and if it's set to zero, then no quantization is performed (this is useful for testing models with continuous spaces).
+The ObservationFunction class declares a trait (shown in Figure \ref{fig:observation-function-trait}) for a functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}.
+It supports quantization of continuous values to a configurable number of fixed levels. This operation is performed in conformity with equation \ref{eq:quantization}. By default, the number of levels is $16$, but this value can be changed by command line as needed and if it's set to zero, then no quantization is performed (this is useful for testing models with continuous spaces).
 The State Space is defined by a $gymnasyum$'s Box of floating point values in range $[0, 1]$ of length \textit{observation\_space\_size()}.
+
+\putimage{figures/observation-function-trait.png}{The ObservationFunction class/trait}{fig:observation-function-trait}{0.75}
 
 In Table \ref{tbl:observation-features} the features which can be extracted for composing the observation of an agent are listed and detailed.
 Moreover, a \textit{shared-view} mechanism has been implemented so that a traffic light agent can see not only its state through a observation function (called "me-function") but also a view over its neighbour traffic lights through a second observation function (called "you-function").
@@ -190,7 +193,9 @@ The reason behind the choice of using the Density ("d") observation function as 
 
 \subsection{The Reward Functions}
 
-The RewardFunction is an functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}.
+The RewardFunction class declares a trait (shown in Figure \ref{fig:reward-function-trait}) for a functor object which uses data from the \textit{Datastore} and the \textit{TrafficSignal}.
+
+\putimage{figures/reward-function-trait.png}{The RewardFunction class/trait}{fig:reward-function-trait}{0.75}
 
 In Table \ref{tbl:reward-features} the features which can be extracted for composing the reward of an agent are listed and detailed.
 Moreover, a \textit{shared-view} mechanism has been implemented so that a traffic light agent can be rewarded also with its neighbour rewards.
@@ -288,35 +293,44 @@ The reason behind the choice of using the DiffWaitingTime ("dwt") reward functio
 
 \subsection{The Agents}
 
-The agents which have been implemented are listed in Table \ref{tbl:agents}.
-The agents \textit{fixed15}, \textit{fixed30}, \textit{fixed45}, \textit{fixed60} follow a fixed cycle algorithm, switching phase every $k$ seconds.
+The Agent class declares a trait (shown in Figure \ref{fig:agent-trait}) for an object which can accepts observations, take actions, learn from errors, be serialized and deserialized. Agents only need to support at least the \textit{act()} method, the other methods are optional. For example, a fixed cycle agent won't learn nor observe the environment, it will just act.
+
+\putimage{figures/agent-trait.png}{The Agent class/trait}{fig:agent-trait}{0.75}
+
+Agents with various features have been implemented in order to compare the effectiveness of those approaches. Among the learning agents, there are three tabular agents and two neural network based agents. Most of them use an off-policy strategy but SARSA which is on-policy. Moreover, the two neural agents support also continuous state space and even if generally quantization will be used in experiments, an interesting point is verifying if not using quantization leads to advantages or disadvantages in performance. Furthermore, the size of neural networks is fixed to $32$ nodes per layer since an objective is to keep all the models reasonably small \footnote{If a traffic light agent needs a supercomputer sized neural network, then it's probably cheaper to build a roundabout or a tramway...}.
+Finally, the neural models use a buffer which accumulates examples taken from interacting with the environment and everytime it's full they use it to learn. The examples are essentiall State-Action-Reward tuples.
+
+The agents \textit{fixed15}, \textit{fixed30}, \textit{fixed45}, \textit{fixed60} do not learn. Instead, they follow a fixed cycle algorithm, switching phase every $k$ seconds.
 Those are the baseline for comparing RL algorithms with the currently employed system. Since all agents start synchronized in the same phase, they are operated in \textit{green wave} mode.
+
+Table \ref{tbl:agents} shows a summary of all implemented agents.
+
 
 \begin{table}[H]
   \captionof{table}{Summary of implemented agents}
   \label{tbl:agents}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|c|c|c|c|c|c|}
+    \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
       \hline
-      ID      & Agent Type  & Cycle Time & Learning Algorithm           & Learning Method & Learning Policy                & Notes \\
+      ID      & Agent Type  & Cycle Time & Learning Algorithm           & Learning Method & Learning Policy & NN Size & Buffer Size & $\epsilon$-Greedy \\
       \hline
-      fixed15 & Fixed Cycle & 15 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      fixed15 & Fixed Cycle & 15 secs    & \xmark                       & \xmark          & \xmark          & \xmark  & \xmark      & \xmark \\
       \hline
-      fixed30 & Fixed Cycle & 30 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      fixed30 & Fixed Cycle & 30 secs    & \xmark                       & \xmark          & \xmark          & \xmark  & \xmark      & \xmark \\
       \hline
-      fixed45 & Fixed Cycle & 45 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      fixed45 & Fixed Cycle & 45 secs    & \xmark                       & \xmark          & \xmark          & \xmark  & \xmark      & \xmark \\
       \hline
-      fixed60 & Fixed Cycle & 60 secs    & \xmark                       & \xmark          & \xmark                         &       \\
+      fixed60 & Fixed Cycle & 60 secs    & \xmark                       & \xmark          & \xmark          & \xmark  & \xmark      & \xmark \\
       \hline
-      sarsa   & RL Agent    & \xmark     & SARSA                        & Tabular         & On-Policy                      &       \\
+      sarsa   & RL Agent    & \xmark     & SARSA                        & Tabular         & On-Policy       & \xmark  & \xmark      & $\epsilon \in [0.001, 1.0] \; \; decay = 0.99$ \\
       \hline
-      ql      & RL Agent    & \xmark     & Q Learning                   & Tabular         & Off-Policy ($\epsilon$-Greedy) &       \\
+      ql      & RL Agent    & \xmark     & Q Learning                   & Tabular         & Off-Policy      & \xmark  & \xmark      & $\epsilon \in [0.001, 1.0] \; \; decay = 0.99$ \\
       \hline
-      dql     & RL Agent    & \xmark     & Double Q Learning            & Tabular         & Off-Policy ($\epsilon$-Greedy) &       \\
+      dql     & RL Agent    & \xmark     & Double Q Learning            & Tabular         & Off-Policy      & \xmark  & \xmark      & $\epsilon \in [0.001, 1.0] \; \; decay = 0.99$ \\
       \hline
-      dqn     & RL Agent    & \xmark     & Deep Q Networks              & Neural          & Off-Policy (Buffer-based)      &       \\
+      dqn     & RL Agent    & \xmark     & Deep Q Networks              & Neural          & Off-Policy      & 32x32   & 2048        & \xmark \\
       \hline
-      ppo     & RL Agent    & \xmark     & Proximal Policy Optimization & Neural          & Off-Policy (Buffer-based)      &       \\
+      ppo     & RL Agent    & \xmark     & Proximal Policy Optimization & Neural          & Off-Policy      & 32x32   & 2048        & \xmark \\
       \hline
     \end{tabular}
   }

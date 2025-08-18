@@ -12,13 +12,16 @@
 ./figures/sumo-rl-architecture.png: ./figures/sumo-rl-architecture.d2
 	d2 ./figures/sumo-rl-architecture.d2 ./figures/sumo-rl-architecture.png
 
-./figures/sumo-rl-observation-functions.png: ./figures/sumo-rl-observation-functions.d2
-	d2 ./figures/sumo-rl-observation-functions.d2 ./figures/sumo-rl-observation-functions.png
+./figures/observation-function-trait.png: ./figures/observation-function-trait.d2
+	d2 ./figures/observation-function-trait.d2 ./figures/observation-function-trait.png
 
-./figures/sumo-rl-reward-functions.png: ./figures/sumo-rl-reward-functions.d2
-	d2 ./figures/sumo-rl-reward-functions.d2 ./figures/sumo-rl-reward-functions.png
+./figures/reward-function-trait.png: ./figures/reward-function-trait.d2
+	d2 ./figures/reward-function-trait.d2 ./figures/reward-function-trait.png
 
-thesis.pdf: thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/sumo-rl-observation-functions.png ./figures/sumo-rl-reward-functions.png figures/*.png chapters/*.tex
+./figures/agent-trait.png: ./figures/agent-trait.d2
+	d2 ./figures/agent-trait.d2 ./figures/agent-trait.png
+
+thesis.pdf: thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png figures/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex
@@ -30,5 +33,6 @@ clean:
 	rm -f ./figures/markov-chain.png
 	rm -f ./figures/markov-decision-process.png
 	rm -f ./figures/sumo-rl-architecture.png
-	rm -f ./figures/sumo-rl-observation-functions.png
-	rm -f ./figures/sumo-rl-reward-functions.png
+	rm -f ./figures/observation-function-trait.png
+	rm -f ./figures/reward-function-trait.png
+	rm -f ./figures/agent-trait.png

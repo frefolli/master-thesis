@@ -1,0 +1,11 @@
+ObservationFunction: {
+  shape: class
+  __init__(self, name: str, quantization: int = 64)
+  __call__(self, datastore: Datastore, ts: TrafficSignal): tuple
+  cache(self, datastore: Datastore, ts: TrafficSignal): tuple
+  observation_space(self, ts: TrafficSignal): Box
+  observation_space_size(self, ts: TrafficSignal): int
+  hash(self, ts: TrafficSignal): str
+  discretize_density(self, density: float): float
+  encode(self, state: numpy.ndarray, ts: TrafficSignal): tuple
+}

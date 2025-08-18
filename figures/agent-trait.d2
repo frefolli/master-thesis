@@ -1,0 +1,15 @@
+Agent: {
+  shape: class
+  __init__(self, id str): None
+  reset(self): None
+  hard_reset(self): None
+  "observe(self, observations dict[str, tuple])": None
+  act(self): "dict[str, int]"
+  "learn(self, rewards dict[str, float])": None
+  serialize(self, output_filepath str): None
+  deserialize(self, input_filepath str): None
+  can_be_serialized(self): bool
+  can_learn(self): bool
+  can_observe(self): bool
+  __repr__(self): str
+}

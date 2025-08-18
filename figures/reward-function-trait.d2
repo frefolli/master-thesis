@@ -1,0 +1,6 @@
+RewardFunction: {
+  shape: class
+  __init__(self, name: str)
+  __call__(self, datastore: Datastore, ts: TrafficSignal): float
+  cache(self, datastore: Datastore, ts: TrafficSignal): float
+}
