@@ -111,7 +111,7 @@ The reason behind the choice of using the Density ("d") observation function as 
   \captionof{table}{Summary of implemented observation features}
   \label{tbl:observation-features}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|l|c|c|}
+    \begin{tabular}{|l|l|l|c|}
       \hline
       Name & ID & Description & Formula \\
       \hline
@@ -221,7 +221,7 @@ The reason behind the choice of using the DiffWaitingTime ("dwt") reward functio
   \captionof{table}{Summary of implemented reward features}
   \label{tbl:reward-features}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|l|c|c|}
+    \begin{tabular}{|l|l|l|c|}
       \hline
       Name & ID & Description & Formula \\
       \hline
@@ -305,12 +305,11 @@ Those are the baseline for comparing RL algorithms with the currently employed s
 
 Table \ref{tbl:agents} shows a summary of all implemented agents.
 
-
 \begin{table}[H]
   \captionof{table}{Summary of implemented agents}
   \label{tbl:agents}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
       \hline
       ID      & Agent Type  & Cycle Time & Learning Algorithm           & Learning Method & Learning Policy & NN Size & Buffer Size & $\epsilon$-Greedy \\
       \hline
@@ -343,11 +342,142 @@ These modules include traffic generation, cross format conversions, experiments 
 
 \subsection{Importing from external sources}
 
-\paragraph{The SUMO format}
+\paragraph{The AMAT format}
 
-\paragraph{The AMMA format}
+Agenzia Mobilit\`a Ambiente Territorio (AMAT) publishes an Origin Destination matrix for the Municipality of Milan along side a graph representation of the road network infrastructure \cite{ODMilano2010}.
+While the graph representation of Milan road network is too big to be used by a consumer-level commodity equipment, the format used by AMAT is interesting because it enables to reuse realistic data coming directly from mobility authorities into SUMO.
+While other authorities may use different fields or tables, the DBF/SHP file formats are commonly used when dealing with labelled geographic data and with many sources like OpenStreetMap this format can be used to export data.
+
+The road graph is composed multiple files: a SHP file for the nodes, a SHP file for graph and a DBF file for priorities and turn restrictions.
+These files are essentially relational databases, which content is summarized in Tables \ref{tbl:amat-nodes-file}, \ref{tbl:amat-graph-file} and \ref{tbl:amat-turns-file}.
+Note that both SHP and DBF files can be converted to SQLite3 file format which is easier to use.
+
+The coordinates of nodes are Gauss-Boaga projections which is a map project method widely used in Italy. Those coordinates can be kept as are and mapped 1:1 to a canvas grid since they may only need scaling to adjust distances.
+Usually transit simulators assume to use the metric system for unit of measures, therefore speeds and distances should be converted to m/s and m respectively.
+
+Moreover, the AMAT format doesn't specify the number of lanes and that datum have to be inferred from \textit{Linktype} or Speed/Capacity.
+Since the Milan road network uses different traffic light cycles in different zones and those are not known, the choice was to use Linktype.
+
+Usually, in Milan and in Italy, freeways may have $4$ lanes per side, main roads may have $3$ lanes per side, secondary roads may have $2$ lanes per side and finally local roads have $1$ lane per side.
+If this convention is used to infer the number of lanes, the extracted road network shows similar features to the real infrastructure, as shown in the comparison of Figures \ref{fig:gmaps-asturie-testi-la-farina} and \ref{fig:sumo-asturie-testi-la-farina}.
+
+\begin{table}[H]
+  \captionof{table}{Fields of Nodes SHP file}
+  \label{tbl:amat-nodes-file}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|l|}
+      \hline
+      Field & Description                                                & Notes \\
+      N     & Each node in the graph is identified by a unique numeric ID &       \\
+      X     & Longitude coordinate in Gauss-Boaga (m) format             &       \\
+      Y     & Latitude coordinate in Gauss-Boaga (m) format              &       \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+\begin{table}[H]
+  \captionof{table}{Fields of Graph SHP file}
+  \label{tbl:amat-graph-file}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|l|}
+      \hline
+      Field     & Description                                                      & Notes                                                                               \\
+      \hline
+      ID        & Each edge in the graph is also identified by a unique numeric ID &                                                                                     \\
+      \hline
+      A         & Source node ID                                                   & Valid IDs are found in the Nodes file                                               \\
+      \hline
+      B         & Source node ID                                                   & Valid IDs are found in the Nodes file                                               \\
+      \hline
+      Distance  & Length of the edge from A to B                                   & Values in km                                                                        \\
+      \hline
+      Linktype  & Type of road edge                                                & \makecell[l]{1 = Freeway \\ 2 = Main Road \\ 3 = Secondary Road \\ 4 = Local Road}  \\
+      \hline
+      Speed     & Maximum allowed speed in the road edge                           & Values in km/h                                                                      \\
+      \hline
+      Capacity  & \makecell[l]{
+                  Road capacity which is computed upon speed, number of lanes \\
+                  and traffic light green-time/cycles ratio}                       & Values in number of vehicles                                                        \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+\begin{table}[H]
+  \captionof{table}{Fields of Turns DBF file}
+  \label{tbl:amat-turns-file}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|l|}
+      \hline
+      Field   & Description                                                & Notes                                             \\
+      \hline
+      A       & Source node of the incoming edge (A-B)                     &                                                   \\
+      \hline
+      B       & Intersection node                                          &                                                   \\
+      \hline
+      C       & Sink node of the outcoming edge (B-C)                      &                                                   \\
+      \hline
+      Penalty & Priority is expressed as penalty in minutes $p \times 100$ & Penalty = $-1$ means that the turn is not allowed \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+\putimagecouple
+{\putsubimage{figures/gmaps-asturie-testi-la-farina.png}{Intersection of via Asturie, via Testi and via La Farina in Milan. Source: Google Maps}{fig:gmaps-asturie-testi-la-farina}{0.45}{1.0}}
+{\putsubimage{figures/sumo-asturie-testi-la-farina.png}{A reconstruction of the intersection with the AMAT data}{fig:sumo-asturie-testi-la-farina}{0.45}{1.0}}
+
+The Origin Destination matrix is given as multiple files representing a different time range (summarized in Table \ref{tbl:amat-time-ranges}).
+Each file is in DBF format (but it can be converted to SQLite3 as before) and contains data about all vehicle transits between zones of Milan.
+Those zones are enumerated in a different file alongside their borders (usually squared).
+The schema of a OD file is detailed in Table \ref{tbl:amat-od-file}.
+
+The number of vehicles specified by an entry of an OD file must be scaled with the \textit{Expansion Coefficient} which accounts for the fact that time ranges have different length.
+AMAT distinguishes demand by travel reason, which in simulations may not be so useful, therefore those values are combined together to obtain the total demand.
+Moreover, simulation engines like SUMO and CityFlow usually require TAZs to specify which roads to affect, therefore geographic location data from the road graph must be combined with the one for zones to build such mapping.
+
+\begin{table}[H]
+  \captionof{table}{Times ranges tracked by AMAT}
+  \label{tbl:amat-time-ranges}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|c|c|l|}
+      \hline
+      Time Range    & Expansion Coefficient & Identified Phase \\
+      \hline
+      07:00 - 10:00 & 2.33                  & Morning peak     \\
+      \hline
+      10:00 - 16:00 & 6.00                  & Off-peak         \\
+      \hline
+      16:00 - 20:00 & 3.52                  & Evening peak     \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+\begin{table}[H]
+  \captionof{table}{Content schema of a OD file}
+  \label{tbl:amat-od-file}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|l|}
+      \hline
+      Field     & Description                & Notes                                                                                                 \\
+      \hline
+      orig\_urb  & Source zone                & Valid IDs are found in the Zones file                                                                 \\
+      \hline
+      dest\_urb  & Sink zone                  & Valid IDs are found in the Zones file                                                                 \\
+      \hline
+      cd\_motivo & Reason of travel           & \makecell[l]{LAV = Work \\ AFF = Business \\ ALT = Study or other reasons \\ CAS = Returning to home} \\
+      \hline
+      veq\_priv  & Number of counted vehicles &                                                                                                       \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
 \paragraph{The CityFlow format}
+
+\paragraph{The SUMO format}
 
 \paragraph{The converters}
 
