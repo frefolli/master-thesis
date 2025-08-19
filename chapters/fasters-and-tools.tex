@@ -477,9 +477,217 @@ Moreover, simulation engines like SUMO and CityFlow usually require TAZs to spec
 
 \paragraph{The CityFlow format}
 
+Since CityFlow is another commonly used simulator, it is important to understand its file format in order to be able to reuse existing scenarious from the literature and experiment on variations.
+CityFlow uses two files for network and demand.
+The network file specifies intersections and roads while the demand file specifies vehicle trips.
+
+A dead end node is a virtual intersection which can be declared with an ID, a position, the roads for which it is source or sink.
+The schema requires setting the \textit{virtual} attribute to true and adding stubs for unused fields like \textit{roadLinks} and \textit{trafficLight}.
+An example of virtual intersection is shown in Listing \ref{lst:sumo-virtual-intersection}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=JSON, caption=Example of virtual intersection declaration in CityFlow format, label={lst:cityflow-virtual-intersection}]
+{
+  "id": "J0",
+    "point": {
+      "x": -300,
+      "y": 0
+    },
+    "width": 0,
+    "roads": [
+      "E1"
+    ],
+    "roadLinks": [],
+    "trafficLight": {
+      "roadLinkIndices": [],
+      "lightphases": []
+    },
+    "virtual": true
+}
+\end{lstlisting}
+\end{minipage}
+
+A normal intersection is more complex as it contains some \textit{roadLinks} which are internal links between roads for which the intersection is source or sink.
+The same goes for \textit{laneLinks}, which are links between lanes of the same roadLink.
+Finally, the traffic light program is declared directly inside the intersection object with an enumeration of roadLinks and a list of phases with duration and green-light roadLinks.
+All the roadLinks not listed inside a phase are automatically set to red-light.
+Yellow-light links are not declarable directly in CityFlow.
+
+An example of normal intersection is shown in Listing \ref{lst:sumo-normal-intersection}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=JSON, caption=Example of normal intersection declaration in CityFlow format, label={lst:cityflow-normal-intersection}]
+{
+  "id": "J1",
+  "point": {"x": 0, "y": 0},
+  "width": 11,
+  "roads": ["E1", "E2", "E3", "E4"],
+  "roadLinks": [{
+    "type": "go_straight",
+    "startRoad": "E1",
+    "endRoad": "E2",
+    "direction": 0,
+    "laneLinks": [{
+      "startLaneIndex": 0,
+      "endLaneIndex": 0,
+      "points": [{"x": -5.0, "y": 0.0},
+                 {"x":  5.0, "y": 0.0}]
+    }]
+  },...],
+  "trafficLight": {
+    "roadLinkIndices": [0, ...],
+    "lightphases": [{
+      "time": 30,
+      "availableRoadLinks": [
+        0,...
+      ]
+    },...]
+  },
+  "virtual": false
+},
+\end{lstlisting}
+\end{minipage}
+
+The Road object is very simple and declares an ID, a shape, the set of lanes with width and maximum allowed speed, source and sink intersections.
+An example of Road is shown in Listing \ref{lst:cityflow-road}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=JSON, caption=Example of road declaration in CityFlow format, label={lst:cityflow-road}]
+{
+  "id": "E1",
+  "points": [{"x": -300, "y": 0},
+            {"x": 0, "y": 0}],
+  "lanes": [{"width": 3, "maxSpeed": 13.89}],
+  "startIntersection": "J0",
+  "endIntersection": "J1"
+}
+\end{lstlisting}
+\end{minipage}
+
+Finally, vehicle trips can be declared by specifying the vehicle features, its route in terms of roads, in time data such as start/end time and interval between spawns. If the end time is greater than the start time, then this object behaves like a flow, otherwise it behaves like a single trip.
+An example of vehicle trips and routes is shown in Listing \ref{lst:cityflow-vehicle-trip}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=JSON, caption=Example of vehicle trip and route declaration in CityFlow format, label={lst:cityflow-vehicle-trip}]
+{"vehicle": {"length": 5.0,
+             "width": 2.0,
+             "maxPosAcc": 2.0,
+             "maxNegAcc": 4.5,
+             "usualPosAcc": 2.0,
+             "usualNegAcc": 4.5,
+             "minGap": 2.5,
+             "maxSpeed": 11.111,
+             "headwayTime": 2},
+ "route": ["E1 E2 E3"],
+ "interval": 1.0,
+ "startTime": 0,
+ "endTime": 0}
+{"vehicle": {...},
+ "route": ["E1 E2 E3"],
+ "interval": 1.0,
+ "startTime": 0,
+ "endTime": 3600}
+\end{lstlisting}
+\end{minipage}
+
 \paragraph{The SUMO format}
 
+As explained in the second chapter, also SUMO uses different files for network, demand and various other objects.
+The network file specifies junctions (intersections and dead ends), traffic light programs, edges and other kind of links.
+The routes file specifies vehicle trips, routes and flows.
+
+The declaration of a virtual Junction only involves setting an ID, the proper \textit{type} attribute, the coordinates and the incoming lanes.
+An example of virtual junction is shown in Listing \ref{lst:sumo-virtual-intersection}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML, caption=Example of virtual Intersection declaration in SUMO format, label={lst:sumo-virtual-intersection}]
+<junction id="J0" type="dead_end" x="-300" y="0" incLanes="-E1" intLanes=""/>
+\end{lstlisting}
+\end{minipage}
+
+A normal intersection instead requires also the declaration of the internal lanes and the Request objects.
+The requests regulate priorities for the intersection while the internal lanes are links from the incoming lanes to the intersection. To map the intersection back to the outcoming lanes a Connection object is used.
+A Connection object is also labelled with a \textit{linkIndex} which is then used in traffic light program entries to define which links are set to green/yellow/read.
+A traffic light program can be declared by using a TLLogic object which requires only the program ID, the junction to which is applied and a list of phases with duration and state.
+An example of normal junction is shown in Listing \ref{lst:sumo-normal-intersection}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML, caption=Example of normal Intersection declaration in SUMO format, label={lst:sumo-normal-intersection}]
+<junction id="J1" type="traffic_light"
+          x="0.0" y="0.0"
+          incLanes="E1 -E2 ..."
+          intLanes=":J1_0_1 ...">
+  <request index="0" response="10" foes="10" cont="0"/>
+  <request index="1" response="00" foes="01" cont="0"/>
+</junction>
+<connection from="E1" to="E2"
+            fromLane="0" toLane="0"
+            via=":J1_0_0" tl="J1"
+            linkIndex="0" dir="r"
+            state="O"/>
+...
+<connection from=":J1_0" to="E2"
+            fromLane="0" toLane="0"
+            dir="r" state="M"/>
+...
+\end{lstlisting}
+\end{minipage}
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML, caption=Example of traffic light program declaration in SUMO format, label={lst:sumo-traffic-light-program}]
+<tlLogic id="J1" type="static" programID="0" offset="0">
+  <phase duration="42" state="GGgrrrGGgrrr"/>
+  ...
+</tlLogic>
+\end{lstlisting}
+\end{minipage}
+
+The Edge object (a road) is rather simple. It declares an ID, source and sink junctions, a priority value, the alignment of lanes on the road (e.g. center, right), a shape and its lanes.
+The Lane object is declared as a child of an Edge and has an ID, an index, a maximum allowed speed, a virtual length and other parameters.
+An example of Edge with Lanes is shown in Listing \ref{lst:sumo-edge-lane}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML, caption=Example of Edge declaration in SUMO format, label={lst:sumo-edge-lane}]
+<edge id="E1" from="J0"
+      to="J1" priority="1"
+      spreadType="center" shape="-300,0 0,0">
+  <lane id="E1_0" index="0" speed="13.89" length="300"/>
+</edge>
+\end{lstlisting}
+\end{minipage}
+
+In SUMO, a vehicle can be declared to use a custom route or reuse an already defined route.
+The data required to spawn trips or flows are similar to the one needed in SUMO.
+In particular, in SUMO it is also possible to use junctions as waypoints for a route.
+An example of vehicle trips and routes is shown in Listing \ref{lst:sumo-vehicle-trip}.
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML, caption=Example of vehicle trip and route declaration in SUMO format, label={lst:sumo-vehicle-trip}]
+<route id="r_0" edges="E1 E2 E3"/>
+<vehicle id="v_0" depart="0.00" route="r_0"/>
+<flow id="f_0" begin="0.00" fromJunction="J0" toJunction="J1" end="3600.00" vehsPerHour="1800"/>
+\end{lstlisting}
+\end{minipage}
+
 \paragraph{The converters}
+
+Given that all the format discussed above involve the same semantic entities (roads, intersections, traffic light programs), it is fairly easy to convert them one into another.
+In SUMO-RL three utilities have been implemented for the following convertions:
+
+\begin{itemize}
+  \item \textbf{cityflow2sumo}: converts CityFlow networks+demands to SUMO
+  \item \textbf{amat2cityflow}: converts AMAT networks+demands to CityFlow
+  \item \textbf{amat2sumo}: converts AMAT networks+demands to SUMO
+\end{itemize}
 
 \subsection{Generating traffic}
 

@@ -21,7 +21,7 @@
 ./figures/agent-trait.png: ./figures/agent-trait.d2
 	d2 ./figures/agent-trait.d2 ./figures/agent-trait.png
 
-thesis.pdf: thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png figures/*.png chapters/*.tex
+thesis.pdf: listings-xml.sty listings-json.sty thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png figures/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex
