@@ -23,7 +23,7 @@ In particular, SUMO-RL has been equipped with an algorithm for partitioning the 
 By default, it assigns an distinct instance of agent to each one of the intersections in the network. If needed, it will group intersections based on the aforementioned similarities and assign a single agent instance for each group.
 Furthermore, while the architecture allows for different agent types to act in the simulation at the same time, the system is actually instructed to use only one agent type at a time, because the goals of this research don't require to analyze the behaviour of different agent types on the same network.
 
-\putimage{figures/sumo-rl-architecture.png}{The SUMO-RL Architecture}{fig:sumo-rl-architecture}{1.0}
+\putimage{figures/sumo-rl-architecture.png}{The SUMO-RL architecture}{fig:sumo-rl-architecture}{1.0}
 
 \subsection{The Environment}
 
@@ -334,6 +334,17 @@ Table \ref{tbl:agents} shows a summary of all implemented agents.
     \end{tabular}
   }
 \end{table}
+
+\subsection{A Self-Adaptive algorithm}
+
+SUMO-RL has been equipped with a Self-Adaptive mechanism which allocates a small training time slot if performance degrades over time.
+The objective of this algorithm is to be effective yet not invasive, therefore it has been designed to trigger only when performance differs significantly.
+
+If Self-Adaptive is enabled, during the training process, SUMO-RL tracks some of the performance metrics (e.g. mean\_accumulated\_waiting\_time, mean\_waiting\_time, mean\_speed) in order to be able to compare them during the evaluation process (which is supposed to be production-like).
+
+During the evaluation phase, every $K = 5000$ seconds, the algorithm computes the performance metrics and compared them with the one tracked during training.
+If one of the performance metrics differs of more than $5\%$ from the consolidated mean, then a training slot is allocated.
+After a training slot, the algorithm is instructed not to activate for at least $T = 15000$ seconds.
 
 \section{The Tools}
 
@@ -953,7 +964,32 @@ This string instructs the generator to use a transition with all the atomic entr
 
 \subsection{Executing experiments}
 
-\paragraph{executor}
+The \textbf{executor} module allows to perform a series of experiments in an unattended fashion.
+In Figure \ref{fig:executor-architecture} the architecture of the executor is shown.
+
+The Executor class loads a list of Experiment instances which can be launched by ID.
+Each Experiment has an \textit{ID}, a \textit{name} and two boolean values which allow a custom experiment to skip training or evaluation phases if needed (e.g. fixed cycle agents don't require training).
+The Experiment instance also need an access to the singleton Archive instance.
+The Archive class enables an experiment to switch context from one Configuration to another in order to run different configurations SUMO-RL in the same experiment.
+
+A Configuration instance has multiple attributes which reflect the options passed to the SUMO-RL core module.
+For each run it is possible to configure the agent, the observation function, the reward function, the dataset used, the number of quantization levels.
+It is also possible to enable the Self Adaptive mechanism, to shutdown the controlled intersection so that they behave like precedence based intersections and the partition type (which if enabled allows an agent to control more than one traffic light intersection at the same time).
+
+The Configuration object also has an \textit{hash()} method which is used to give a name to the active configuration.
+This is realized simply by, more or less, concatenating the attribute values separated by a dash symbol ('-').
+An example of such naming is \textit{dql-mono-d-dwt-nsa-dataset\_zero-on-q8}.
+While that seems verbose, it is very effective in allowing to distinguish between configurations.
+
+For each experiment a subclass of the Experiment class should be created.
+In particular, two more advanced base classes have been created in order to automate two useful behaviors.
+
+The CombinatorialExperiment class implements an experiment in which for each possible combination of the supplied options (its attributes are list of option values) it executes one round of training with SUMO-RL and then it executes $5$ rounds of evaluation.
+During this last phase the analysis modules introduced in the next subsection are called in order to produce a final deliverable with a dataframe of metrics containing all the combinations as rows for each evaluation round.
+
+The SerialExperiment class is very similar to the CombinatorialExperiment class with the exception than the configurations used are directly supplied in a list of configuration as attribute of the instance.
+
+\putimage{figures/executor-architecture.png}{The Executor architecture}{fig:executor-architecture}{1.0}
 
 \subsection{Extracting metrics}
 
