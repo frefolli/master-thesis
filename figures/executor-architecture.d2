@@ -1,0 +1,70 @@
+direction: right
+
+Experiment: {
+  shape: class
+  id str
+  name: str
+  archive: Archive
+  skip_training: bool
+  skip_evaluation: bool
+  "__init__(self, ...)": None
+  all(self): None
+  prepare(self): None
+  training(self): None
+  evaluation(self): None
+  pack(self): None
+  clean(self): None
+  commit(self): None
+}
+
+SequentialExperiment: {
+  shape: class
+  configurations: "list[Configuration]"
+}
+
+CombinatorialExperiment: {
+  shape: class
+  agents: "list[str]"
+  partitions: "list[str]"
+  observations: "list[str]"
+  rewards: "list[str]"
+  self_adaptives: "list[bool]"
+  datasets: "list[str]"
+  shutdowns: "list[bool]"
+  quantizations: "list[int]"
+}
+
+Configuration: {
+  shape: class
+  agent: str
+  partition: str
+  observation: str
+  reward: str
+  self_adaptive: bool
+  dataset: str
+  shutdown: bool
+  quantization: int
+
+  "__init__(self, ...)": None
+  Default(): Configuration
+  to_cli(self): "list[str]"
+  hash(self): str
+  to_dict(self): dict
+  from_dict(data dict): Configuration
+  "Patch(config Configuration, ...)": Configuration
+}
+
+Archive: {
+  shape: class
+  __init__(self): None
+  _read_config(self): None
+  _write_config(self): None
+  use_dataset(self, id int): None
+  switch(self, config Configuration): None
+  current_config_file(self): str
+  config_dir(self, config Configuration): str
+}
+
+Experiment -> Archive -> Configuration
+CombinatorialExperiment -> Experiment
+SequentialExperiment -> Experiment

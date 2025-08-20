@@ -21,7 +21,10 @@
 ./figures/agent-trait.png: ./figures/agent-trait.d2
 	d2 ./figures/agent-trait.d2 ./figures/agent-trait.png
 
-thesis.pdf: listings-xml.sty listings-json.sty thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png figures/*.png chapters/*.tex
+./figures/executor-architecture.png: ./figures/executor-architecture.d2
+	d2 ./figures/executor-architecture.d2 ./figures/executor-architecture.png
+
+thesis.pdf: listings-xml.sty listings-json.sty thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png ./figures/executor-architecture.png figures/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex
@@ -36,3 +39,4 @@ clean:
 	rm -f ./figures/observation-function-trait.png
 	rm -f ./figures/reward-function-trait.png
 	rm -f ./figures/agent-trait.png
+	rm -f ./figures/executor-architecture.png
