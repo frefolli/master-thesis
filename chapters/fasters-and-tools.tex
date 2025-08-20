@@ -769,7 +769,7 @@ In order to create realistic scenarious, a set of \textit{four} situations has b
 
 \subparagraph{Normal}
 
-All in order: those who take the train take the train, those who take public transport take public transport, those who take the car take the car.
+All in order: those who take the train take the train, those who take public transit take public transit, those who take the car take the car.
 No disruptions are expected.
 Weekday traffic is more heavily influenced by commuters for work/study, so the main routes are more affected.
 On the other hand, during holiday traffic, people who travel not for "duty" but for "pleasure" will also travel to smaller destinations.
@@ -851,7 +851,7 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-rail
 \subparagraph{Public Transit Strike}
 
 The same considerations regarding the train strike apply, with some differences.
-People who normally take local public transport will now travel by car.
+People who normally take local public transit will now travel by car.
 This includes not only those arriving by train, but also those who already live in the province or city.
 Therefore, there will be much more traffic to and from smaller destinations.
 The components of this traffic set are listed in Table \ref{tbl:traffic-set-public-transit-strike}.
@@ -864,19 +864,19 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-publ
       \hline
       ID          & Description                                                                                     & Classification \\
       \hline
-      STPL1       & Weekday traffic during off-peak hours on days of local public transport strikes                 & Random Symmetric Medium \\
+      STPL1       & Weekday traffic during off-peak hours on days of local public transit strikes                 & Random Symmetric Medium \\
       \hline
-      STPL2       & Weekday traffic during peak hours (center <- suburbs) on days of local public transport strikes & Stable Asymmetric Direct Dense <High,Medium,Medium,Medium> \\
+      STPL2       & Weekday traffic during peak hours (center <- suburbs) on days of local public transit strikes & Stable Asymmetric Direct Dense <High,Medium,Medium,Medium> \\
       \hline
-      STPL3       & Weekday traffic during peak hours (center -> suburbs) on days of local public transport strikes & Stable Asymmetric Inverse Dense <High,Medium,Medium,Medium> \\
+      STPL3       & Weekday traffic during peak hours (center -> suburbs) on days of local public transit strikes & Stable Asymmetric Inverse Dense <High,Medium,Medium,Medium> \\
       \hline
-      STPL1-STPL2 & Weekday morning traffic during off-peak hours on days of local public transport strikes         & Transition >STPL1>>STPL2> \\
+      STPL1-STPL2 & Weekday morning traffic during off-peak hours on days of local public transit strikes         & Transition >STPL1>>STPL2> \\
       \hline
-      STPL1-STPL3 & Weekday evening traffic increasing on local public transport strike days                        & Transition >STPL1>>STPL3> \\
+      STPL1-STPL3 & Weekday evening traffic increasing on local public transit strike days                        & Transition >STPL1>>STPL3> \\
       \hline
-      STPL2-STPL1 & Weekday morning traffic decreasing on local public transport strike days                        & Transition >STPL2>>STPL1> \\
+      STPL2-STPL1 & Weekday morning traffic decreasing on local public transit strike days                        & Transition >STPL2>>STPL1> \\
       \hline
-      STPL3-STPL1 & Weekday evening traffic decreasing on local public transport strike days                        & Transition >STPL3>>STPL1> \\
+      STPL3-STPL1 & Weekday evening traffic decreasing on local public transit strike days                        & Transition >STPL3>>STPL1> \\
       \hline
     \end{tabular}
   }
@@ -928,6 +928,28 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-tram
 \end{table}
 
 \paragraph{The traffic specifier}
+
+The traffic generator module accepts as input a string specifier with a special syntax that allows to unleash all the options available.
+Each string is a sequence of comma separated arguments.
+
+If the first argument is a number, it is considered to be the number of routes file to be generated.
+If the second argument is a number, it is considered to be the duration of a routes file (default is 100000 seconds).
+
+If the character \textit{'$\pounds$'} is present among the arguments, then the traffic flows generated will have artificial queues enabled (implemented with $arrivalSpeed = 0$ to simulate a traffic slowdown at edges).
+
+If the character \textit{'*'} is present among the arguments, then all the entries of the traffic registry which are not Transitions are added as if they were mentioned as arguments.
+
+If the character \textit{'$\sim$'} is present among the arguments, all the added entries are shuffled.
+
+All the other arguments are interpreted as ID of entries of the traffic registry, therefore all the mentioned entries get included in a transition. If only one entry is specified, then it is used as is without being wrapped in a Transition object.
+
+Here are some examples:
+
+\subparagraph{$2,\pounds,N1,N2,N1,N3,N1$}
+This string instructs the generator to use a transition $N1 \rightarrow N2 \rightarrow N1 \rightarrow N3 \rightarrow N1$ with artificial queues enabled and generate two $100000$ seconds long routes file.
+
+\subparagraph{$1,400000,\pounds,*,\sim$}
+This string instructs the generator to use a transition with all the atomic entries shuffled and concatenated in a single transition (e.g. $N2 \rightarrow CT5 \rightarrow N3 \rightarrow STPL1 \rightarrow STPL2 \rightarrow N4 \rightarrow CT3 \rightarrow CT1 \rightarrow CT4 \rightarrow N1 \rightarrow CT2 \rightarrow ST2 \rightarrow N5 \rightarrow ST1 \rightarrow STPL3 \rightarrow ST3$) with artificial queues enabled and generate one $400000$ seconds long routes file.
 
 \subsection{Executing experiments}
 
