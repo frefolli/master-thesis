@@ -342,9 +342,9 @@ The objective of this algorithm is to be effective yet not invasive, therefore i
 
 If Self-Adaptive is enabled, during the training process, SUMO-RL tracks some of the performance metrics (e.g. mean\_accumulated\_waiting\_time, mean\_waiting\_time, mean\_speed) in order to be able to compare them during the evaluation process (which is supposed to be production-like).
 
-During the evaluation phase, every $K = 5000$ seconds, the algorithm computes the performance metrics and compared them with the one tracked during training.
+During the evaluation phase, every $K = 10000$ seconds, the algorithm computes the performance metrics and compared them with the one tracked during training.
 If one of the performance metrics differs of more than $5\%$ from the consolidated mean, then a training slot is allocated.
-After a training slot, the algorithm is instructed not to activate for at least $T = 15000$ seconds.
+After a training slot, the algorithm is instructed not to activate for at least $T = 30000$ seconds.
 
 \section{The Tools}
 
