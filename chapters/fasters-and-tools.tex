@@ -1033,6 +1033,10 @@ It produces a summarizing dictionary with minimum value, maximum value, mean and
 An example is displayed in Listing \ref{lst:metrics-global-extraction-example}.
 It has been programmed to do so only for evaluation metrics, since the training metrics will be subject of another type of analysis.
 
+A variant of this module, \textbf{extract-directional-metrics}, does the same kind of extraction but further divides data into the directions of the network (e.g. \textit{J2-J0, J2-J1, J2-J3}).
+In order to do so, SUMO-RL Core have to be launched with the \textit{-de, --depth} option.
+This analysis allows to verify if the agents ensure fairness among all the users of the road network.
+
 \noindent
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[language=JSON, caption=Example of dictionary of metrics extracted from the metric files, label={lst:metrics-global-extraction-example}]
@@ -1066,3 +1070,49 @@ It has been programmed to do so only for evaluation metrics, since the training 
   }
 \end{lstlisting}
 \end{minipage}
+
+The output of the \textit{extract-global/directional-metrics} utilies is store in a \textit{scores.yml} file inside the output directory.
+Since with the Executor module each experiment is run in a separate context, a module, \textbf{compare-metrics}, has been implemented in order to aggregate all the \textit{scores.yml} files into a single round csv file comprising metrics for all the configuration, as shown in Table \ref{tbl:round-file-example}.
+
+\begin{table}[H]
+  \captionof{table}{Example of round file produced by \textit{compare-metrics}}
+  \label{tbl:round-file-example}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|c|}
+      \hline
+      ID & AWT max & AWT mean & AWT min & AWT var & ... \\
+      \hline
+      a & 913.785 & 205.417 & 0.0 & 19569.804 & ... \\
+      \hline
+      b & 878.5   & 210.828 & 0.0 & 20006.516 & ... \\
+      \hline
+      c & 914.211 & 396.977 & 0.0 & 13184.152 & ... \\
+      \hline
+      d & 903.75  & 206.176 & 0.0 & 19920.849 & ... \\
+      \hline
+      e & 877.0   & 210.703 & 0.0 & 21200.319 & ... \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+Starting from these round files, the module \textbf{generate-report} is able to produce three distinct valuable deliverables.
+For each metric it creates a plot showing the value of the metric over time (= over rounds) for each configuration variant.
+An example is shown in Figure \ref{fig:generate-report-plots}.
+Then it produces another plot for each metric averaging the value of the metric over time and showing a barplot of all the configurations.
+An example is shown in Figure \ref{fig:generate-report-bars}.
+
+Finally, it assigns some points (computed using a Fibonacci sequence) to all the configuration on the basis of how well that metric value is with respect of the ones achieved by the other metrics.
+For this evaluation, the average over time is used.
+Summing all the leaderboard created for each metric, \textit{generate-report} creates also a final leaderboard.
+Each leaderboard get plotted in a separated file for the sake of comparison.
+
+An example is shown in Figure \ref{fig:generate-report-leaderboards}.
+While a leaderboard system isn't exaustive in evaluating the relative goodness of those configurations, it gives a quick insight of the results.
+It is however important to inspect the other deliverables to ensure that an advantage in terms of points is reflecting a clear superiority in terms of metrics.
+Otherwise, a slight metric difference would lead to an unfair advantage.
+
+\putimagecouple
+{\putsubimage{figures/generate-report-bars.png}{An example of Bar plot created by the generate-report utility}{fig:generate-report-bars}{0.45}{1.0}}
+{\putsubimage{figures/generate-report-leaderboards.png}{An example of Leaderboard plot created by the generate-report utility}{fig:generate-report-leaderboards}{0.45}{1.0}}
+\putimage{figures/generate-report-plots.png}{An example of metrics plot created by the generate-report utility}{fig:generate-report-plots}{0.75}
