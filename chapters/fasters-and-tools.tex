@@ -991,24 +991,78 @@ The SerialExperiment class is very similar to the CombinatorialExperiment class 
 
 \putimage{figures/executor-architecture.png}{The Executor architecture}{fig:executor-architecture}{1.0}
 
-\subsection{Extracting metrics}
+\subsection{Analyzing experiment runs}
 
-\paragraph{extract-directional-metrics}
-\paragraph{extract-global-metrics}
+During a training or evaluation round, the SUMO-RL Core tracks down some metrics which can be useful to evaluate the goodness of the reinforcement learning system.
+It writes them to metrics file in the output directory, an example of which is displayed in Table \ref{tbl:metrics-file-example}.
+For conciceness, the metrics are enumerated by acronyms, but in those files are listed by full name.
+These are the same metrics that have been presented in the previos section.
 
-\subsection{Plotting metrics}
+\begin{table}[H]
+  \captionof{table}{Example of metrics file produced by SUMO-RL Core}
+  \label{tbl:metrics-file-example}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      Step & TR & TB & TS & TA & TD & TT & TWT & MWT & TAWT & MAWT & MS & TR \\
+      \hline
+      0.0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.0 & 0 & 0.0 & 0 & 11.568 & 0.0 \\
+      \hline
+      5.0 & 28 & 71 & 0 & 0 & 28 & 0 & 0.0 & 0.0 & 0.0 & 0.0 & 10.622 & 0.0 \\
+      \hline
+      10.0 & 42 & 0 & 0 & 0 & 42 & 0 & 0.0 & 0.0 & 0.0 & 0.0 & 11.128 & 0.0 \\
+      \hline
+      15.0 & 42 & 0 & 0 & 0 & 42 & 0 & 0.0 & 0.0 & 2.0 & 0.047 & 11.114 & 0.0 \\
+      \hline
+      20.0 & 42 & 0 & 0 & 0 & 42 & 0 & 0.0 & 0.0 & 2.0 & 0.047 & 11.257 & -0.02 \\
+      \hline
+      25.0 & 41 & 0 & 2 & 1 & 42 & 0 & 4.0 & 0.097 & 6.0 & 0.146 & 10.519 & -0.03 \\
+      \hline
+      30.0 & 44 & 0 & 6 & 1 & 45 & 0 & 20.0 & 0.454 & 27.0 & 0.613 & 10.579 & -0.170 \\
+      \hline
+      35.0 & 43 & 0 & 7 & 2 & 45 & 0 & 49.0 & 1.139 & 56.0 & 1.302 & 11.210 & -0.33 \\
+      \hline
+      ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... & ... \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
-\paragraph{plot-global-metrics}
-\paragraph{plot-smoothed-metrics}
-\paragraph{plot-directional-metrics}
+A module \textbf{extract-global-metrics} can retrieve all the metrics file produced by an experiment organized in iterations (e.g. \textit{0.csv, 1.csv, 2.csv}) and by phase (evaluation or training).
+It produces a summarizing dictionary with minimum value, maximum value, mean and variance for each metric.
+An example is displayed in Listing \ref{lst:metrics-global-extraction-example}.
+It has been programmed to do so only for evaluation metrics, since the training metrics will be subject of another type of analysis.
 
-\subsection{Comparing metrics}
-
-\paragraph{merge-experiments}
-
-\paragraph{compare-global-metrics}
-\paragraph{compare-directional-metrics}
-
-\subsection{Generating reports}
-
-\paragraph{generate-report}
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=JSON, caption=Example of dictionary of metrics extracted from the metric files, label={lst:metrics-global-extraction-example}]
+  {
+    'waiting_time': {
+      'mean': np.float64(48.299),
+      'var': np.float64(837.112),
+      'min': np.float64(0.0),
+      'max': np.float64(126.426)
+    }, 'accumulated_waiting_time': {
+      'mean': np.float64(140.083),
+      'var': np.float64(6865.645),
+      'min': np.float64(0.0),
+      'max': np.float64(268.278)
+    }, 'speed': {
+      'mean': np.float64(9.942),
+      'var': np.float64(0.112),
+      'min': np.float64(9.015),
+      'max': np.float64(11.257)
+    }, 'arrival_rate': {
+      'mean': np.float64(3.096),
+      'var': np.float64(3.200),
+      'min': np.int64(0),
+      'max': np.int64(9)},
+    'departure_rate': {
+      'mean': np.float64(4.163),
+      'var': np.float64(8.420),
+      'min': np.int64(0),
+      'max': np.int64(22)
+    }
+  }
+\end{lstlisting}
+\end{minipage}
