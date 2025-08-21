@@ -962,6 +962,11 @@ This string instructs the generator to use a transition $N1 \rightarrow N2 \righ
 \subparagraph{$1,400000,\pounds,*,\sim$}
 This string instructs the generator to use a transition with all the atomic entries shuffled and concatenated in a single transition (e.g. $N2 \rightarrow CT5 \rightarrow N3 \rightarrow STPL1 \rightarrow STPL2 \rightarrow N4 \rightarrow CT3 \rightarrow CT1 \rightarrow CT4 \rightarrow N1 \rightarrow CT2 \rightarrow ST2 \rightarrow N5 \rightarrow ST1 \rightarrow STPL3 \rightarrow ST3$) with artificial queues enabled and generate one $400000$ seconds long routes file.
 
+\paragraph{Generating datasets}
+
+The module \textbf{generate-datasets} accepts as input a description of a dataset to be generated with a name and the traffic specifiers of which it is composed (into distinct sets: training and evaluation).
+This is actively used in the experiments to generate the datasets automatically from a seed.
+
 \subsection{Executing experiments}
 
 The \textbf{executor} module allows to perform a series of experiments in an unattended fashion.
@@ -1116,3 +1121,18 @@ Otherwise, a slight metric difference would lead to an unfair advantage.
 {\putsubimage{figures/generate-report-bars.png}{An example of Bar plot created by the generate-report utility}{fig:generate-report-bars}{0.45}{1.0}}
 {\putsubimage{figures/generate-report-leaderboards.png}{An example of Leaderboard plot created by the generate-report utility}{fig:generate-report-leaderboards}{0.45}{1.0}}
 \putimage{figures/generate-report-plots.png}{An example of metrics plot created by the generate-report utility}{fig:generate-report-plots}{0.75}
+
+Finally, the modules \textbf{plot-global-metrics} and \textbf{plot-directional-metrics} are a set of utilities for plotting the extracted metrics like mean waiting time, accumulated reward (\textit{total\_reward-AC}), mean speed and so on.
+The plots are organized by phase (training and evaluation), by metric. For each simulation, a distinct figure is generated (e.g. \textit{0.png, 1.png, 2.png}) and a concatenated version of all simulation metrics is created as well (\textit{summary.png}).
+
+Moreover, they also create a version of those plots with moving average with two different modes of operation.
+The \textit{Symmetric} (SS) moving average maps an input shape of $\mathbb{R}^N$ to an output shape $\mathbb{R}^N$ where each entry $r_i$ is the average of a neighbourhood of length $K$ ($[\frac K 2 - i \; : \; \frac K 2 + i]$).
+The \textit{Asymmetric} (AS) moving average maps an input shape of $\mathbb{R}^N$ to an output shape $\mathbb{R}^M$ (with $M \leq N$) where each entry $r_i$ is the average of the right-end neighbourhood of length $K$ ($[i \; : \; K + i]$).
+
+Some examples of plots created by these modules are shown in Figures \ref{fig:plotting-metrics-raw}, \ref{fig:plotting-metrics-ac}, \ref{fig:plotting-metrics-as}, \ref{fig:plotting-metrics-ss}.
+
+\putimage{figures/plotting-metrics-raw.png}{An example of raw metric plotted by \textit{plot-global-metrics}}{fig:plotting-metrics-raw}{0.75}
+\putimage{figures/plotting-metrics-ac.png}{An example of accumulated (AC) metric plotted by \textit{plot-global-metrics}}{fig:plotting-metrics-ac}{0.75}
+
+\putimage{figures/plotting-metrics-ss.png}{An example of symmetric smoothed (SS) metric plotted by \textit{plot-global-metrics}}{fig:plotting-metrics-ss}{0.75}
+\putimage{figures/plotting-metrics-as.png}{An example of asymmetric smoothed (AS) metric plotted by \textit{plot-global-metrics}}{fig:plotting-metrics-as}{0.75}
