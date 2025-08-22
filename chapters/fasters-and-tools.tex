@@ -11,14 +11,14 @@ This section is concerned with the core of the reinforcement learning framework,
 
 SUMO-RL has a \textbf{modular} architecture (it can be seen in figure \ref{fig:sumo-rl-architecture}) that allows developers and researchers to replace a-la-carte almost all its components if needed.
 
-The \textit{Environment} object get created through settings supplied by both command line arguments and a configuration file.
-These settings select which functions, agents, scenario to use in the simulation, as well as feature flags for tuning SUMO and changing other aspects of the experiments.
+The \textit{Environment} object gets created through settings supplied by both command line arguments and a configuration file.
+These settings select which functions, agents, scenario to use in a simulation, as well as feature flags for tuning SUMO and changing other aspects of the experiments.
 The Environment is then equipped with an \textit{ObservationFunction}, a \textit{RewardFunction}, a dataframe for collecting \textit{Metrics} about agents and the simulations, an object for caching data about vehicles, lanes and intersections called \textit{Datastore}, and a dictionary of \textit{TrafficSignal}s.
 Each \textit{TrafficSignal} instance represents a controlled intersection in the scenario that has been loaded in the \textit{Environment}. Upon creation, it queries SUMO to extract valuable data about the shape of the intersection and the traffic light program logic (that is to say \textit{the clock cycle and its phases}). It identifies its \textit{green phases} and represents the act of switching to one of those as an action of the Action Space.
 
 Along with the environment, also a set of \textit{Agent}s are created which can observe the state of the simulation through the output of the \textit{ObservationFunction} and get rewarded with the output of the \textit{RewardFunction}, both of which are mediated by the \textit{Environment}.
 
-In most of the literature works either the is only one intersection in the scenario or each agent instance is controlled strictly one of the intersections. As such, also the original SUMO-RL framework \cite{sumorl} developed by Lucas Alegre supported an agent to control only one traffic light intersection.
+In most of literature works either there is only one intersection in the scenario or each agent instance is controlling only one of the intersections. As such, also the original SUMO-RL framework \cite{sumorl} developed by Lucas Alegre supported an agent to control only one traffic light intersection.
 The architecture has been revised to allow agents to control more than one intersection by modifying both the agent trait and how the environment works.
 In particular, SUMO-RL has been equipped with an algorithm for partitioning the set of controllable traffic lights intersections on the basis of the number of input lanes or the State Space shape.
 By default, it assigns an distinct instance of agent to each one of the intersections in the network. If needed, it will group intersections based on the aforementioned similarities and assign a single agent instance for each group.
@@ -37,7 +37,7 @@ The TrafficSignal constructor also accepts parameters for changing the minimum g
 This way, the TrafficSignal component is able to query SUMO for its shape and traffic light control program.
 Therefore it acquires the list of incoming lanes, the list of output lanes and it caches the lengths of its lanes (which will be used afterwards in computations).
 It also sets its \textit{Action Space} with a \textit{gymnasium}'s Discrete space which is parametrized on the number of green phases.
-The action on a traffic light is the green phase it should enable, then its up to the TrafficSignal component to enforce that phases by using the correct yellow-light transition and the correct phase in the simulations.
+The action on a traffic light is the green phase it should enable, then its up to the TrafficSignal component to enforce that phase by using the correct yellow-light transition and the correct phase in the simulations.
 
 \paragraph{Acquiring traffic light phases}
 
@@ -52,7 +52,7 @@ It also keep a map \textit{yellow-dict} of transitions which can be indexed by a
 Before running each simulation the environment should be reset through the \textit{reset()} method.
 Every time it is reset, it reloads SUMO with the previously selected scenario, the selected routes file and the input seed (important for ensuring that a performed simulation is replicable).
 At each iteration of a simulation, the agents are fed with the observations granted from the Environment and their actions are collected and fed in the Environment with its \textit{step()} method.
-Afterwards, some other methods can be called depending of what data is needed. At least \textit{gather\_data\_from\_sumo()} and {compute\_observations()} are needed for running a simulation but using also \textit{compute\_rewards()} allows agents to learn and the researcher to investigate results. The \textit{gather\_data\_from\_sumo()} method essentially queries SUMO for data concerning vehicles and lanes so that it can extract the metrics enumated in Tables \ref{tbl:gather-data-from-sumo-vehicle-metrics} and \ref{tbl:gather-data-from-sumo-lane-metrics}.
+Afterwards, some other methods can be called depending of what data is needed. At least \textit{gather\_data\_from\_sumo()} and {compute\_observations()} are needed for running a simulation but using also \textit{compute\_rewards()} allows agents to learn and the researcher to investigate results. The \textit{gather\_data\_from\_sumo()} method essentially queries SUMO for data concerning vehicles and lanes so that it can extract the metrics enumerated in Tables \ref{tbl:gather-data-from-sumo-vehicle-metrics} and \ref{tbl:gather-data-from-sumo-lane-metrics}.
 
 \begin{table}[H]
   \captionof{table}{Summary of Vehicle metrics collected by gather\_data\_from\_sumo().}
@@ -346,7 +346,9 @@ The Agent class declares a trait (shown in Figure \ref{fig:agent-trait}) for an 
 \putimage{figures/agent-trait.png}{The Agent class/trait}{fig:agent-trait}{0.75}
 
 Agents with various features have been implemented in order to compare the effectiveness of those approaches. Among the learning agents, there are three tabular agents and two neural network based agents. Most of them use an off-policy strategy but SARSA which is on-policy. Moreover, the two neural agents support also continuous state space and even if generally quantization will be used in experiments, an interesting point is verifying if not using quantization leads to advantages or disadvantages in performance. Furthermore, the size of neural networks is fixed to $32$ nodes per layer since an objective is to keep all the models reasonably small \footnote{If a traffic light agent needs a supercomputer sized neural network, then it's probably cheaper to build a roundabout or a tramway...}.
-Finally, the neural models use a buffer which accumulates examples taken from interacting with the environment and everytime it's full they use it to learn. The examples are essentiall State-Action-Reward tuples.
+Finally, the neural models use a buffer which accumulates examples taken from interacting with the environment and every time it's full they use it to learn. The examples are essentially State-Action-Reward tuples.
+
+An important notice is that all the reinforcement learning agents are non deterministic. The neural models use their output layer as a probability distribution in order to pick an action according to its probability (i.e. its expected reward). Instead, the tabular methods use the Epsilon Greedy strategy with a minimum value of $0.05$, which means that approximately $5\%$ of the actions will be randomized. Lowering this value leads to a more deterministic behaviour, but it has been empirically proven that a little of non-determinism does improve performance ratings for all models.
 
 The agents \textit{fixed15}, \textit{fixed30}, \textit{fixed45}, \textit{fixed60} do not learn. Instead, they follow a fixed cycle algorithm, switching phase every $k$ seconds.
 Those are the baseline for comparing RL algorithms with the currently employed system. Since all agents start synchronized in the same phase, they are operated in \textit{green wave} mode.
@@ -369,11 +371,11 @@ Table \ref{tbl:agents} shows a summary of all implemented agents.
       \hline
       fixed60 & Fixed Cycle & 60 secs    & \xmark                       & \xmark          & \xmark          & \xmark  & \xmark      & \xmark \\
       \hline
-      sarsa   & RL Agent    & \xmark     & SARSA                        & Tabular         & On-Policy       & \xmark  & \xmark      & $\epsilon \in [0.001, 1.0] \; \; decay = 0.99$ \\
+      sarsa   & RL Agent    & \xmark     & SARSA                        & Tabular         & On-Policy       & \xmark  & \xmark      & $\epsilon \in [0.05, 1.0] \; \; decay = 0.99$ \\
       \hline
-      ql      & RL Agent    & \xmark     & Q Learning                   & Tabular         & Off-Policy      & \xmark  & \xmark      & $\epsilon \in [0.001, 1.0] \; \; decay = 0.99$ \\
+      ql      & RL Agent    & \xmark     & Q Learning                   & Tabular         & Off-Policy      & \xmark  & \xmark      & $\epsilon \in [0.05, 1.0] \; \; decay = 0.99$ \\
       \hline
-      dql     & RL Agent    & \xmark     & Double Q Learning            & Tabular         & Off-Policy      & \xmark  & \xmark      & $\epsilon \in [0.001, 1.0] \; \; decay = 0.99$ \\
+      dql     & RL Agent    & \xmark     & Double Q Learning            & Tabular         & Off-Policy      & \xmark  & \xmark      & $\epsilon \in [0.05, 1.0] \; \; decay = 0.99$ \\
       \hline
       dqn     & RL Agent    & \xmark     & Deep Q Networks              & Neural          & Off-Policy      & 32x32   & 2048        & \xmark \\
       \hline
@@ -536,7 +538,7 @@ Moreover, simulation engines like SUMO and CityFlow usually require TAZs to spec
 
 \paragraph{The CityFlow format}
 
-Since CityFlow is another commonly used simulator, it is important to understand its file format in order to be able to reuse existing scenarious from the literature and experiment on variations.
+Since CityFlow is another commonly used simulator, it is important to understand its file format in order to be able to reuse existing scenarios from the literature and experiment on variations.
 CityFlow uses two files for network and demand.
 The network file specifies intersections and roads while the demand file specifies vehicle trips.
 
@@ -733,14 +735,16 @@ An example of vehicle trips and routes is shown in Listing \ref{lst:sumo-vehicle
 \begin{lstlisting}[language=XML, caption=Example of vehicle trip and route declaration in SUMO format, label={lst:sumo-vehicle-trip}]
 <route id="r_0" edges="E1 E2 E3"/>
 <vehicle id="v_0" depart="0.00" route="r_0"/>
-<flow id="f_0" begin="0.00" fromJunction="J0" toJunction="J1" end="3600.00" vehsPerHour="1800"/>
+<flow id="f_0" begin="0.00"
+      fromJunction="J0" toJunction="J1"
+      end="3600.00" vehsPerHour="1800"/>
 \end{lstlisting}
 \end{minipage}
 
 \paragraph{The converters}
 
 Given that all the format discussed above involve the same semantic entities (roads, intersections, traffic light programs), it is fairly easy to convert them one into another.
-In SUMO-RL three utilities have been implemented for the following convertions:
+In SUMO-RL three utilities have been implemented for the following conversions:
 
 \begin{itemize}
   \item \textbf{cityflow2sumo}: converts CityFlow networks+demands to SUMO
@@ -818,7 +822,7 @@ The possible values are Zero (0.0), Low (0.05), Medium (0.2), High (0.5), Very H
 \paragraph{The traffic registry}
 
 Using the above classification, a traffic registry can be assembled so that traffic can be generated a\`-a-carte.
-In order to create realistic scenarious, a set of \textit{four} situations has been developed.
+In order to create realistic scenarios, a set of \textit{four} situations has been developed.
 
 \subparagraph{Normal}
 
@@ -1044,8 +1048,8 @@ The SerialExperiment class is very similar to the CombinatorialExperiment class 
 
 During a training or evaluation round, the SUMO-RL Core tracks down some metrics which can be useful to evaluate the goodness of the reinforcement learning system.
 It writes them to metrics file in the output directory, an example of which is displayed in Table \ref{tbl:metrics-file-example}.
-For conciceness, the metrics are enumerated by acronyms, but in those files are listed by full name.
-These are the same metrics that have been presented in the previos section.
+For conciseness, the metrics are enumerated by acronyms, but in those files are listed by full name.
+These are the same metrics that have been presented in the previous section.
 
 \begin{table}[H]
   \captionof{table}{Example of metrics file produced by SUMO-RL Core}
@@ -1124,7 +1128,7 @@ This analysis allows to verify if the agents ensure fairness among all the users
 
 \paragraph{Comparing configurations}
 
-The output of the \textit{extract-global/directional-metrics} utilies is store in a \textit{scores.yml} file inside the output directory.
+The output of the \textit{extract-global/directional-metrics} utilities is stored in a \textit{scores.yml} file inside the output directory.
 Since with the Executor module each experiment is run in a separate context, a module, \textbf{compare-metrics}, has been implemented in order to aggregate all the \textit{scores.yml} files into a single round csv file comprising metrics for all the configuration, as shown in Table \ref{tbl:round-file-example}.
 
 \begin{table}[H]
@@ -1149,7 +1153,7 @@ Since with the Executor module each experiment is run in a separate context, a m
   }
 \end{table}
 
-\paragraph{Generating autmated reports}
+\paragraph{Generating automated reports}
 
 Starting from these round files, the module \textbf{generate-report} is able to produce three distinct valuable deliverables.
 For each metric it creates a plot showing the value of the metric over time (= over rounds) for each configuration variant.
@@ -1163,7 +1167,7 @@ Summing all the leaderboard created for each metric, \textit{generate-report} cr
 Each leaderboard get plotted in a separated file for the sake of comparison.
 
 An example is shown in Figure \ref{fig:generate-report-leaderboards}.
-While a leaderboard system isn't exaustive in evaluating the relative goodness of those configurations, it gives a quick insight of the results.
+While a leaderboard system isn't exhaustive in evaluating the relative goodness of those configurations, it gives a quick insight of the results.
 It is however important to inspect the other deliverables to ensure that an advantage in terms of points is reflecting a clear superiority in terms of metrics.
 Otherwise, a slight metric difference would lead to an unfair advantage.
 
