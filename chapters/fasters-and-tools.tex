@@ -1,6 +1,7 @@
-\chapter{Fasteners and Tools}
+\chapter{The Extended SUMO-RL Framework}
 
-This chapter showcases and explains the architecture of the extended reinforcement learning framework \textit{SUMO-RL}, along with its components, tools and algorithms.
+This chapter introduces the SUMO-RL framework fork that has been developed to address the research questions.
+SUMO-RL comprises a Core for running simulations and a toolchain for executing automated experiments and analyzing the results.
 
 \section{The Core}
 
@@ -51,43 +52,90 @@ It also keep a map \textit{yellow-dict} of transitions which can be indexed by a
 Before running each simulation the environment should be reset through the \textit{reset()} method.
 Every time it is reset, it reloads SUMO with the previously selected scenario, the selected routes file and the input seed (important for ensuring that a performed simulation is replicable).
 At each iteration of a simulation, the agents are fed with the observations granted from the Environment and their actions are collected and fed in the Environment with its \textit{step()} method.
-Afterwards, some other methods can be called depending of what data is needed. At least \textit{gather\_data\_from\_sumo()} and {compute\_observations()} are needed for running a simulation but using also \textit{compute\_rewards()} allows agents to learn and the researcher to investigate results.
+Afterwards, some other methods can be called depending of what data is needed. At least \textit{gather\_data\_from\_sumo()} and {compute\_observations()} are needed for running a simulation but using also \textit{compute\_rewards()} allows agents to learn and the researcher to investigate results. The \textit{gather\_data\_from\_sumo()} method essentially queries SUMO for data concerning vehicles and lanes so that it can extract the metrics enumated in Tables \ref{tbl:gather-data-from-sumo-vehicle-metrics} and \ref{tbl:gather-data-from-sumo-lane-metrics}.
 
-\begin{itemize}
-  \item the \textit{gather\_data\_from\_sumo()} method essentially queries SUMO for data concerning vehicles and lanes. For each vehicle the following metrics are extracted:
-  \begin{itemize}
-    \item \textit{awt}: Accumulated Waiting Time is the amount of time of the last $1000$ seconds that a vehicle has spent being at full-stop.
-  \end{itemize}
-  For each lane, the following data are extracted:
-  \begin{itemize}
-      \item \textit{lsvn}: LastStepVehicleNumber is the number of vehicles present in the lane in the last step of the simulation.
-      \item \textit{lshn}: LastStepHaltingNumber is the number of full-stop vehicles in the lane in the last step of the simulation.
-      \item \textit{lsms}: LastSteoMeanSpeed is the average speed of vehicles in the lane in the last step of the simulation.
-      \item \textit{lso}: LastStepOccupancy is the occupancy level in the lane in the last step of the simulation.
-      \item \textit{lswt}: LastStepWaitingTime is the average waiting time of vehicles in the lane in the last step of the simulation.
-      \item \textit{vehs}: LastStepVehicleIDs is the list of vehicles present in the lane in the last step of the simulation.
-      \item \textit{mawt}: the MeanAccumulatedWaitingTime is computed by averaging accumulated waiting times of vehicles in a lane.
-      \item \textit{tawt}: the TotalAccumulatedWaitingTime is computed by summing accumulated waiting times of vehicles in a lane.
-  \end{itemize}
-  \item the \textit{compute\_observations()} method construct observations for each traffic light with the selected ObservationFunction and stores them inside an Environment field.
-  \item the \textit{compute\_rewards()} method constructs the rewards using the selected RewardFunction and stores them inside an Environment field.
-  \item the \textit{compute\_metrics()} method computes the following metrics:
-  \begin{itemize}
-    \item \textit{step}: the current simulation step
-    \item \textit{total\_running}: the number of vehicles which speed is not zero.
-    \item \textit{total\_backlogged}: the number of vehicles which are enqueued and waiting to enter the simulation.
-    \item \textit{total\_stopped}: the number of vehicles at full-stop.
-    \item \textit{total\_arrived}: the number of vehicles which have arrived at their destination in the last step.
-    \item \textit{total\_departed}: the number of vehicles which have departed in the last step (this is the same as \textit{entering the simulation}).
-    \item \textit{total\_waiting\_time}: the sum of waiting time of all lanes.
-    \item \textit{mean\_waiting\_time}: the mean of waiting time of all lanes.
-    \item \textit{total\_accumulated\_waiting\_time}: the sum of accumulated waiting time of all lanes.
-    \item \textit{mean\_accumulated\_waiting\_time}: the mean of accumulated waiting time of all lanes.
-    \item \textit{mean\_speed}: the average of speed of all lanes.
-    \item \textit{total\_reward}: the total of rewards released by the environment in the last step.
-  \end{itemize}
-  These are written to CSV files and can be analyzed to compute the performance of models as well as evaluating their fairness with respect of directions. This last option is available by setting to True a parameter called \textit{advanced\_metrics} which enables tracking the aforementioned metrics for each direction of the network (each pair of origin-destination inside the network).
-\end{itemize}
+\begin{table}[H]
+  \captionof{table}{Summary of Vehicle metrics collected by gather\_data\_from\_sumo().}
+  \label{tbl:gather-data-from-sumo-vehicle-metrics}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|c|l|}
+      \hline
+      \textbf{ID}  & \textbf{Description} \\
+      \hline
+      awt & Accumulated Waiting Time is the amount of time of the last $1000$ seconds that a vehicle has spent being at full-stop. \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+\begin{table}[H]
+  \captionof{table}{Summary of Lane metrics collected by gather\_data\_from\_sumo().}
+  \label{tbl:gather-data-from-sumo-lane-metrics}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|}
+      \hline
+      \textbf{ID}    & \textbf{Description} \\
+      \hline
+      lsvn  & LastStepVehicleNumber is the number of vehicles present in the lane in the last step of the simulation. \\
+      \hline
+      lshn  & LastStepHaltingNumber is the number of full-stop vehicles in the lane in the last step of the simulation. \\
+      \hline
+      lsms  & LastSteoMeanSpeed is the average speed of vehicles in the lane in the last step of the simulation. \\
+      \hline
+      lso   & LastStepOccupancy is the occupancy level in the lane in the last step of the simulation. \\
+      \hline
+      lswt  & LastStepWaitingTime is the average waiting time of vehicles in the lane in the last step of the simulation. \\
+      \hline
+      vehs  & LastStepVehicleIDs is the list of vehicles present in the lane in the last step of the simulation. \\
+      \hline
+      mawt  & the MeanAccumulatedWaitingTime is computed by averaging accumulated waiting times of vehicles in a lane. \\
+      \hline
+      tawt  & the TotalAccumulatedWaitingTime is computed by summing accumulated waiting times of vehicles in a lane. \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
+The \textit{compute\_observations()} method construct observations for each traffic light with the selected ObservationFunction and stores them inside an Environment field.
+The \textit{compute\_rewards()} method constructs the rewards using the selected RewardFunction and stores them inside an Environment field.
+The \textit{compute\_metrics()} method computes another set of metrics which are written to CSV files and can be analyzed to compute the performance of models as well as evaluating their fairness with respect of directions. This last option is available by setting to True a parameter called \textit{advanced\_metrics} which enables tracking the aforementioned metrics for each direction of the network (each pair of origin-destination inside the network).
+This last set of metrics is enumerated in Table \ref{tbl:compute-metrics}.
+
+\begin{table}[H]
+  \captionof{table}{Summary of metrics collected by compute\_metrics().}
+  \label{tbl:compute-metrics}
+  \resizebox{\linewidth}{!}{
+    \begin{tabular}{|l|l|}
+      \hline
+      \textbf{ID}                                 & \textbf{Description} \\
+      \hline
+      step                               & the current simulation step \\
+      \hline
+      total\_running                     & the number of vehicles which speed is not zero. \\
+      \hline
+      total\_backlogged                  & the number of vehicles which are enqueued and waiting to enter the simulation. \\
+      \hline
+      total\_stopped                     & the number of vehicles at full-stop. \\
+      \hline
+      total\_arrived                     & the number of vehicles which have arrived at their destination in the last step. \\
+      \hline
+      total\_departed                    & the number of vehicles which have departed in the last step (this is the same as \textit{entering the simulation}). \\
+      \hline
+      total\_waiting\_time               & the sum of waiting time of all lanes. \\
+      \hline
+      mean\_waiting\_time                & the mean of waiting time of all lanes. \\
+      \hline
+      total\_accumulated\_waiting\_time  & the sum of accumulated waiting time of all lanes. \\
+      \hline
+      mean\_accumulated\_waiting\_time   & the mean of accumulated waiting time of all lanes. \\
+      \hline
+      mean\_speed                        & the average of speed of all lanes. \\
+      \hline
+      total\_reward                      & the total of rewards released by the environment in the last step. \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
 
 \subsection{The Observation Functions}
 
@@ -113,7 +161,7 @@ The reason behind the choice of using the Density ("d") observation function as 
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|c|}
       \hline
-      Name & ID & Description & Formula \\
+      \textbf{Name} & \textbf{ID} & \textbf{Description} & \textbf{Formula} \\
       \hline
       Current Phase Encoding     & \textbf{CPE} & \makecell[l]{the current traffic light phase ($CP$) encoded as one-hot vector.} &
       \makecell{$
@@ -165,9 +213,9 @@ The reason behind the choice of using the Density ("d") observation function as 
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|}
       \hline
-      ID & \multicolumn{5}{|c|}{Itself} & \multicolumn{5}{|c|}{Neighborhood} & State Space Shape \\
+      \textbf{ID} & \multicolumn{5}{|c|}{\textbf{Itself}} & \multicolumn{5}{|c|}{\textbf{Neighborhood}} & \textbf{State Space Shape} \\
       \hline
-      & CPE & MGR & LSP & LOC & LQP & CPE & MGR & LSP & LOC & LQP & \\
+      & \textbf{CPE} & \textbf{MGR} & \textbf{LSP} & \textbf{LOC} & \textbf{LQP} & \textbf{CPE} & \textbf{MGR} & \textbf{LSP} & \textbf{LOC} & \textbf{LQP} & \\
       \hline
       default & \FilledCircle & \FilledCircle & \FilledCircle & \FilledCircle & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & ${[0,1]} ^ {log _ 2 {N} + 1 + 3 \cdot M}$ \\
       \hline
@@ -223,7 +271,7 @@ The reason behind the choice of using the DiffWaitingTime ("dwt") reward functio
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|c|}
       \hline
-      Name & ID & Description & Formula \\
+      \textbf{Name} & \textbf{ID} & \textbf{Description} & \textbf{Formula} \\
       \hline
       Diff Accumulated Waiting Time  & \textbf{DWT} & \makecell[l]{the difference between the total accumulated waiting time ($TAWT$) \\
                                                                    of vehicles in its input lanes in the previous time step and the TAWT \\
@@ -263,9 +311,9 @@ The reason behind the choice of using the DiffWaitingTime ("dwt") reward functio
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
       \hline
-      ID & \multicolumn{5}{|c|}{Itself} & \multicolumn{5}{|c|}{Neighborhood} \\
+      \textbf{ID} & \multicolumn{5}{|c|}{\textbf{Itself}} & \multicolumn{5}{|c|}{\textbf{Neighborhood}} \\
       \hline
-      & DWT & SPD & QLE & DQL & PRE & DWT & SPD & QLE & DQL & PRE \\
+      & \textbf{DWT} & \textbf{SPD} & \textbf{QLE} & \textbf{DQL} & \textbf{PRE} & \textbf{DWT} & \textbf{SPD} & \textbf{QLE} & \textbf{DQL} & \textbf{PRE} \\
       \hline
       dwt   & \FilledCircle & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  & \EmptyCircle  \\
       \hline
@@ -309,9 +357,9 @@ Table \ref{tbl:agents} shows a summary of all implemented agents.
   \captionof{table}{Summary of implemented agents}
   \label{tbl:agents}
   \resizebox{\linewidth}{!}{
-    \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+    \begin{tabular}{|l|l|c|l|l|l|c|c|c|}
       \hline
-      ID      & Agent Type  & Cycle Time & Learning Algorithm           & Learning Method & Learning Policy & NN Size & Buffer Size & $\epsilon$-Greedy \\
+      \textbf{ID}      & \textbf{Agent Type}  & \textbf{Cycle Time} & \textbf{Learning Algorithm}           & \textbf{Learning Method} & \textbf{Learning Policy} & \textbf{NN Size} & \textbf{Buffer Size} & \textbf{$\epsilon$-Greedy} \\
       \hline
       fixed15 & Fixed Cycle & 15 secs    & \xmark                       & \xmark          & \xmark          & \xmark  & \xmark      & \xmark \\
       \hline
@@ -378,7 +426,7 @@ If this convention is used to infer the number of lanes, the extracted road netw
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      Field & Description                                                & Notes \\
+      \textbf{Field} & \textbf{Description}                                                & \textbf{Notes} \\
       N     & Each node in the graph is identified by a unique numeric ID &       \\
       X     & Longitude coordinate in Gauss-Boaga (m) format             &       \\
       Y     & Latitude coordinate in Gauss-Boaga (m) format              &       \\
@@ -393,7 +441,7 @@ If this convention is used to infer the number of lanes, the extracted road netw
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      Field     & Description                                                      & Notes                                                                               \\
+      \textbf{Field}     & \textbf{Description}                                                      & \textbf{Notes}                                                                               \\
       \hline
       ID        & Each edge in the graph is also identified by a unique numeric ID &                                                                                     \\
       \hline
@@ -421,7 +469,7 @@ If this convention is used to infer the number of lanes, the extracted road netw
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      Field   & Description                                                & Notes                                             \\
+      \textbf{Field}   & \textbf{Description}                                                & \textbf{Notes}                                             \\
       \hline
       A       & Source node of the incoming edge (A-B)                     &                                                   \\
       \hline
@@ -454,7 +502,7 @@ Moreover, simulation engines like SUMO and CityFlow usually require TAZs to spec
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|c|c|l|}
       \hline
-      Time Range    & Expansion Coefficient & Identified Phase \\
+      \textbf{Time Range}    & \textbf{Expansion Coefficient} & \textbf{Identified Phase} \\
       \hline
       07:00 - 10:00 & 2.33                  & Morning peak     \\
       \hline
@@ -472,7 +520,7 @@ Moreover, simulation engines like SUMO and CityFlow usually require TAZs to spec
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      Field     & Description                & Notes                                                                                                 \\
+      \textbf{Field}     & \textbf{Description}                & \textbf{Notes}                                                                                                 \\
       \hline
       orig\_urb  & Source zone                & Valid IDs are found in the Zones file                                                                 \\
       \hline
@@ -733,22 +781,16 @@ This module can generate traffic configuration using \textit{four} base types as
 In particular, each of those traffic bricks has a duration which will be referred to as \textit{block time} and the combination of more traffic bricks has the sum of their durations as block time.
 
 The \textit{Random} type is generated by dividing the block time into time slots of fixed size in which each direction has a binomial probability of appearing ($p=0.7$).
-
 With the \textit{Stable} type, the traffic level on each direction doesn't changes significantly during the block time.
-
 The \textit{Unstable} types divides the block time into time slots of dixed size in which traffic in side directions may appear ($p=0.7$).
-
 Finally, the \textit{Transition} type concatenates multiple traffic types $T_1, T_2, ... T_n$ into a single block time in which traffic changes between those types every $k$ seconds. In particular, if the block time is $BT$ and the number of input traffic types is $N$, then each child traffic type is assigned $\frac {BT} {N}$ seconds.
 
 In addition to this classification, other options are employed to customize the traffic configuration.
 The traffic types are summarized in Table \ref{tbl:traffic-types} along with the options they support.
 
 The option \textit{Symmetry} decides if a direction and its opposite have to receive the same traffic load. Its values are Symmetric/Asymmetric.
-
 The option \textit{Density} decides whether to generate traffic only on declared axis or also in all other directions. Its values are Axial/Dense.
-
 The option \textit{Direction} decides which of the two direction (direct and inverted one) will receive more traffic (double the amount) if $Symmetry \; = \; Asymmetric$. Its values are Direct/Inverse.
-
 The option \textit{TrafficLevel} defines the traffic level as a decimal value representing the percentage of vehicles to be generated in a flow with respect to the ideal capacity of a road.
 If \textit{Density} is available then \textit{TrafficLevel} is expressed as a dictionary $\circledvee \; : \; \{M, S\} \times \{M, S\} \rightarrow [0, 1]$, where M/S are Main/Side nodes, otherwise as a single $\circledwedge \; : \; [0,1]$ value.
 The possible values are Zero (0.0), Low (0.05), Medium (0.2), High (0.5), Very High (0.8), Ridiculous (1.0)
@@ -759,7 +801,7 @@ The possible values are Zero (0.0), Low (0.05), Medium (0.2), High (0.5), Very H
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|c|c|c|c|}
       \hline
-      ID         & Description                                                  & Symmetry & Density & Direction & TrafficLevel   \\
+      \textbf{ID}         & \textbf{Description}                                                  & \textbf{Symmetry} & \textbf{Density} & \textbf{Direction} & \textbf{TrafficLevel}   \\
       \hline
       Random     & Random traffic in all directions                             & \cmark   & \xmark  & \cmark    & \CoarseGrained \\
       \hline
@@ -793,7 +835,7 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-norm
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      ID    & Description                                             & Classification \\
+      \textbf{ID}    & \textbf{Description}                                             & \textbf{Classification} \\
       \hline
       N1    & Weekday/holiday traffic during off-peak hours           & Random Symmetric Low \\
       \hline
@@ -839,7 +881,7 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-rail
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      ID      & Description                                                                & Classification \\
+      \textbf{ID}      & \textbf{Description}                                                                & \textbf{Classification} \\
       \hline
       ST1     & Weekday traffic during off-peak hours on train strike days                 & Random Symmetric Medium \\
       \hline
@@ -873,7 +915,7 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-publ
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
       \hline
-      ID          & Description                                                                                     & Classification \\
+      \textbf{ID}          & \textbf{Description}                                                                                     & \textbf{Classification} \\
       \hline
       STPL1       & Weekday traffic during off-peak hours on days of local public transit strikes                 & Random Symmetric Medium \\
       \hline
@@ -906,7 +948,7 @@ The components of this traffic set are listed in Table \ref{tbl:traffic-set-tram
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|l|l|l|}
     \hline
-    ID      & Description                                                                               & Classification \\
+    \textbf{ID}      & \textbf{Description}                                                                               & \textbf{Classification} \\
     \hline
     CT1     & Weekday/holiday traffic during off-peak hours on days with tram construction              & Unstable Symmetric Dense <Low,Low,Low,Low> \\
     \hline
@@ -1011,7 +1053,7 @@ These are the same metrics that have been presented in the previos section.
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
       \hline
-      Step & TR & TB & TS & TA & TD & TT & TWT & MWT & TAWT & MAWT & MS & TR \\
+      \textbf{Step} & \textbf{TR} & \textbf{TB} & \textbf{TS} & \textbf{TA} & \textbf{TD} & \textbf{TT} & \textbf{TWT} & \textbf{MWT} & \textbf{TAWT} & \textbf{MAWT} & \textbf{MS} & \textbf{TR} \\
       \hline
       0.0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.0 & 0 & 0.0 & 0 & 11.568 & 0.0 \\
       \hline
@@ -1091,7 +1133,7 @@ Since with the Executor module each experiment is run in a separate context, a m
   \resizebox{\linewidth}{!}{
     \begin{tabular}{|c|c|c|c|c|c|}
       \hline
-      ID & AWT max & AWT mean & AWT min & AWT var & ... \\
+      \textbf{ID} & \textbf{AWT max} & \textbf{AWT mean} & \textbf{AWT min} & \textbf{AWT var} & ... \\
       \hline
       a & 913.785 & 205.417 & 0.0 & 19569.804 & ... \\
       \hline
