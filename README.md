@@ -51,85 +51,66 @@
       - [x] Incremental learning
       - [x] Curriculum learning
       - [x] Simulated learning
-- [ ] Fasteners and tools
-  - [ ] The Core
-    - [ ] The Architecture
-    - [ ] The Environment
-    - [ ] The Observation Functions
-      - [ ] ObservationFunction
-      - [ ] DefaultObservationFunction
-      - [ ] DensityObservationFunction
-      - [ ] QueueObservationFunction
-      - [ ] SpeedObservationFunction
-      - [ ] PhaseObservationFunction
-      - [ ] SharedVisionObservationFunction
-    - [ ] The Reward Functions
-      - [ ] RewardFunction
-      - [ ] AverageSpeedRewardFunction
-      - [ ] DiffWaitingTimeRewardFunction
-      - [ ] PressureRewardFunction
-      - [ ] QueueLengthRewardFunction
-      - [ ] DiffQueueLengthRewardFunction
-      - [ ] MixedRewardFunction
-      - [ ] SharedVisionRewardFunction
-    - [ ] The Agents
-      - [ ] Agent
-      - [ ] Learning Agents
-        - [ ] SARSAAgent
-        - [ ] QLAgent
-        - [ ] DQLAgent
-        - [ ] DQNAgent
-        - [ ] PPOAgent
-      - [ ] Fixed Cycle Agents
-        - [ ] FixedCycleAgent
-        - [ ] Fixed15
-        - [ ] Fixed30
-        - [ ] Fixed45
-        - [ ] Fixed60
-  - [ ] The Tools
-    - [ ] Importing from external sources
-      - [ ] amma2cityflow
-      - [ ] amma2sumo
-      - [ ] cityflow2sumo
-    - [ ] Generating topologies
-      - [ ] generate-topology
-    - [ ] Generating traffic
-      - [ ] flows
-      - [ ] generate-flows
-      - [ ] generate-datasets
-    - [ ] Executing experiments
-      - [ ] executor
-    - [ ] Extracting metrics
-      - [ ] extract-directional-metrics
-      - [ ] extract-global-metrics
-    - [ ] Plotting metrics
-      - [ ] plot-global-metrics
-      - [ ] plot-smoothed-metrics
-      - [ ] plot-directional-metrics
-    - [ ] Comparing metrics
-      - [ ] merge-experiments
-      - [ ] compare-global-metrics
-      - [ ] compare-directional-metrics
-    - [ ] Generating reports
-      - [ ] generate-report
+- [x] The Extended SUMO-RL Framework
+  - [x] The Core
+    - [x] The Architecture
+    - [x] The Environment
+      - [x] Loading the scenario
+      - [x] Acquiring traffic light phases
+      - [x] Running the simulation
+    - [x] The Observation Functions
+    - [x] The Reward Functions
+    - [x] The Agents
+    - [x] A Self-Adaptive algorithm
+  - [x] The Tools
+    - [x] Importing from external sources
+      - [x] The AMAT format
+      - [x] The CityFlow format
+      - [x] The SUMO format
+      - [x] The converters
+    - [x] Generating traffic
+      - [x] Computing network capacity
+      - [x] The traffic types
+      - [x] The traffic registry
+        - [x] Normal
+        - [x] Railway Strike
+        - [x] Public Transit Strike
+        - [x] Tramway Roadworks
+      - [x] The traffic specifier
+        - [x] $2,\pounds,N1,N2,N1,N3,N1$
+        - [x] $1,400000,\pounds,*,\sim$
+      - [x] Generating datasets
+    - [x] Executing experiments
+    - [x] Analyzing experiment runs
+      - [x] The raw material
+      - [x] Extracting metrics
+      - [x] Comparing configurations
+      - [x] Generating automated reports
+      - [x] Visualizing raw metrics
 - [ ] Experiments and findings
-  - [ ] Q0: Acquire a baseline
+  - [ ] RQ 0 - Acquiring a baseline
     - [ ] E0: Find Best Reward Function
     - [ ] E1: Find Best Observation Function
-  - [ ] Q1: Curriculum vs Frankestein
+  - [ ] RQ 1 - Curriculum vs Monolithic Learning
     - [ ] E2: Find The Best Dataset
-  - [ ] Q2: Find the best agent model
+  - [ ] RQ 2 - Deep vs Tabular Learning
     - [ ] E3A: Find The Best Tabular Agent
     - [ ] E3B: Find The Best Deep Agent
+  - [ ] RQ 3 - RL vs Fixed vs Priority
     - [ ] E3C: Find The Best Fixed Agent
     - [ ] E7: Try Unattended
-    - [ ] E8: Try Unquantized
-  - [ ] Q3: Self-Adaptive
-    - [ ] E4: Try Self Adaptive
-  - [ ] Q4: Single Agent vs Multi Agent
+  - [ ] RQ 4 - Determinism Sensitivity
+    - [ ] E11: Explore determinism (DQL)
+    - [ ] E12: Explore determinism (PPO)
+  - [ ] RQ 5 - Quantization Sensitivity
+    - [ ] E8: Try Unquantized (DQL)
+    - [ ] E9: Try Unquantized (PPO)
+  - [ ] RQ 6 - Multi-Agent vs Single-Agent Learning
     - [ ] E5: Try Marl On Observation
     - [ ] E6: Try Marl On Reward
-    - [ ] E9: Try Partition
+    - [ ] E10: Try Partition
+  - [ ] RQ 7 - Static vs Self-Adaptive System
+    - [ ] E4: Try Self Adaptive
 - [ ] Threats to Validity
   - [ ] Internal threats
     - [ ] Simplistic simulation model
