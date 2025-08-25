@@ -1,32 +1,101 @@
 \chapter{Experiments and findings}
 
-\section{RQ 0 - Acquiring a baseline}
-  \subsection{E0: Find Best Reward Function}
-  \subsection{E1: Find Best Observation Function}
+\section{RO 0 - Acquiring a baseline}
+  
+  Before even evaluating novel approaches in Reinforcement Learning it is useful to investigate which are the best base settings. This involves finding the best Reward function and the best Observation function among the implemented set of functions. To optimize these two hyperparameters, two distinct experiments have been performed in parallel, each one comparing the various implemented functions.
 
-\section{RQ 1 - Curriculum vs Monolithic Learning}
-  \subsection{E2: Find The Best Dataset}
+  The QLAgent has been trained for $400k$ virtual seconds with a \textbf{monolithic} dataset containing each one of the entries of the Traffic Registry. It is then evaluated for another $400k$ virtual seconds using an evaluation dataset composed of four possible everyday scenarios comprising both low traffic and high congestions. From a technical standpoint, this complete dataset has been generated with the following schema using the \textit{generate-flow/dataset} utility:
 
-\section{RQ 2 - Deep vs Tabular Learning}
-  \subsection{E3A: Find The Best Tabular Agent}
-  \subsection{E3B: Find The Best Deep Agent}
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=JSON, caption=The schema for the "Monolithic" Dataset, label={lst:dataset-schema-monolithic}, mathescape=true]
+"training": [
+  "4,100000,$\pounds$,*,$\sim$"
+], "evaluation": [
+  "1,\pounds,N1,N2,N1,N3,N1",
+  "1,\pounds,N1,N4,N1,N5,N1",
+  "1,\pounds,N1,STPL2,N1,STPL3,N1",
+  "1,\pounds,N1,CT2,N1,CT3,N1"
+]
+\end{lstlisting}
+\end{minipage}
 
-\section{RQ 3 - RL vs Fixed vs Priority}
-  \subsection{E3C: Find The Best Fixed Agent}
-  \subsection{E7: Try Unattended}
+\subsection{The best Reward function}
 
-\section{RQ 4 - Determinism Sensitivity}
-  \subsection{E11: Explore determinism (DQL)}
-  \subsection{E12: Explore determinism (PPO)}
+Each of the basic reward functions (\textit{dwt, as, ql, dql, p}) have been used to train an agent with the same dataset and seeds.
+These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
 
-\section{RQ 5 - Quantization Sensitivity}
-  \subsection{E8: Try Unquantized (DQL)}
-  \subsection{E9: Try Unquantized (PPO)}
+In the following plots are displayed the values for the main performance metrics with a data point for each on of the five runs: the Accumulated Waiting Time (Figure \ref{fig:dwt-leads-to-lower-awt}), the Waiting Time (Figure \ref{fig:dwt-leads-to-lower-wt}), the Average Speed (Figure \ref{fig:dwt-leads-to-higher-as}), the Arrival Rate (Figure \ref{fig:dwt-leads-to-higher-ar}), the Departure Rate (Figure \ref{fig:dwt-leads-to-higher-dr}).
+As can be seen, the \textit{DiffWaitingTime} (dwt) reward function excels among the other because it grants lower (accumulated) waiting times and is among the highest for average speed, departure rate and arrival rate.
+Meaning that more vehicles can use the intersection network, they can arrive faster at destination and have to wait less time.
 
-\section{RQ 6 - Multi-Agent vs Single-Agent Learning}
-  \subsection{E5: Try Marl On Observation}
-  \subsection{E6: Try Marl On Reward}
-  \subsection{E10: Try Partition}
+\putimage{figures/exp/dwt-leads-to-lower-awt.png}{The DiffWaitingTime reward function leads to lower average accumulated waiting times.}{fig:dwt-leads-to-lower-awt}{0.75}
+\putimage{figures/exp/dwt-leads-to-lower-wt.png}{The DiffWaitingTime reward function leads to lower average waiting times.}{fig:dwt-leads-to-lower-wt}{0.75}
+\putimage{figures/exp/dwt-leads-to-higher-as.png}{The DiffWaitingTime reward function leads to higher average speed.}{fig:dwt-leads-to-higher-as}{0.75}
+\putimage{figures/exp/dwt-leads-to-higher-ar.png}{The DiffWaitingTime reward function leads to higher average arrival rate.}{fig:dwt-leads-to-higher-ar}{0.75}
+\putimage{figures/exp/dwt-leads-to-higher-dr.png}{The DiffWaitingTime reward function leads to higher average departure rate.}{fig:dwt-leads-to-higher-dr}{0.75}
 
-\section{RQ 7 - Static vs Self-Adaptive System}
-  \subsection{E4: Try Self Adaptive}
+In the above graphs the AverageSpeed (as) reward function is missing, but for a good reason.
+As can be seen in the last two images, AverageSpeed grants a higher average speed (Figure \ref{fig:as-leads-to-higher-as}) but leads to a way worse accumulated waiting time (Figure \ref{fig:as-leads-to-higher-awt}), meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
+Since its performance are notably worse, to increase the readibility of the plots, this component has been removed.
+
+\putimage{figures/exp/as-leads-to-higher-as.png}{The AverageSpeed reward function leads to higher average speeds.}{fig:as-leads-to-higher-as}{0.75}
+\putimage{figures/exp/as-leads-to-higher-awt.png}{The AverageSpeed reward function leads to higher average accumulated waiting times.}{fig:as-leads-to-higher-awt}{0.75}
+
+\subsection{The best Observation function}
+
+Each of the basic observation functions (\textit{default, s, d, q}) have been used to train an agent with the same dataset and seeds. These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
+
+In the following plots are displayed the values for the main performance metrics with a data point for each on of the five runs: the Accumulated Waiting Time (Figure \ref{fig:d-leads-to-lower-awt}), the Waiting Time (Figure \ref{fig:d-leads-to-lower-wt}), the Average Speed (Figure \ref{fig:d-leads-to-higher-as}), the Arrival Rate (Figure \ref{fig:d-leads-to-higher-ar}), the Departure Rate (Figure \ref{fig:d-leads-to-higher-dr}).
+As can be seen, the \textit{Density} (d) observation function excels among the other because it grants lower accumulated waiting times and is among the highest for average speed, departure rate and arrival rate.
+The only metric in which seems to be worse than the alternatives is the mean waiting time: vehicles are waiting in average $\sim2$ seconds more at full-stop.
+This however doesn't hold for the accumulate waiting time.
+This means that drivers may feel to be waiting less but in average their travel time is higher by $\sim10$ seconds.
+Both the metric are important to evaluate how much a driver get stuck in traffic jams, since a lower waiting time score may means an higher frequency acceleration-deceleration cycles.
+Every time that a vehicle moves, the waiting time metric get zeroed, since it only measures how much time a driver has been standing still in a precise moment in time.
+
+\putimage{figures/exp/d-leads-to-lower-awt.png}{The Density observation function leads to lower average accumulated waiting times.}{fig:d-leads-to-lower-awt}{0.75}
+\putimage{figures/exp/d-leads-to-lower-wt.png}{The Density observation function leads to lower average waiting times.}{fig:d-leads-to-lower-wt}{0.75}
+\putimage{figures/exp/d-leads-to-lower-as.png}{The Density observation function leads to lower average speed.}{fig:d-leads-to-lower-as}{0.75}
+\putimage{figures/exp/d-leads-to-higher-ar.png}{The Density observation function leads to higher average arrival rate.}{fig:d-leads-to-higher-ar}{0.75}
+\putimage{figures/exp/d-leads-to-higher-dr.png}{The Density observation function leads to higher average departure rate.}{fig:d-leads-to-higher-dr}{0.75}
+
+In the above graphs the Default observation function is missing, but for a good reason.
+As can be seen in the last two images, Default grants a higher average speed (Figure \ref{fig:default-leads-to-higher-as}) but leads to a way worse accumulated waiting time (Figure \ref{fig:default-leads-to-higher-awt}), meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
+Since its performance are notably worse, to increase the readibility of the plots, this component has been removed.
+A possible reason to explain this phenomenon is the fact that the state space size of the Default function is way bigger than the rest, thus increasing the sparsity of state information and making it more difficult to capture relevant features.
+
+\putimage{figures/exp/default-leads-to-higher-as.png}{The Default observation function leads to higher average speeds.}{fig:default-leads-to-higher-as}{0.75}
+\putimage{figures/exp/default-leads-to-higher-awt.png}{The Default observation function leads to higher average accumulated waiting times.}{fig:default-leads-to-higher-awt}{0.75}
+
+\subsection{Results}
+
+Using the \textit{DiffWaitingTime} reward function in combination with the \textit{Density} observation function allows to reach a good compromise between average vehicle speed and waiting times.
+Notably, every \textit{"winning"} option is the one with the slower average speed, but even the lowest value ($\sim9$) is similar or higher than the average speed in the major metropolitan areas ($\sim 6 m/s \; = \; 20 km/h$).
+
+% \section{RO 1 - Curriculum vs Monolithic Learning}
+%   \subsection{E2: Find The Best Dataset}
+% 
+% \section{RO 2 - Deep vs Tabular Learning}
+%   \subsection{E3A: Find The Best Tabular Agent}
+%   \subsection{E3B: Find The Best Deep Agent}
+% 
+% \section{RO 3 - RL vs Fixed vs Priority}
+%   \subsection{E3C: Find The Best Fixed Agent}
+%   \subsection{E7: Try Unattended}
+% 
+% \section{RO 4 - Determinism Sensitivity}
+%   \subsection{E11: Explore determinism (DQL)}
+%   \subsection{E12: Explore determinism (PPO)}
+% 
+% \section{RO 5 - Quantization Sensitivity}
+%   \subsection{E8: Try Unquantized (DQL)}
+%   \subsection{E9: Try Unquantized (PPO)}
+% 
+% \section{RO 6 - Multi-Agent vs Single-Agent Learning}
+%   \subsection{E5: Try Marl On Observation}
+%   \subsection{E6: Try Marl On Reward}
+%   \subsection{E10: Try Partition}
+% 
+% \section{RO 7 - Static vs Self-Adaptive System}
+%   \subsection{E4: Try Self Adaptive}
