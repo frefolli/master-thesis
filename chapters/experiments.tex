@@ -119,6 +119,21 @@ Their schemas are reported in Listings \ref{lst:dataset-schema-curriculum-daily}
 \end{lstlisting}
 \end{minipage}
 
+Experiment results show that the \textbf{Curriculum Daily + Disruption} dataset grants a lower average (accumulated) waiting time (Figures \ref{fig:cdd-leads-to-lower-awt} and \ref{fig:cdd-leads-to-lower-wt}) while increasing the throughput with higher arrival/departure rates (Figures \ref{fig:cdd-leads-to-higher-ar} and \ref{fig:cdd-leads-to-higher-dr}), all at the cost of a lower average vehicle speed (Figure \ref{fig:cdd-leads-to-lower-as}). Moreover, the performances of this dataset are more stable than the ones of the \textbf{Curriculum Daily} dataset and of the \textbf{Monolithic} dataset.
+
+Collected data supports the hypothesis that \textit{Curriculum Daily + Disruption} dataset balances the best of both other datasets.
+The stability and easiness from the \textit{Curriculum Daily} dataset allows agent to incrementally learn without being permanently drown in negative rewards.
+On the other hand, the presence of disruptions as in the \textit{Monolithic} dataset allows the agent to learn to adapt to tough traffic conditions.
+Notably, the peak-hour disruptions supplied in the \textit{Curriculum Daily + Disruption} are the low-to-medium volume variants of their type.
+This means that a curriculum learning driven dataset allows the agents to generalize more and learn a policy of higher quality (with respect to performance and stability) than a collage-like monolithic dataset.
+As a consequence, real-world daily traffic data can be used for training without regret (with the assumption that disruptions often happen on a daily basis).
+
+\putimage{figures/exp/cdd-leads-to-lower-awt.png}{The "Curriculum Daily + Disruption" dataset leads to lower average accumulated waiting times.}{fig:cdd-leads-to-lower-awt}{0.75}
+\putimage{figures/exp/cdd-leads-to-lower-wt.png}{The "Curriculum Daily + Disruption" dataset leads to lower average waiting times.}{fig:cdd-leads-to-lower-wt}{0.75}
+\putimage{figures/exp/cdd-leads-to-lower-as.png}{The "Curriculum Daily + Disruption" dataset leads to lower average speed.}{fig:cdd-leads-to-lower-as}{0.75}
+\putimage{figures/exp/cdd-leads-to-higher-ar.png}{The "Curriculum Daily + Disruption" dataset leads to higher average arrival rate.}{fig:cdd-leads-to-higher-ar}{0.75}
+\putimage{figures/exp/cdd-leads-to-higher-dr.png}{The "Curriculum Daily + Disruption" dataset leads to higher average departure rate.}{fig:cdd-leads-to-higher-dr}{0.75}
+
 % Does curriculum learning leads to better running performances?
 % Is there a loss of knowledge due to curriculum learning not being exhaustive?
 % What is the impact of adding disruption episodes in the training set?
