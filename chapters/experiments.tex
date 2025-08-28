@@ -26,38 +26,36 @@
 Each of the basic reward functions (\textit{dwt, as, ql, dql, p}) have been used to train an agent with the same dataset and seeds.
 These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
 
-In the following plots are displayed the values for the main performance metrics with a data point for each on of the five runs: the Accumulated Waiting Time (Figure \ref{fig:dwt-leads-to-lower-awt}), the Waiting Time (Figure \ref{fig:dwt-leads-to-lower-wt}), the Average Speed (Figure \ref{fig:dwt-leads-to-higher-as}), the Arrival Rate (Figure \ref{fig:dwt-leads-to-higher-ar}), the Departure Rate (Figure \ref{fig:dwt-leads-to-higher-dr}).
-As can be seen, the \textit{DiffWaitingTime} (dwt) reward function excels among the other because it grants lower (accumulated) waiting times and is among the highest for average speed, departure rate and arrival rate.
+As can be seen in Figure \ref{fig:exp-1-rew-b}, which summarizes the results in a radar plot, the \textit{DiffWaitingTime} (dwt) reward function excels among the other because it grants lower (accumulated) waiting times and is among the highest for average speed, departure rate and arrival rate.
 Meaning that more vehicles can use the intersection network, they can arrive faster at destination and have to wait less time.
 
-\putimage{figures/exp/exp-1-rew-b.png}{}{fig:exp-1-rew-b}{1.0}
+\putimage{figures/exp/exp-1-rew-b.png}{Comparison of DiffWaitingTime (dwt), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-b}{1.0}
 
-In the above graphs the AverageSpeed (as) reward function is missing, but for a good reason.
-As can be seen in the last two images, AverageSpeed grants a higher average speed (Figure \ref{fig:as-leads-to-higher-as}) but leads to a way worse accumulated waiting time (Figure \ref{fig:as-leads-to-higher-awt}), meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
-Since its performance are notably worse, to increase the readibility of the plots, this component has been removed.
+In the above graph the AverageSpeed (as) reward function is missing, but for a good reason.
+As can be seen in Figure \ref{fig:exp-1-rew-a}, AverageSpeed grants a higher average speed but leads to a way worse accumulated waiting time, meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
+Since its performance are notably worse, to increase the readibility of the previous plot, this component has been removed.
 
-\putimage{figures/exp/exp-1-rew-a.png}{}{fig:exp-1-rew-a}{1.0}
+\putimage{figures/exp/exp-1-rew-a.png}{Comparison of DiffWaitingTime (dwt), AverageSpeed (as), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-a}{1.0}
 
 \subsection{RQ 1.2 - Which is the best implemented observation function?}
 
 Each of the basic observation functions (\textit{default, s, d, q}) have been used to train an agent with the same dataset and seeds. These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
 
-In the following plots are displayed the values for the main performance metrics with a data point for each on of the five runs: the Accumulated Waiting Time (Figure \ref{fig:d-leads-to-lower-awt}), the Waiting Time (Figure \ref{fig:d-leads-to-lower-wt}), the Average Speed (Figure \ref{fig:d-leads-to-higher-as}), the Arrival Rate (Figure \ref{fig:d-leads-to-higher-ar}), the Departure Rate (Figure \ref{fig:d-leads-to-higher-dr}).
-As can be seen, the \textit{Density} (d) observation function excels among the other because it grants lower accumulated waiting times and is among the highest for average speed, departure rate and arrival rate.
+As can be seen in Figure \ref{fig:exp-1-obs-b}, the \textit{Density} (d) observation function excels among the other because it grants lower accumulated waiting times and is among the highest for average speed, departure rate and arrival rate.
 The only metric in which seems to be worse than the alternatives is the mean waiting time: vehicles are waiting in average $\sim2$ seconds more at full-stop.
 This however doesn't hold for the accumulate waiting time.
 This means that drivers may feel to be waiting less but in average their travel time is higher by $\sim10$ seconds.
 Both the metric are important to evaluate how much a driver get stuck in traffic jams, since a lower waiting time score may means an higher frequency acceleration-deceleration cycles.
 Every time that a vehicle moves, the waiting time metric get zeroed, since it only measures how much time a driver has been standing still in a precise moment in time.
 
-\putimage{figures/exp/exp-1-obs-b.png}{}{fig:exp-1-obs-b}{1.0}
+\putimage{figures/exp/exp-1-obs-b.png}{Comparison of Default (default), Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-b}{1.0}
 
 In the above graphs the Default observation function is missing, but for a good reason.
-As can be seen in the last two images, Default grants a higher average speed (Figure \ref{fig:default-leads-to-higher-as}) but leads to a way worse accumulated waiting time (Figure \ref{fig:default-leads-to-higher-awt}), meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
-Since its performance are notably worse, to increase the readibility of the plots, this component has been removed.
+As can be seen in Figure \ref{fig:exp-1-obs-a}, Default grants a higher average speed but leads to a way worse accumulated waiting time, meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
+Since its performance are notably worse, to increase the readibility of the previous plot, this component has been removed.
 A possible reason to explain this phenomenon is the fact that the state space size of the Default function is way bigger than the rest, thus increasing the sparsity of state information and making it more difficult to capture relevant features.
 
-\putimage{figures/exp/exp-1-obs-a.png}{}{fig:exp-1-obs-a}{1.0}
+\putimage{figures/exp/exp-1-obs-a.png}{Comparison of Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-a}{1.0}
 
 \subsection{Conclusions}
 
@@ -109,7 +107,7 @@ Their schemas are reported in Listings \ref{lst:dataset-schema-curriculum-daily}
 \end{lstlisting}
 \end{minipage}
 
-Experiment results show that the \textbf{Curriculum Daily + Disruption} dataset grants a lower average (accumulated) waiting time (Figures \ref{fig:cdd-leads-to-lower-awt} and \ref{fig:cdd-leads-to-lower-wt}) while increasing the throughput with higher arrival/departure rates (Figures \ref{fig:cdd-leads-to-higher-ar} and \ref{fig:cdd-leads-to-higher-dr}), all at the cost of a lower average vehicle speed (Figure \ref{fig:cdd-leads-to-lower-as}). Moreover, the performances of this dataset are more stable than the ones of the \textbf{Curriculum Daily} dataset and of the \textbf{Monolithic} dataset.
+Experiment results (shown in Figure \ref{fig:exp-2-dat}) suggest that the \textbf{Curriculum Daily + Disruption} dataset grants a lower average (accumulated) waiting time while increasing the throughput with higher arrival/departure rates, all at the cost of a lower average vehicle speed. Moreover, an inspection of the metric plots over time revealed that the performances of this dataset are more stable than the ones of the \textbf{Curriculum Daily} dataset and of the \textbf{Monolithic} dataset.
 
 Collected data supports the hypothesis that \textit{Curriculum Daily + Disruption} dataset balances the best of both other datasets.
 The stability and easiness from the \textit{Curriculum Daily} dataset allows agent to incrementally learn without being permanently drown in negative rewards.
@@ -118,7 +116,7 @@ Notably, the peak-hour disruptions supplied in the \textit{Curriculum Daily + Di
 This means that a curriculum learning driven dataset allows the agents to generalize more and learn a policy of higher quality (with respect to performance and stability) than a collage-like monolithic dataset.
 As a consequence, real-world daily traffic data can be used for training without regret (with the assumption that disruptions often happen on a daily basis).
 
-\putimage{figures/exp/exp-2-dat.png}{}{fig:exp-2-dat}{1.0}
+\putimage{figures/exp/exp-2-dat.png}{Comparison of Monolithic, Curriculum Daily and Curriculum Daily + Disruption datasets.}{fig:exp-2-dat}{1.0}
 
 % Does curriculum learning leads to better running performances? Yes, it can generalize more and is more stable
 % Is there a loss of knowledge due to curriculum learning not being exhaustive? Probably no
@@ -133,24 +131,25 @@ In both the experiments, the dataset being used is \textit{Curriculum Daily + Di
 
 \subsection{RQ 3.1 - Which is the best implemented tabular agent?}
 
-\putimage{figures/exp/exp-3-tab.png}{}{fig:exp-3-tab}{1.0}
+\putimage{figures/exp/exp-3-tab.png}{Comparison of QL, SARSA and DQL agents.}{fig:exp-3-tab}{1.0}
 
 \subsection{RQ 3.2 - Which is the best implemented neural agent?}
 
-\putimage{figures/exp/exp-3-neu.png}{}{fig:exp-3-neu}{1.0}
+\putimage{figures/exp/exp-3-neu.png}{Comparison of DQN and PPO agents.}{fig:exp-3-neu}{1.0}
 
-\subsection{RQ 3.2 - Which is the best implemented agent?}
+\subsection{RQ 3.3 - Is Deep Learning worth its cost?}
 
-\putimage{figures/exp/exp-3-tot.png}{}{fig:exp-3-tot}{1.0}
+\putimage{figures/exp/exp-3-tot.png}{Comparison of DQL and PPO agents.}{fig:exp-3-tot}{1.0}
 
-% What tabular methods can achieve with minimum requirements?
-% What neural methods can achieve with minimum requirements?
-% Is it worth to use tabular vs neural methods?
+\section{RO 4 - Comparing Reinforcement Learning with existing solutions}
 
-%   \subsection{E3A: Find The Best Tabular Agent}
-%   \subsection{E3B: Find The Best Deep Agent}
-% 
-% \section{RO 4 - Comparing Reinforcement Learning with existing solutions}
+\subsection{RQ 4.1 - What is the impact of cycle time in Fixed Cycle Agents?}
+
+\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, Fixed30, Fixed45 and Fixed60 agents.}{fig:exp-4-fca}{1.0}
+
+\subsection{RQ 4.2 - Are RL Agent an improvement over non-AI solutions?}
+
+\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15 and DQL agents and priority based intersections.}{fig:exp-4-tot}{1.0}
 %
 % Which cycle time grants better performance? fixed30
 % Is fixed cycle traffic light an improvement over unregulated priority based intersections? Yes
