@@ -30,18 +30,13 @@ In the following plots are displayed the values for the main performance metrics
 As can be seen, the \textit{DiffWaitingTime} (dwt) reward function excels among the other because it grants lower (accumulated) waiting times and is among the highest for average speed, departure rate and arrival rate.
 Meaning that more vehicles can use the intersection network, they can arrive faster at destination and have to wait less time.
 
-\putimage{figures/exp/dwt-leads-to-lower-awt.png}{The DiffWaitingTime reward function leads to lower average accumulated waiting times.}{fig:dwt-leads-to-lower-awt}{0.75}
-\putimage{figures/exp/dwt-leads-to-lower-wt.png}{The DiffWaitingTime reward function leads to lower average waiting times.}{fig:dwt-leads-to-lower-wt}{0.75}
-\putimage{figures/exp/dwt-leads-to-higher-as.png}{The DiffWaitingTime reward function leads to higher average speed.}{fig:dwt-leads-to-higher-as}{0.75}
-\putimage{figures/exp/dwt-leads-to-higher-ar.png}{The DiffWaitingTime reward function leads to higher average arrival rate.}{fig:dwt-leads-to-higher-ar}{0.75}
-\putimage{figures/exp/dwt-leads-to-higher-dr.png}{The DiffWaitingTime reward function leads to higher average departure rate.}{fig:dwt-leads-to-higher-dr}{0.75}
+\putimage{figures/exp/exp-1-rew-b.png}{}{fig:exp-1-rew-b}{1.0}
 
 In the above graphs the AverageSpeed (as) reward function is missing, but for a good reason.
 As can be seen in the last two images, AverageSpeed grants a higher average speed (Figure \ref{fig:as-leads-to-higher-as}) but leads to a way worse accumulated waiting time (Figure \ref{fig:as-leads-to-higher-awt}), meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
 Since its performance are notably worse, to increase the readibility of the plots, this component has been removed.
 
-\putimage{figures/exp/as-leads-to-higher-as.png}{The AverageSpeed reward function leads to higher average speeds.}{fig:as-leads-to-higher-as}{0.75}
-\putimage{figures/exp/as-leads-to-higher-awt.png}{The AverageSpeed reward function leads to higher average accumulated waiting times.}{fig:as-leads-to-higher-awt}{0.75}
+\putimage{figures/exp/exp-1-rew-a.png}{}{fig:exp-1-rew-a}{1.0}
 
 \subsection{RQ 1.2 - Which is the best implemented observation function?}
 
@@ -55,19 +50,14 @@ This means that drivers may feel to be waiting less but in average their travel 
 Both the metric are important to evaluate how much a driver get stuck in traffic jams, since a lower waiting time score may means an higher frequency acceleration-deceleration cycles.
 Every time that a vehicle moves, the waiting time metric get zeroed, since it only measures how much time a driver has been standing still in a precise moment in time.
 
-\putimage{figures/exp/d-leads-to-lower-awt.png}{The Density observation function leads to lower average accumulated waiting times.}{fig:d-leads-to-lower-awt}{0.75}
-\putimage{figures/exp/d-leads-to-lower-wt.png}{The Density observation function leads to lower average waiting times.}{fig:d-leads-to-lower-wt}{0.75}
-\putimage{figures/exp/d-leads-to-lower-as.png}{The Density observation function leads to lower average speed.}{fig:d-leads-to-lower-as}{0.75}
-\putimage{figures/exp/d-leads-to-higher-ar.png}{The Density observation function leads to higher average arrival rate.}{fig:d-leads-to-higher-ar}{0.75}
-\putimage{figures/exp/d-leads-to-higher-dr.png}{The Density observation function leads to higher average departure rate.}{fig:d-leads-to-higher-dr}{0.75}
+\putimage{figures/exp/exp-1-obs-b.png}{}{fig:exp-1-obs-b}{1.0}
 
 In the above graphs the Default observation function is missing, but for a good reason.
 As can be seen in the last two images, Default grants a higher average speed (Figure \ref{fig:default-leads-to-higher-as}) but leads to a way worse accumulated waiting time (Figure \ref{fig:default-leads-to-higher-awt}), meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
 Since its performance are notably worse, to increase the readibility of the plots, this component has been removed.
 A possible reason to explain this phenomenon is the fact that the state space size of the Default function is way bigger than the rest, thus increasing the sparsity of state information and making it more difficult to capture relevant features.
 
-\putimage{figures/exp/default-leads-to-higher-as.png}{The Default observation function leads to higher average speeds.}{fig:default-leads-to-higher-as}{0.75}
-\putimage{figures/exp/default-leads-to-higher-awt.png}{The Default observation function leads to higher average accumulated waiting times.}{fig:default-leads-to-higher-awt}{0.75}
+\putimage{figures/exp/exp-1-obs-a.png}{}{fig:exp-1-obs-a}{1.0}
 
 \subsection{Conclusions}
 
@@ -128,11 +118,7 @@ Notably, the peak-hour disruptions supplied in the \textit{Curriculum Daily + Di
 This means that a curriculum learning driven dataset allows the agents to generalize more and learn a policy of higher quality (with respect to performance and stability) than a collage-like monolithic dataset.
 As a consequence, real-world daily traffic data can be used for training without regret (with the assumption that disruptions often happen on a daily basis).
 
-\putimage{figures/exp/cdd-leads-to-lower-awt.png}{The "Curriculum Daily + Disruption" dataset leads to lower average accumulated waiting times.}{fig:cdd-leads-to-lower-awt}{0.75}
-\putimage{figures/exp/cdd-leads-to-lower-wt.png}{The "Curriculum Daily + Disruption" dataset leads to lower average waiting times.}{fig:cdd-leads-to-lower-wt}{0.75}
-\putimage{figures/exp/cdd-leads-to-lower-as.png}{The "Curriculum Daily + Disruption" dataset leads to lower average speed.}{fig:cdd-leads-to-lower-as}{0.75}
-\putimage{figures/exp/cdd-leads-to-higher-ar.png}{The "Curriculum Daily + Disruption" dataset leads to higher average arrival rate.}{fig:cdd-leads-to-higher-ar}{0.75}
-\putimage{figures/exp/cdd-leads-to-higher-dr.png}{The "Curriculum Daily + Disruption" dataset leads to higher average departure rate.}{fig:cdd-leads-to-higher-dr}{0.75}
+\putimage{figures/exp/exp-2-dat.png}{}{fig:exp-2-dat}{1.0}
 
 % Does curriculum learning leads to better running performances? Yes, it can generalize more and is more stable
 % Is there a loss of knowledge due to curriculum learning not being exhaustive? Probably no
@@ -144,6 +130,18 @@ The QLAgent used so far is an example of tabular method for reinforcement learni
 In Chapter 3 more reinforcement learning have been presented and now the interest is in comparing \textit{simpler} \textbf{tabular} methods with the more \textit{sophisticated} \textbf{neural} methods.
 In order to evaluate the potential of those approaches, two distinct experiments were conducted comparing the different tabular/neural agents available on the same simulation conditions.
 In both the experiments, the dataset being used is \textit{Curriculum Daily + Disruption}, the observation function is \textit{Density} and the reward function is \textit{DiffWaitingTime}.
+
+\subsection{RQ 3.1 - Which is the best implemented tabular agent?}
+
+\putimage{figures/exp/exp-3-tab.png}{}{fig:exp-3-tab}{1.0}
+
+\subsection{RQ 3.2 - Which is the best implemented neural agent?}
+
+\putimage{figures/exp/exp-3-neu.png}{}{fig:exp-3-neu}{1.0}
+
+\subsection{RQ 3.2 - Which is the best implemented agent?}
+
+\putimage{figures/exp/exp-3-tot.png}{}{fig:exp-3-tot}{1.0}
 
 % What tabular methods can achieve with minimum requirements?
 % What neural methods can achieve with minimum requirements?
