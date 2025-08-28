@@ -1161,6 +1161,12 @@ An example is shown in Figure \ref{fig:generate-report-plots}.
 Then it produces another plot for each metric averaging the value of the metric over time and showing a barplot of all the configurations.
 An example is shown in Figure \ref{fig:generate-report-bars}.
 
+The utility is also able to generate radar shaped plots which compare different configurations by their mean metric values, as shown in Figure \ref{fig:generate-report-radars}.
+Curves depicted in such graphs always indicate a positive quantity, in other words: higher is better.
+This rescaling is obtained by inverting the value of the "negative" metrics such as waiting time, leaving unvaried "positive" metrics such as average speed.
+A further normalization is performed to obtain values in range $[0,\;1]$ which resemble the relative proportions between values of the same metric for different configurations.
+The usual interpretation of such graph is that to a larger curve corresponds a better configuration (and of course, a smaller curve coincides with a worse configuration).
+
 Finally, it assigns some points (computed using a Fibonacci sequence) to all the configuration on the basis of how well that metric value is with respect of the ones achieved by the other metrics.
 For this evaluation, the average over time is used.
 Summing all the leaderboard created for each metric, \textit{generate-report} creates also a final leaderboard.
@@ -1175,6 +1181,7 @@ Otherwise, a slight metric difference would lead to an unfair advantage.
 {\putsubimage{figures/generate-report-bars.png}{An example of Bar plot created by the generate-report utility}{fig:generate-report-bars}{0.45}{1.0}}
 {\putsubimage{figures/generate-report-leaderboards.png}{An example of Leaderboard plot created by the generate-report utility}{fig:generate-report-leaderboards}{0.45}{1.0}}
 \putimage{figures/generate-report-plots.png}{An example of metrics plot created by the generate-report utility}{fig:generate-report-plots}{0.75}
+\putimage{figures/generate-report-radars.png}{An example of metrics radar created by the generate-report utility}{fig:generate-report-radars}{0.75}
 
 \paragraph{Visualizing raw metrics}
 
