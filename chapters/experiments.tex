@@ -133,28 +133,61 @@ In both the experiments, the dataset being used is \textit{Curriculum Daily + Di
 
 As can be seen in Figure \ref{fig:exp-3-tab}, the QL and DQL agents show a clear advantage over the other model in terms of average speed, throughput (arrival/departure rate) and accumulated waiting time.
 In fact, their metrics are very similar: the tie is break using the accumulated waiting time metric in which the DQL agent is $1$ second faster.
-However, if we look at waiting times, the SARSA agent is in average $2$ seconds faster than the Off Policy agents.
+However, looking at waiting times, the SARSA agent is in average $2$ seconds faster than the Off Policy agents.
 Its slower score record in accumulated waiting time is probably due to SARSA's tendency to favor a faster pace experience over long run waiting time.
 
 \putimage{figures/exp/exp-3-tab.png}{Comparison of QL, SARSA and DQL agents.}{fig:exp-3-tab}{1.0}
 
 \subsection{RQ 3.2 - Which is the best implemented neural agent?}
 
+Figure \ref{fig:exp-3-neu} shows that the PPO agent bulldozes the DQN agent in almost every metric.
+Interestingly, the shape of the DQN curve in this graph is similar to the one of the worst reward/observation functions (Figures \ref{fig:exp-1-rew} and \ref{fig:exp-1-obs}).
+The only difference is that the underlying situation is very different.
+SUMO-RL allows researches to perform a graphical demo in which the agents and their configuration can be seen in action.
+A quick inspection using the demo mode revealed that the DQN agent wasn't learning at all.
+Instead, all the intersections where stuck with green light in one direction during the entirety of the simulation.
+A possible explanation is that a DQN model would need more training time to reach the performances of the other neural model.
+This hypothesis is supported with empirical evidence in the field of reinforcement learning \cite{kozlica2023deep}.
+
 \putimage{figures/exp/exp-3-neu.png}{Comparison of DQN and PPO agents.}{fig:exp-3-neu}{1.0}
 
 \subsection{RQ 3.3 - Is Deep Learning worth its cost?}
+
+The results of the experiments being carried out show that, given the same training time and conditions, a sophisticated (yet simple) tabular agent based on Q Learning can easily outperform one of the most popular and powerful neural network algorithm for reinforcement learning.
+Of course, on the long run the PPO agent \textbf{may} be able to gain ground on DQL with more training episodes, but the use of conditional is needed and the empirical evidence \cite{kozlica2023deep} suggests that usually PPO has a initial steep learning curve and after some time it comes into a plateau, just as tabular methods.
 
 \putimage{figures/exp/exp-3-tot.png}{Comparison of DQL and PPO agents.}{fig:exp-3-tot}{1.0}
 
 \section{RO 4 - Comparing Reinforcement Learning with existing solutions}
 
+Now that there is a clearer picture of the potential of the main reinforcement learning algorithms implemented in SUMO-RL, we need to understand if they stand a chance with fixed cycle traffic light programs.
+
 \subsection{RQ 4.1 - What is the impact of cycle time in Fixed Cycle Agents?}
 
-\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, Fixed30, Fixed45 and Fixed60 agents.}{fig:exp-4-fca}{1.0}
+In order to compare RL agents to a fixed cycle agent, it is important to select the best performing cycle time for it to work with. Figure \ref{fig:exp-4-fca} shows a comparison of four possible cycle times which are widely used in urban controlled intersections.
+A singular pattern can be noted in agent shapes: the lower is cycle time, the better are performance ratings.
+This is true for almost all the metrics but the average speed, in which this rule appears to be inverted.
 
-\subsection{RQ 4.2 - Are RL Agent an improvement over non-AI solutions?}
+A logical explanation for this phenomenon is that with lower cycle time, vehicles are waiting less time at full-stop at intersection entrance.
+Interestingly, this holds also for accumulated waiting time, in which there is a clear advantage for the lower cycle times (15 and 30).
+However, a faster pace traffic light also means that there are frequent acceleration and decelerations, therefore the average speed can be expected to be higher in long cycle times (30, 45, 60).
+Notably, the is an hidden threshold between $15$ seconds and $30$ seconds for which performance is subject to a radical change.
 
-\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15 and DQL agents and priority based intersections.}{fig:exp-4-tot}{1.0}
+\putimage{figures/exp/exp-4-fca.png}{Comparison of Fixed15, Fixed30, Fixed45 and Fixed60 agents.}{fig:exp-4-fca}{1.0}
+
+\subsection{RQ 4.2 - Are RL Agents an improvement over non-AI solutions?}
+
+Now that the best configuration for cycle time is known, an experiment was run to compare two RL agents (PPO and DQL) with the best FixedCycle agent (Fixed15) and with unregulated intersection.
+The reasoning behind the choice of running also a priority-based intersection is that in urban tissues, not all the busy intersections are regulated with traffic light, therefore the aim is to experimentally verify which is impact of installing a traffic light on such intersections. The results of this experiment are shown in Figure \ref{fig:exp-4-tot}.
+
+\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, PPO and DQL agents and priority based intersections.}{fig:exp-4-tot}{1.0}
+
+The relative inefficiency of unregulated intersections is well-known and it is probably the least interesting suggestion of the radar plot.
+Interestingly, the performances of the PPO agent are very similar to the ones of a traffic light intersection with a cycle time of $15$ seconds.
+This not only shows the limit of efficiency of traffic lights with fixed cycle program, but also shows that at least the PPO agent has learnt a comparable policy.
+
+Excluding the instant waiting time, in which its average value is very close to PPO and Fixed15 agents, the DQL agent surpasses by far its competitors in every possible ways.
+Notably, the cost in terms of secondary memory of this agent is roughly $4$ MB, which means that it can be fitted into dedicated boards very easily.
 %
 % Which cycle time grants better performance? fixed30
 % Is fixed cycle traffic light an improvement over unregulated priority based intersections? Yes
