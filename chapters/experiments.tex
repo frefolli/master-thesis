@@ -131,6 +131,11 @@ In both the experiments, the dataset being used is \textit{Curriculum Daily + Di
 
 \subsection{RQ 3.1 - Which is the best implemented tabular agent?}
 
+As can be seen in Figure \ref{fig:exp-3-tab}, the QL and DQL agents show a clear advantage over the other model in terms of average speed, throughput (arrival/departure rate) and accumulated waiting time.
+In fact, their metrics are very similar: the tie is break using the accumulated waiting time metric in which the DQL agent is $1$ second faster.
+However, if we look at waiting times, the SARSA agent is in average $2$ seconds faster than the Off Policy agents.
+Its slower score record in accumulated waiting time is probably due to SARSA's tendency to favor a faster pace experience over long run waiting time.
+
 \putimage{figures/exp/exp-3-tab.png}{Comparison of QL, SARSA and DQL agents.}{fig:exp-3-tab}{1.0}
 
 \subsection{RQ 3.2 - Which is the best implemented neural agent?}
@@ -155,19 +160,32 @@ In both the experiments, the dataset being used is \textit{Curriculum Daily + Di
 % Is fixed cycle traffic light an improvement over unregulated priority based intersections? Yes
 % L'agente RL e' un miglioramento rispetto alle performance delle soluzioni (di base) correnti?
 % Does the best RL agent represent an improvement with respect to performances achieved by current traffic regulation solutions? Yes
-% 
-% \section{RO 5 - Evaluating the impact of Determinism over performances}
+
+\section{RO 5 - Evaluating the impact of learning parameters over performances}
+%   \subsection{E11: Explore Epsilon Greedy curve (DQL)}
+%   \subsection{E12: Explore Buffer Size (PPO)}
+\putimage{figures/exp/exp-5-buf.png}{}{fig:exp-5-buf}{1.0}
+
+\section{RO 6 - Evaluating the impact of Determinism over performances}
 %   \subsection{E11: Explore determinism (DQL)}
 %   \subsection{E12: Explore determinism (PPO)}
-% 
-% \section{RO 6 - Evaluating the impact of Quantization over performances}
+\putimage{figures/exp/exp-6-dql.png}{}{fig:exp-6-dql}{1.0}
+\putimage{figures/exp/exp-6-ppo.png}{}{fig:exp-6-ppo}{1.0}
+
+\section{RO 7 - Evaluating the impact of Quantization over performances}
 %   \subsection{E8: Try Unquantized (DQL)}
 %   \subsection{E9: Try Unquantized (PPO)}
-% 
-% \section{RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning}
+\putimage{figures/exp/exp-7-dql.png}{}{fig:exp-7-dql}{1.0}
+\putimage{figures/exp/exp-7-ppo.png}{}{fig:exp-7-ppo}{1.0}
+
+\section{RO 8 - Comparing Multi-Agent Learning with Single-Agent Learning}
 %   \subsection{E5: Try Marl On Observation}
 %   \subsection{E6: Try Marl On Reward}
 %   \subsection{E10: Try Partition}
-% 
-% \section{RO 8 - Evaluating the effectiveness of Self-Adaptive strategies}
+\putimage{figures/exp/exp-8-rew.png}{}{fig:exp-8-rew}{1.0}
+\putimage{figures/exp/exp-8-obs.png}{}{fig:exp-8-obs}{1.0}
+\putimage{figures/exp/exp-8-par.png}{}{fig:exp-8-par}{1.0}
+
+\section{RO 9 - Evaluating the effectiveness of Self-Adaptive strategies}
 %   \subsection{E4: Try Self Adaptive}
+\putimage{figures/exp/exp-9-sam.png}{}{fig:exp-9-sam}{1.0}
