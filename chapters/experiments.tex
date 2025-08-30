@@ -29,13 +29,13 @@ These configurations have been then evaluated with five runs each (using the sam
 As can be seen in Figure \ref{fig:exp-1-rew-b}, which summarizes the results in a radar plot, the \textit{DiffWaitingTime} (dwt) reward function excels among the other because it grants lower (accumulated) waiting times and is among the highest for average speed, departure rate and arrival rate.
 Meaning that more vehicles can use the intersection network, they can arrive faster at destination and have to wait less time.
 
-\putimage{figures/exp/exp-1-rew-b.png}{Comparison of DiffWaitingTime (dwt), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-b}{1.0}
-
-In the above graph the AverageSpeed (as) reward function is missing, but for a good reason.
+In the last graph the AverageSpeed (as) reward function is missing, but for a good reason.
 As can be seen in Figure \ref{fig:exp-1-rew-a}, AverageSpeed grants a higher average speed but leads to a way worse accumulated waiting time, meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
 Since its performance are notably worse, to increase the readibility of the previous plot, this component has been removed.
 
-\putimage{figures/exp/exp-1-rew-a.png}{Comparison of DiffWaitingTime (dwt), AverageSpeed (as), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-a}{1.0}
+\putimage{figures/exp/exp-1-rew-b.png}{Comparison of DiffWaitingTime (dwt), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-b}{0.75}
+
+\putimage{figures/exp/exp-1-rew-a.png}{Comparison of DiffWaitingTime (dwt), AverageSpeed (as), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-a}{0.75}
 
 \subsection{RQ 1.2 - Which is the best implemented observation function?}
 
@@ -48,14 +48,14 @@ This means that drivers may feel to be waiting less but in average their travel 
 Both the metric are important to evaluate how much a driver get stuck in traffic jams, since a lower waiting time score may means an higher frequency acceleration-deceleration cycles.
 Every time that a vehicle moves, the waiting time metric get zeroed, since it only measures how much time a driver has been standing still in a precise moment in time.
 
-\putimage{figures/exp/exp-1-obs-b.png}{Comparison of Default (default), Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-b}{1.0}
-
-In the above graphs the Default observation function is missing, but for a good reason.
+In the last graphs the Default observation function is missing, but for a good reason.
 As can be seen in Figure \ref{fig:exp-1-obs-a}, Default grants a higher average speed but leads to a way worse accumulated waiting time, meaning that at the end of their journey, those vehicles would have been waiting for at least double the time.
 Since its performance are notably worse, to increase the readibility of the previous plot, this component has been removed.
 A possible reason to explain this phenomenon is the fact that the state space size of the Default function is way bigger than the rest, thus increasing the sparsity of state information and making it more difficult to capture relevant features.
 
-\putimage{figures/exp/exp-1-obs-a.png}{Comparison of Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-a}{1.0}
+\putimage{figures/exp/exp-1-obs-b.png}{Comparison of Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-b}{0.75}
+
+\putimage{figures/exp/exp-1-obs-a.png}{Comparison of Default (default), Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-a}{0.75}
 
 \subsection{Conclusions}
 
@@ -116,7 +116,7 @@ Notably, the peak-hour disruptions supplied in the \textit{Curriculum Daily + Di
 This means that a curriculum learning driven dataset allows the agents to generalize more and learn a policy of higher quality (with respect to performance and stability) than a collage-like monolithic dataset.
 As a consequence, real-world daily traffic data can be used for training without regret (with the assumption that disruptions often happen on a daily basis).
 
-\putimage{figures/exp/exp-2-dat.png}{Comparison of Monolithic, Curriculum Daily and Curriculum Daily + Disruption datasets.}{fig:exp-2-dat}{1.0}
+\putimage{figures/exp/exp-2-dat.png}{Comparison of Monolithic, Curriculum Daily and Curriculum Daily + Disruption datasets.}{fig:exp-2-dat}{0.75}
 
 % Does curriculum learning leads to better running performances? Yes, it can generalize more and is more stable
 % Is there a loss of knowledge due to curriculum learning not being exhaustive? Probably no
@@ -136,7 +136,7 @@ In fact, their metrics are very similar: the tie is break using the accumulated 
 However, looking at waiting times, the SARSA agent is in average $2$ seconds faster than the Off Policy agents.
 Its slower score record in accumulated waiting time is probably due to SARSA's tendency to favor a faster pace experience over long run waiting time.
 
-\putimage{figures/exp/exp-3-tab.png}{Comparison of QL, SARSA and DQL agents.}{fig:exp-3-tab}{1.0}
+\putimage{figures/exp/exp-3-tab.png}{Comparison of QL, SARSA and DQL agents.}{fig:exp-3-tab}{0.75}
 
 \subsection{RQ 3.2 - Which is the best implemented neural agent?}
 
@@ -149,14 +149,14 @@ Instead, all the intersections where stuck with green light in one direction dur
 A possible explanation is that a DQN model would need more training time to reach the performances of the other neural model.
 This hypothesis is supported with empirical evidence in the field of reinforcement learning \cite{kozlica2023deep}.
 
-\putimage{figures/exp/exp-3-neu.png}{Comparison of DQN and PPO agents.}{fig:exp-3-neu}{1.0}
+\putimage{figures/exp/exp-3-neu.png}{Comparison of DQN and PPO agents.}{fig:exp-3-neu}{0.75}
 
 \subsection{RQ 3.3 - Is Deep Learning worth its cost?}
 
 The results of the experiments being carried out show that, given the same training time and conditions, a sophisticated (yet simple) tabular agent based on Q Learning can easily outperform one of the most popular and powerful neural network algorithm for reinforcement learning.
 Of course, on the long run the PPO agent \textbf{may} be able to gain ground on DQL with more training episodes, but the use of conditional is needed and the empirical evidence \cite{kozlica2023deep} suggests that usually PPO has a initial steep learning curve and after some time it comes into a plateau, just as tabular methods.
 
-\putimage{figures/exp/exp-3-tot.png}{Comparison of DQL and PPO agents.}{fig:exp-3-tot}{1.0}
+\putimage{figures/exp/exp-3-tot.png}{Comparison of DQL and PPO agents.}{fig:exp-3-tot}{0.75}
 
 \section{RO 4 - Comparing Reinforcement Learning with existing solutions}
 
@@ -173,14 +173,12 @@ Interestingly, this holds also for accumulated waiting time, in which there is a
 However, a faster pace traffic light also means that there are frequent acceleration and decelerations, therefore the average speed can be expected to be higher in long cycle times (30, 45, 60).
 Notably, the is an hidden threshold between $15$ seconds and $30$ seconds for which performance is subject to a radical change.
 
-\putimage{figures/exp/exp-4-fca.png}{Comparison of Fixed15, Fixed30, Fixed45 and Fixed60 agents.}{fig:exp-4-fca}{1.0}
+\putimage{figures/exp/exp-4-fca.png}{Comparison of Fixed15, Fixed30, Fixed45 and Fixed60 agents.}{fig:exp-4-fca}{0.75}
 
 \subsection{RQ 4.2 - Are RL Agents an improvement over non-AI solutions?}
 
 Now that the best configuration for cycle time is known, an experiment was run to compare two RL agents (PPO and DQL) with the best FixedCycle agent (Fixed15) and with unregulated intersection.
 The reasoning behind the choice of running also a priority-based intersection is that in urban tissues, not all the busy intersections are regulated with traffic light, therefore the aim is to experimentally verify which is impact of installing a traffic light on such intersections. The results of this experiment are shown in Figure \ref{fig:exp-4-tot}.
-
-\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, PPO and DQL agents and priority based intersections.}{fig:exp-4-tot}{1.0}
 
 The relative inefficiency of unregulated intersections is well-known and it is probably the least interesting suggestion of the radar plot.
 Interestingly, the performances of the PPO agent are very similar to the ones of a traffic light intersection with a cycle time of $15$ seconds.
@@ -188,37 +186,29 @@ This not only shows the limit of efficiency of traffic lights with fixed cycle p
 
 Excluding the instant waiting time, in which its average value is very close to PPO and Fixed15 agents, the DQL agent surpasses by far its competitors in every possible ways.
 Notably, the cost in terms of secondary memory of this agent is roughly $4$ MB, which means that it can be fitted into dedicated boards very easily.
-%
-% Which cycle time grants better performance? fixed30
-% Is fixed cycle traffic light an improvement over unregulated priority based intersections? Yes
-% L'agente RL e' un miglioramento rispetto alle performance delle soluzioni (di base) correnti?
-% Does the best RL agent represent an improvement with respect to performances achieved by current traffic regulation solutions? Yes
 
-\section{RO 5 - Evaluating the impact of learning parameters over performances}
-%   \subsection{E11: Explore Epsilon Greedy curve (DQL)}
-%   \subsection{E12: Explore Buffer Size (PPO)}
-\putimage{figures/exp/exp-5-buf.png}{}{fig:exp-5-buf}{1.0}
+\putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, PPO and DQL agents and priority based intersections.}{fig:exp-4-tot}{0.75}
 
-\section{RO 6 - Evaluating the impact of Determinism over performances}
+\section{RO 5 - Evaluating the impact of Determinism over performances}
 %   \subsection{E11: Explore determinism (DQL)}
 %   \subsection{E12: Explore determinism (PPO)}
-\putimage{figures/exp/exp-6-dql.png}{}{fig:exp-6-dql}{1.0}
-\putimage{figures/exp/exp-6-ppo.png}{}{fig:exp-6-ppo}{1.0}
+\putimage{figures/exp/exp-5-dql.png}{}{fig:exp-5-dql}{0.75}
+\putimage{figures/exp/exp-5-ppo.png}{}{fig:exp-5-ppo}{0.75}
 
-\section{RO 7 - Evaluating the impact of Quantization over performances}
+\section{RO 6 - Evaluating the impact of Quantization over performances}
 %   \subsection{E8: Try Unquantized (DQL)}
 %   \subsection{E9: Try Unquantized (PPO)}
-\putimage{figures/exp/exp-7-dql.png}{}{fig:exp-7-dql}{1.0}
-\putimage{figures/exp/exp-7-ppo.png}{}{fig:exp-7-ppo}{1.0}
+\putimage{figures/exp/exp-6-dql.png}{}{fig:exp-6-dql}{0.75}
+\putimage{figures/exp/exp-6-ppo.png}{}{fig:exp-6-ppo}{0.75}
 
-\section{RO 8 - Comparing Multi-Agent Learning with Single-Agent Learning}
+\section{RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning}
 %   \subsection{E5: Try Marl On Observation}
 %   \subsection{E6: Try Marl On Reward}
 %   \subsection{E10: Try Partition}
-\putimage{figures/exp/exp-8-rew.png}{}{fig:exp-8-rew}{1.0}
-\putimage{figures/exp/exp-8-obs.png}{}{fig:exp-8-obs}{1.0}
-\putimage{figures/exp/exp-8-par.png}{}{fig:exp-8-par}{1.0}
+\putimage{figures/exp/exp-7-rew.png}{}{fig:exp-7-rew}{0.75}
+\putimage{figures/exp/exp-7-obs.png}{}{fig:exp-7-obs}{0.75}
+\putimage{figures/exp/exp-7-par.png}{}{fig:exp-7-par}{0.75}
 
-\section{RO 9 - Evaluating the effectiveness of Self-Adaptive strategies}
+\section{RO 8 - Evaluating the effectiveness of Self-Adaptive strategies}
 %   \subsection{E4: Try Self Adaptive}
-\putimage{figures/exp/exp-9-sam.png}{}{fig:exp-9-sam}{1.0}
+\putimage{figures/exp/exp-8-sam.png}{}{fig:exp-8-sam}{0.75}
