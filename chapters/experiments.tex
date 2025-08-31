@@ -241,13 +241,17 @@ As expected, the the traffic light system gains a global advantage of $-5$ secon
 Notably, excluding two aforementioned functions and the shared-view of DiffQueueLength which achieves similar performances to the Fixed15 agent, all the other performance ratings are worse than the PPO agent.
 Interestingly, they are actually equal or worse than the original non-shared-view functions they used as base.
 This evidence supports the idea that sharing the rewards of a function with mediocre performance is probably going to create a worthless reward function which is actually counterproductive.
+Finally, a further experiment as revealed that there is no significant difference in summing neighbours' raw rewards or dumping them with a scaling factor.
+Obviously such shared-view construct and in general this last consideration only makes sense if the same reward function is used for neighbourhood and for the agent iself, because otherwise rewards coming from different sources should be rescaled to match in domain.
 
 \putimage{figures/exp/exp-7-rew.png}{Comparison of DiffWaitingTime and the shared-view reward functions for the DQL agent.}{fig:exp-7-rew}{0.75}
 
 In Figure \ref{fig:exp-7-obs} are shown the results of an experiment in which the agent DQL has been tested with the baseline Density observation function and with the shared-view observation functions presented in the previous chapter (recall that with this shared-view all agents are receiving a concatenation of the baseline and the shared-view features).
 It is observed that almost all shared-view function worsen the performance with respect of the base function.
-Notably, using the function that share the current phase of traffic lights to neighbours, the loss in terms of waiting time and throughput is fairly significant but is counterbalanced with an increase in the average speed which is probably due to more synchronization driven by knowing each other phase.
-% TODO: INSERIRE SPIEGAZIONE CON GREEN-WAVE
+Notably, using the function that share the current phase of traffic lights to neighbours, the loss in terms of waiting time and throughput is fairly significant but is counterbalanced with an increase in the average speed.
+An hypothesis to explain such phenomenon is that the synchronization that is created by sharing phase information allows to some vehicles to effectively flow though the network.
+Passing more than one intersection per cycle means maintaining a higher speed for more time but also more waiting time for other incoming vehicles.
+This is a trade-off which also solutions like Green-Waves have to master.
 
 \putimage{figures/exp/exp-7-obs.png}{Comparison of Density and the shared-view observation functions for the DQL agent.}{fig:exp-7-obs}{0.75}
 
