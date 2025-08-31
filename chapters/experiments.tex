@@ -160,7 +160,7 @@ Of course, on the long run the PPO agent \textbf{may} be able to gain ground on 
 
 \section{RO 4 - Comparing Reinforcement Learning with existing solutions}
 
-Now that there is a clearer picture of the potential of the main reinforcement learning algorithms implemented in SUMO-RL, we need to understand if they stand a chance with fixed cycle traffic light programs.
+Now that there is a clearer picture of the potential of the main reinforcement learning algorithms implemented in SUMO-RL, it is vital to understand if they stand a chance with fixed cycle traffic light programs.
 
 \subsection{RQ 4.1 - What is the impact of cycle time in Fixed Cycle Agents?}
 
@@ -190,21 +190,39 @@ Notably, the cost in terms of secondary memory of this agent is roughly $4$ MB, 
 \putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, PPO and DQL agents and priority based intersections.}{fig:exp-4-tot}{0.75}
 
 \section{RO 5 - Evaluating the impact of Determinism over performances}
-%   \subsection{E11: Explore determinism (DQL)}
-%   \subsection{E12: Explore determinism (PPO)}
-\putimage{figures/exp/exp-5-dql.png}{}{fig:exp-5-dql}{0.75}
-\putimage{figures/exp/exp-5-ppo.png}{}{fig:exp-5-ppo}{0.75}
+
+All the reinforcement learning agents implemented use some kind of non-determinism mechanism in order to randomize a small share of the action that would be chosen. Tabular agents use an Epsilon Greedy curve which yields totally random actions, while neural agents interpret their output as a probability distribution, choosing an action with the high expected reward with high probability and an action with low expected reward with low probability. The choice of allowing non-determinism to partially dominate their behaviour is not obvious and the interest here is to discover if there is a tangible effect on performance and then if the agents are benefiting from it. Two separate experiments have been conducted to answer to these questions.
+
+The DQL agent has been tested with different values for the minimum $\epsilon$ variable, which results are shown in Figure \ref{fig:exp-5-dql}. There is no evidence for significant change over minimum $\epsilon$ value other than little improvements, but there seem to be an hidden threshold for which one of the variants ($0.01$) is significantly worse than the others ($0.05, 0.005, 0.001$). A possible explanation is that the worst value lies in a unlucky middle zone in which values are too noisy to stabilize a traffic light intersection but not noisy enough to produce a significant exploration of the state-action-reward space, meaning less learning power.
+
+The PPO agent has been tested with non-determinism disabled only during evaluation. Disabling it also in the training process would be unfair since reinforcement learning models often benefit from the state-action-reward space exploration. The results are shown in Figure \ref{fig:exp-5-ppo}. Empirical evidence shows that the PPO is too weak to survive without using the probability distribution trick. This is not necessarely a problem: by theory, if the Q table approximation is \textit{correct}, the maximum average expected reward achievable is gained by following such a probabilistic policy. The problem raises in comparison with tabular agents, because even with very low residual $\epsilon$ they achieve a decent performance.
+
+Motivated by this performance drops, \textit{stable\_baselines} PPO implementation was searched for other hyperparameters which may determine the ability of a neural model to learn better.
+An example is the buffer size, which capacity is inversely proportional to the number of learning updates since usually learning is triggered whenever this buffer is filled.
+Another example is the entropy regularization coefficient, which is used to enact an optimal trade-off between exploration and exploitation, being essentially an equivalent in \textit{stable\_baselines} of the Epsilon Greedy algorithm of tabular methods.
+Further experiments have been executed to evaluate their impact, however they have revealed that these changes have no significant effects and that hyperparameter tuning is unlikely to boost PPO performance.
+
+\putimage{figures/exp/exp-5-dql.png}{Comparison of different minimum values for $\epsilon$ (Epsilon-Greedy).}{fig:exp-5-dql}{0.75}
+\putimage{figures/exp/exp-5-ppo.png}{Comparison of disabling/enabling non-determinism in the PPO agent.}{fig:exp-5-ppo}{0.75}
 
 \section{RO 6 - Evaluating the impact of Quantization over performances}
-%   \subsection{E8: Try Unquantized (DQL)}
-%   \subsection{E9: Try Unquantized (PPO)}
-\putimage{figures/exp/exp-6-dql.png}{}{fig:exp-6-dql}{0.75}
-\putimage{figures/exp/exp-6-ppo.png}{}{fig:exp-6-ppo}{0.75}
+
+State quantization is a very useful tecnhique because it allows to reduce a continuous space into a discrete space. However, choosing the right number of quantization levels is essential as a excessively small quantization space would lead to loss of information while with a oversized space it would be impossible to have any significant positive effect.
+
+To verify the presence of better quantization values other than the default one ($16$), the DQL agent has been trained and used in a experiment with different quantization values ($8, 16, 32, 64$), and the results are shown in Figure \ref{fig:exp-6-dql}.
+Evidence shows that the agent is profiting from the reduction of state space, as expected, and in particular there is a hidden threshold between $8$ and $16$ in which benefits get spread more on throughput than in waiting times.
+Notably, each reduction of state space leads to a decrease of average space in favor of better waiting time and/or throughput, as happened in other experiments, and the value of $16$ is confirmed to be an optimal trade-off.
+
+Since the PPO agent by theory is suitable also for continuous state spaces, the same type of experiment has been carried out also for this agent, which results are shown in Figure \ref{fig:exp-6-ppo}.
+Interestingly, PPO takes no significant advantage or damage from using a higher/lower quantization or not using quantization at all.
+
+%% MOTIVATES TO INVESTIGATE DIFFERENT NETWORK SIZES
+
+\putimage{figures/exp/exp-6-dql.png}{Comparison of 8, 16, 32, 64 quantization levels for the DQL agent.}{fig:exp-6-dql}{0.75}
+\putimage{figures/exp/exp-6-ppo.png}{Comparison of 8, 16, 32, 64 quantization levels and continuous-space for the PPO agent.}{fig:exp-6-ppo}{0.75}
 
 \section{RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning}
-%   \subsection{E5: Try Marl On Observation}
-%   \subsection{E6: Try Marl On Reward}
-%   \subsection{E10: Try Partition}
+
 \putimage{figures/exp/exp-7-rew.png}{}{fig:exp-7-rew}{0.75}
 \putimage{figures/exp/exp-7-obs.png}{}{fig:exp-7-obs}{0.75}
 \putimage{figures/exp/exp-7-par.png}{}{fig:exp-7-par}{0.75}
