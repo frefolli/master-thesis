@@ -87,30 +87,23 @@
       - [x] Comparing configurations
       - [x] Generating automated reports
       - [x] Visualizing raw metrics
-- [ ] Experiments and findings
-  - [ ] RQ 0 - Acquiring a baseline
-    - [ ] E0: Find Best Reward Function
-    - [ ] E1: Find Best Observation Function
-  - [ ] RQ 1 - Curriculum vs Monolithic Learning
-    - [ ] E2: Find The Best Dataset
-  - [ ] RQ 2 - Deep vs Tabular Learning
-    - [ ] E3A: Find The Best Tabular Agent
-    - [ ] E3B: Find The Best Deep Agent
-  - [ ] RQ 3 - RL vs Fixed vs Priority
-    - [ ] E3C: Find The Best Fixed Agent
-    - [ ] E7: Try Unattended
-  - [ ] RQ 4 - Determinism Sensitivity
-    - [ ] E11: Explore determinism (DQL)
-    - [ ] E12: Explore determinism (PPO)
-  - [ ] RQ 5 - Quantization Sensitivity
-    - [ ] E8: Try Unquantized (DQL)
-    - [ ] E9: Try Unquantized (PPO)
-  - [ ] RQ 6 - Multi-Agent vs Single-Agent Learning
-    - [ ] E5: Try Marl On Observation
-    - [ ] E6: Try Marl On Reward
-    - [ ] E10: Try Partition
-  - [ ] RQ 7 - Static vs Self-Adaptive System
-    - [ ] E4: Try Self Adaptive
+- [x] Experiments and findings
+  - [x] RO 1 - Acquiring a baseline
+    - [x] RQ 1.1 - Which is the best implemented reward function?
+    - [x] RQ 1.2 - Which is the best implemented observation function?
+  - [x] on{Conclusions
+  - [x] RO 2 - Evaluating the effectiveness of Curriculum Learning
+  - [x] RO 3 - Comparing Deep Learning with Tabular Learning
+    - [x] RQ 3.1 - Which is the best implemented tabular agent?
+    - [x] RQ 3.2 - Which is the best implemented neural agent?
+    - [x] RQ 3.3 - Is Deep Learning worth its cost?
+  - [x] RO 4 - Comparing Reinforcement Learning with existing solutions
+    - [x] RQ 4.1 - What is the impact of cycle time in Fixed Cycle Agents?
+    - [x] RQ 4.2 - Are RL Agents an improvement over non-AI solutions?
+  - [x] RO 5 - Evaluating the impact of Determinism over performances
+  - [x] RO 6 - Evaluating the impact of Quantization over performances
+  - [x] RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning
+  - [x] RO 8 - Evaluating the effectiveness of Self-Adaptive strategies
 - [ ] Threats to Validity
   - [ ] Internal threats
     - [ ] Simplistic simulation model
