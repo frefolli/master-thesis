@@ -20,7 +20,7 @@ Along with the environment, also a set of \textit{Agent}s are created which can 
 
 In most of literature works either there is only one intersection in the scenario or each agent instance is controlling only one of the intersections. As such, also the original SUMO-RL framework \cite{sumorl} developed by Lucas Alegre supported an agent to control only one traffic light intersection.
 The architecture has been revised to allow agents to control more than one intersection by modifying both the agent trait and how the environment works.
-In particular, SUMO-RL has been equipped with an algorithm for partitioning the set of controllable traffic lights intersections on the basis of the number of input lanes or the State Space shape.
+In particular, SUMO-RL has been equipped with an algorithm for partitioning the set of controllable traffic lights intersections on the basis of the number of input lanes or the State-Action Space shape.
 By default, it assigns an distinct instance of agent to each one of the intersections in the network. If needed, it will group intersections based on the aforementioned similarities and assign a single agent instance for each group.
 Furthermore, while the architecture allows for different agent types to act in the simulation at the same time, the system is actually instructed to use only one agent type at a time, because the goals of this research don't require to analyze the behaviour of different agent types on the same network.
 

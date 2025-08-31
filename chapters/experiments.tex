@@ -248,17 +248,24 @@ Obviously such shared-view construct and in general this last consideration only
 
 In Figure \ref{fig:exp-7-obs} are shown the results of an experiment in which the agent DQL has been tested with the baseline Density observation function and with the shared-view observation functions presented in the previous chapter (recall that with this shared-view all agents are receiving a concatenation of the baseline and the shared-view features).
 It is observed that almost all shared-view function worsen the performance with respect of the base function.
-Notably, using the function that share the current phase of traffic lights to neighbours, the loss in terms of waiting time and throughput is fairly significant but is counterbalanced with an increase in the average speed.
-An hypothesis to explain such phenomenon is that the synchronization that is created by sharing phase information allows to some vehicles to effectively flow though the network.
-Passing more than one intersection per cycle means maintaining a higher speed for more time but also more waiting time for other incoming vehicles.
-This is a trade-off which also solutions like Green-Waves have to master.
+However, using the observation function that share the current phase of traffic lights to neighbours, there is a significant gain in terms of waiting time, throughput and average speed.
 
 \putimage{figures/exp/exp-7-obs.png}{Comparison of Density and the shared-view observation functions for the DQL agent.}{fig:exp-7-obs}{0.75}
 
-In Figure \ref{fig:exp-7-par} are shown the results of an experiment in which the controllable intersection have been distributed to a pool of agents with different types of partitioning.
+% In Figure \ref{fig:exp-7-par} are shown the results of an experiment in which the controllable intersection have been distributed to a pool of agents with different types of partitioning.
+% 
+% \putimage{figures/exp/exp-7-par.png}{Comparison of intersection partitioning techniques for Few-Agent/Single-Agent learning with the DQL agent.}{fig:exp-7-par}{0.75}
 
-\putimage{figures/exp/exp-7-par.png}{Comparison of intersection partitioning techniques for Few-Agent/Single-Agent learning with the DQL agent.}{fig:exp-7-par}{0.75}
+\section{RO 8 - Evaluating the effectiveness of Self-Adaptive strategies}
 
-% \section{RO 8 - Evaluating the effectiveness of Self-Adaptive strategies}
-% %   \subsection{E4: Try Self Adaptive}
-% \putimage{figures/exp/exp-8-sam.png}{}{fig:exp-8-sam}{0.75}
+Traffic control system cannot be thought as immutable objects which, once trained, will stay still forever.
+Traffic habits change and so do demand, usually driven by socio-economic factors but also by perception change due to drivens experiencing more or less traffic jams over time.
+Ideally, the system could need to be retrained with updated dataset every year, if not every month with small learning slots.
+What if a reinforcement learning system is able to detect automatically degradation of performance and to schedule a small training session when needed so that is gets stronger over time?
+That's exacly what has been tried applying the Self-Adaptive algorithm explained in the last chapter.
+As usual, the DQL has been the laboratory rat with the best non-shared-view configuration available, and the results of the experiment are shown in Figure \ref{fig:exp-8-sam}.
+Evidence shows that such mechanism would instead worsen performance by a significant amount in all statistics.
+Since the threshold used in triggering a learning slot is very strict, the doubt remained whether it was actually used but an inspection of simulation log has found to be case.
+Therefore, an explanation of this phenomenon is that learning is not a stable process, fluctuations due to Q table updates probably have induced unwanted behavior and therefore worse performance ratings.
+
+\putimage{figures/exp/exp-8-sam.png}{Comparison of DQL agent performance with Self-Adaptive enabled/disabled.}{fig:exp-8-sam}{0.75}
