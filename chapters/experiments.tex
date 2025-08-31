@@ -205,6 +205,7 @@ Further experiments have been executed to evaluate their impact, however they ha
 \putimage{figures/exp/exp-5-dql.png}{Comparison of different minimum values for $\epsilon$ (Epsilon-Greedy).}{fig:exp-5-dql}{0.75}
 \putimage{figures/exp/exp-5-ppo.png}{Comparison of disabling/enabling non-determinism in the PPO agent.}{fig:exp-5-ppo}{0.75}
 
+\newpage
 \section{RO 6 - Evaluating the impact of Quantization over performances}
 
 State quantization is a very useful tecnhique because it allows to reduce a continuous space into a discrete space. However, choosing the right number of quantization levels is essential as a excessively small quantization space would lead to loss of information while with a oversized space it would be impossible to have any significant positive effect.
@@ -223,9 +224,27 @@ Interestingly, PPO takes no significant advantage or damage from using a higher/
 
 \section{RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning}
 
-\putimage{figures/exp/exp-7-rew.png}{}{fig:exp-7-rew}{0.75}
-\putimage{figures/exp/exp-7-obs.png}{}{fig:exp-7-obs}{0.75}
-\putimage{figures/exp/exp-7-par.png}{}{fig:exp-7-par}{0.75}
+Usually modelling a reinforcement learning task as a single-agent activity simplifies the design and implementation of a RL system.
+Even when there is a multi-agent system, an agent is usually thought to observe only a portion of the world directly under its control.
+In the experiment run so far, the agents can observe only their internal state or some features of their incoming/outcoming lanes, and they are rewarded only for the quality of their intersection dynamic program.
+However, each intersection is part of a road network, and as such it influences it (and it is influenced back) though its behavior.
+Each agent may be pursuing a local optimum behavior, but if there is no coordination nor collaboration, at global level the system could fail.
+
+To solve this problem there are mainly two types of approaches: (1) letting an agent to control and observe more than one intersection at the same time and (2) letting an agent to observe neighbour/global zones and to perceive neighbour/global rewards.
+While the first technique has been used by other works in RL literature on traffic lights, the second one is thought to be more interesting since it requires less sophisticated agents and it is more realistic with respect to how alive creatures (especially in collaborative societies) experience learning and tasks. Think for example to a soccer game. % TODO: CITAZIONE
+Intuitively, an intersection benefits from a good behaviour of their neighbours just as a soccer players benefits from playing as a team, in which also the least talented one still wins if a more talented teammate scores.
+Moreover, an intersection willing to observe its surrounding not to impede neighbour intersection follows the same principle as two players synchronising with eyesight for a ball passage.
+In the present section the use of shared-view mechanisms, introduced in the last chapter, will be used to let traffic lights coordinate and learn from collective ownership of rewards and observations. % TODO: SISTEMARE
+
+In Figure \ref{fig:exp-7-rew} are shown the results of an experiment in which the agent DQL has been tested with the baseline DiffWaitingTime reward function and with the shared-view reward functions presented in the previous chapter.
+
+In Figure \ref{fig:exp-7-obs} are shown the results of an experiment in which the agent DQL has been tested with the baseline Density observation function and with the shared-view observation functions presented in the previous chapter (recall that with this shared-view all agents are receiving a concatenation of the baseline and the shared-view features).
+
+In Figure \ref{fig:exp-7-par} are shown the results of an experiment in which the controllable intersection have been distributed to a pool of agents with different types of partitioning.
+
+\putimage{figures/exp/exp-7-rew.png}{Comparison of DiffWaitingTime and the shared-view reward functions for the DQL agent.}{fig:exp-7-rew}{0.75}
+\putimage{figures/exp/exp-7-obs.png}{Comparison of Density and the shared-view observation functions for the DQL agent.}{fig:exp-7-obs}{0.75}
+\putimage{figures/exp/exp-7-par.png}{Comparison of intersection partitioning techniques for Few-Agent/Single-Agent learning with the DQL agent.}{fig:exp-7-par}{0.75}
 
 \section{RO 8 - Evaluating the effectiveness of Self-Adaptive strategies}
 %   \subsection{E4: Try Self Adaptive}
