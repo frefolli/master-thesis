@@ -1,7 +1,82 @@
 \chapter{Experiments and findings}
 %% DATASETS ARE GENERATED WITH SEED = 170701
 
-\section{RO 1 - Acquiring a baseline}
+In this chapter, the following research objectives and questions are addressed thoroughly and individually, with related experiments and conclusions.
+For the scope of these experiments, if not said otherwise, the experimental setting is based on the Celoria scenario \ref{fig:setting-celoria}.
+The datasets are generated using the \textit{generate-datasets} utility with $seed \; = \; 170701$ and the experiments are run automatically by the \textit{executor} module.
+All the experiments are executed with the computational resources provided by hpc-ReGAInS@DISCo, which is a MUR Department of Excellence Project within the Department of Informatics, Systems and Communication at the University of Milan-Bicocca \footnote{\href{https://www.disco.unimib.it}{https://www.disco.unimib.it}}.
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro1}{RO 1}: Acquiring a baseline}
+\hfill \break
+\textit{\hypertarget{rq1.1}{RQ 1.1}: Which is the best implemented reward function?}
+\hfill \break
+\textit{\hypertarget{rq1.2}{RQ 1.2}: Which is the best implemented observation function?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro2}{RO 2}: Evaluating the effectiveness of Curriculum Learning}
+\hfill \break
+\textit{\hypertarget{rq2.1}{RQ 2.1}: Does curriculum learning leads to better running performances?}
+\hfill \break
+\textit{\hypertarget{rq2.2}{RQ 2.2}: Is there a loss of knowledge due to curriculum learning not being exhaustive?}
+\hfill \break
+\textit{\hypertarget{rq2.3}{RQ 2.3}: Does adding disruption episodes in the training set enable agents to tackle conditions?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro3}{RO 3}: Comparing Deep Learning with Tabular Learning}
+\hfill \break
+\textit{\hypertarget{rq3.1}{RQ 3.1}: Which is the best implemented tabular agent?}
+\hfill \break
+\textit{\hypertarget{rq3.2}{RQ 3.2}: Which is the best implemented neural agent?}
+\hfill \break
+\textit{\hypertarget{rq3.3}{RQ 3.3}: Is Deep Learning worth its cost?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro4}{RO 4}: Comparing Reinforcement Learning with existing solutions}
+\hfill \break
+\textit{\hypertarget{rq4.1}{RQ 4.1}: What is the impact of cycle time in Fixed Cycle Agents?}
+\hfill \break
+\textit{\hypertarget{rq4.2}{RQ 4.2}: Are RL Agents an improvement over non-AI solutions?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro5}{RO 5}: Evaluating the impact of Determinism over performances}
+\hfill \break
+\textit{\hypertarget{rq5.1}{RQ 5.1}: Is non-determinism helping the agents?}
+\hfill \break
+\textit{\hypertarget{rq5.2}{RQ 5.2}: Locking determinism does cause a significant drop in performance?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro6}{RO 6}: Evaluating the impact of Quantization over performances}
+\hfill \break
+\textit{\hypertarget{rq6.1}{RQ 6.1}: Do agents benefit from a small quantization?}
+\hfill \break
+\textit{\hypertarget{rq6.2}{RQ 6.2}: Do continuous-space agents benefit from disabling quantization?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro7}{RO 7}: Comparing Multi-Agent Learning with Single-Agent Learning}
+\hfill \break
+\textit{\hypertarget{rq7.1}{RQ 7.1}: Does sharing rewards to neighbour agents improve globally the solution?}
+\hfill \break
+\textit{\hypertarget{rq7.2}{RQ 7.2}: Does sharing observations to neighbour agents improve globally the solution?}
+
+\hfill \break
+\noindent
+\textbf{\hypertarget{ro8}{RO 8}: Evaluating the effectiveness of Self-Adaptive strategies}
+\hfill \break
+\textit{\hypertarget{rq8.1}{RQ 8.1}: Can a reinforcement learning system be designed to update itself as needed?}
+\hfill \break
+\textit{\hypertarget{rq8.2}{RQ 8.2}: Is the self-adaptive system improving performance over time?}
+\hfill \break
+\textit{\hypertarget{rq8.3}{RQ 8.3}: Is the self-adaptive system updating as intended?}
+
+\section{Acquiring a baseline}
   
   Before even evaluating novel approaches in Reinforcement Learning it is useful to investigate which are the best base settings. This involves finding the best Reward function and the best Observation function among the implemented set of functions. To optimize these two hyperparameters, two distinct experiments have been performed in parallel, each one comparing the various implemented functions.
 
@@ -21,7 +96,7 @@
 \end{lstlisting}
 \end{minipage}
 
-\subsection{RQ 1.1 - Which is the best implemented reward function?}
+\paragraph{Which is the best implemented reward function?}
 
 Each of the basic reward functions (\textit{dwt, as, ql, dql, p}) have been used to train an agent with the same dataset and seeds.
 These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
@@ -37,7 +112,7 @@ Since its performance are notably worse, to increase the readibility of the prev
 
 \putimage{figures/exp/exp-1-rew-a.png}{Comparison of DiffWaitingTime (dwt), AverageSpeed (as), QueueLength (ql), DiffQueueLength (dql) and Pressure (p) reward functions.}{fig:exp-1-rew-a}{0.75}
 
-\subsection{RQ 1.2 - Which is the best implemented observation function?}
+\paragraph{Which is the best implemented observation function?}
 
 Each of the basic observation functions (\textit{default, s, d, q}) have been used to train an agent with the same dataset and seeds. These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
 
@@ -57,12 +132,12 @@ A possible reason to explain this phenomenon is the fact that the state space si
 
 \putimage{figures/exp/exp-1-obs-a.png}{Comparison of Default (default), Speed (s), Density (d) and Queue (q) observation functions.}{fig:exp-1-obs-a}{0.75}
 
-\subsection{Conclusions}
+\paragraph{Conclusions}
 
 Using the \textit{DiffWaitingTime} reward function in combination with the \textit{Density} observation function allows to reach a good compromise between average vehicle speed and waiting times.
 Notably, every \textit{"winning"} option is among the ones with slower average speed, but even the lowest value ($\sim9$) is similar or higher than the average speed in the major metropolitan areas ($\sim 6 m/s \; = \; 20 km/h$).
 
-\section{RO 2 - Evaluating the effectiveness of Curriculum Learning}
+\section{Evaluating the effectiveness of Curriculum Learning}
 
 Using a proper training dataset is at least as important as choosing the right reward and observation functions.
 So far a monolithic dataset have been used in experiments.
@@ -122,14 +197,14 @@ As a consequence, real-world daily traffic data can be used for training without
 % Is there a loss of knowledge due to curriculum learning not being exhaustive? Probably no
 % Does adding disruption episodes in the training set enable agents to tackle conditions? Yes, its lack leads to a loss of knowledge
 
-\section{RO 3 - Comparing Deep Learning with Tabular Learning}
+\section{Comparing Deep Learning with Tabular Learning}
 
 The QLAgent used so far is an example of tabular method for reinforcement learning.
 In Chapter 3 more reinforcement learning have been presented and now the interest is in comparing \textit{simpler} \textbf{tabular} methods with the more \textit{sophisticated} \textbf{neural} methods.
 In order to evaluate the potential of those approaches, two distinct experiments were conducted comparing the different tabular/neural agents available on the same simulation conditions.
 In both the experiments, the dataset being used is \textit{Curriculum Daily + Disruption}, the observation function is \textit{Density} and the reward function is \textit{DiffWaitingTime}.
 
-\subsection{RQ 3.1 - Which is the best implemented tabular agent?}
+\paragraph{Which is the best implemented tabular agent?}
 
 As can be seen in Figure \ref{fig:exp-3-tab}, the QL and DQL agents show a clear advantage over the other model in terms of average speed, throughput (arrival/departure rate) and accumulated waiting time.
 In fact, their metrics are very similar: the tie is break using the accumulated waiting time metric in which the DQL agent is $1$ second faster.
@@ -138,7 +213,7 @@ Its slower score record in accumulated waiting time is probably due to SARSA's t
 
 \putimage{figures/exp/exp-3-tab.png}{Comparison of QL, SARSA and DQL agents.}{fig:exp-3-tab}{0.75}
 
-\subsection{RQ 3.2 - Which is the best implemented neural agent?}
+\paragraph{Which is the best implemented neural agent?}
 
 Figure \ref{fig:exp-3-neu} shows that the PPO agent bulldozes the DQN agent in almost every metric.
 Interestingly, the shape of the DQN curve in this graph is similar to the one of the worst reward/observation functions (Figures \ref{fig:exp-1-rew} and \ref{fig:exp-1-obs}).
@@ -151,18 +226,18 @@ This hypothesis is supported with empirical evidence in the field of reinforceme
 
 \putimage{figures/exp/exp-3-neu.png}{Comparison of DQN and PPO agents.}{fig:exp-3-neu}{0.75}
 
-\subsection{RQ 3.3 - Is Deep Learning worth its cost?}
+\paragraph{Is Deep Learning worth its cost?}
 
-The results of the experiments being carried out show that, given the same training time and conditions, a sophisticated (yet simple) tabular agent based on Q Learning can easily outperform one of the most popular and powerful neural network algorithm for reinforcement learning.
+Figure \ref{fig:exp-3-tot} summarizes the results of the experiments being carried out and shows that, given the same training time and conditions, a sophisticated (yet simple) tabular agent based on Q Learning can easily outperform one of the most popular and powerful neural network algorithm for reinforcement learning.
 Of course, on the long run the PPO agent \textbf{may} be able to gain ground on DQL with more training episodes, but the use of conditional is needed and the empirical evidence \cite{kozlica2023deep} suggests that usually PPO has a initial steep learning curve and after some time it comes into a plateau, just as tabular methods.
 
 \putimage{figures/exp/exp-3-tot.png}{Comparison of DQL and PPO agents.}{fig:exp-3-tot}{0.75}
 
-\section{RO 4 - Comparing Reinforcement Learning with existing solutions}
+\section{Comparing Reinforcement Learning with existing solutions}
 
 Now that there is a clearer picture of the potential of the main reinforcement learning algorithms implemented in SUMO-RL, it is vital to understand if they stand a chance with fixed cycle traffic light programs.
 
-\subsection{RQ 4.1 - What is the impact of cycle time in Fixed Cycle Agents?}
+\paragraph{What is the impact of cycle time in Fixed Cycle Agents?}
 
 In order to compare RL agents to a fixed cycle agent, it is important to select the best performing cycle time for it to work with. Figure \ref{fig:exp-4-fca} shows a comparison of four possible cycle times which are widely used in urban controlled intersections.
 A singular pattern can be noted in agent shapes: the lower is cycle time, the better are performance ratings.
@@ -175,7 +250,7 @@ Notably, the is an hidden threshold between $15$ seconds and $30$ seconds for wh
 
 \putimage{figures/exp/exp-4-fca.png}{Comparison of Fixed15, Fixed30, Fixed45 and Fixed60 agents.}{fig:exp-4-fca}{0.75}
 
-\subsection{RQ 4.2 - Are RL Agents an improvement over non-AI solutions?}
+\paragraph{Are RL Agents an improvement over non-AI solutions?}
 
 Now that the best configuration for cycle time is known, an experiment was run to compare two RL agents (PPO and DQL) with the best FixedCycle agent (Fixed15) and with unregulated intersection.
 The reasoning behind the choice of running also a priority-based intersection is that in urban tissues, not all the busy intersections are regulated with traffic light, therefore the aim is to experimentally verify which is impact of installing a traffic light on such intersections. The results of this experiment are shown in Figure \ref{fig:exp-4-tot}.
@@ -189,7 +264,7 @@ Notably, the cost in terms of secondary memory of this agent is roughly $4$ MB, 
 
 \putimage{figures/exp/exp-4-tot.png}{Comparison of Fixed15, PPO and DQL agents and priority based intersections.}{fig:exp-4-tot}{0.75}
 
-\section{RO 5 - Evaluating the impact of Determinism over performances}
+\section{Evaluating the impact of Determinism over performances}
 
 All the reinforcement learning agents implemented use some kind of non-determinism mechanism in order to randomize a small share of the action that would be chosen. Tabular agents use an Epsilon Greedy curve which yields totally random actions, while neural agents interpret their output as a probability distribution, choosing an action with the high expected reward with high probability and an action with low expected reward with low probability. The choice of allowing non-determinism to partially dominate their behaviour is not obvious and the interest here is to discover if there is a tangible effect on performance and then if the agents are benefiting from it. Two separate experiments have been conducted to answer to these questions.
 
@@ -206,7 +281,7 @@ Further experiments have been executed to evaluate their impact, however they ha
 \putimage{figures/exp/exp-5-ppo.png}{Comparison of disabling/enabling non-determinism in the PPO agent.}{fig:exp-5-ppo}{0.75}
 
 \newpage
-\section{RO 6 - Evaluating the impact of Quantization over performances}
+\section{Evaluating the impact of Quantization over performances}
 
 State quantization is a very useful tecnhique because it allows to reduce a continuous space into a discrete space. However, choosing the right number of quantization levels is essential as a excessively small quantization space would lead to loss of information while with a oversized space it would be impossible to have any significant positive effect.
 
@@ -222,7 +297,7 @@ Interestingly, PPO takes no significant advantage or damage from using a higher/
 \putimage{figures/exp/exp-6-dql.png}{Comparison of 8, 16, 32, 64 quantization levels for the DQL agent.}{fig:exp-6-dql}{0.75}
 \putimage{figures/exp/exp-6-ppo.png}{Comparison of 8, 16, 32, 64 quantization levels and continuous-space for the PPO agent.}{fig:exp-6-ppo}{0.75}
 
-\section{RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning}
+\section{Comparing Multi-Agent Learning with Single-Agent Learning}
 
 Usually modelling a reinforcement learning task as a single-agent activity simplifies the design and implementation of a RL system.
 Even when there is a multi-agent system, an agent is usually thought to observe only a portion of the world directly under its control \cite{alegre2021quantifying}.
@@ -236,6 +311,8 @@ Intuitively, an intersection benefits from a good behaviour of their neighbours 
 Moreover, an intersection willing to observe its surrounding not to impede neighbour intersection follows the same principle as two players synchronising with eyesight for a ball passage.
 In the present section the shared-view mechanisms introduced in the last chapter will be used to let traffic lights coordinate and learn from collective ownership of rewards and observations.
 
+\paragraph{Does sharing rewards to neighbour agents improve globally the solution?}
+
 In Figure \ref{fig:exp-7-rew} are shown the results of an experiment in which the agent DQL has been tested with the baseline DiffWaitingTime reward function and with the shared-view reward functions presented in the previous chapter.
 As expected, the the traffic light system gains a global advantage of $-5$ seconds in accumulated waiting time and $-2$ seconds in instant waiting time by sharing the rewards of the DiffWaitingTime function in the neighbourhood.
 Notably, excluding two aforementioned functions and the shared-view of DiffQueueLength which achieves similar performances to the Fixed15 agent, all the other performance ratings are worse than the PPO agent.
@@ -245,6 +322,8 @@ Finally, a further experiment as revealed that there is no significant differenc
 Obviously such shared-view construct and in general this last consideration only makes sense if the same reward function is used for neighbourhood and for the agent iself, because otherwise rewards coming from different sources should be rescaled to match in domain.
 
 \putimage{figures/exp/exp-7-rew.png}{Comparison of DiffWaitingTime and the shared-view reward functions for the DQL agent.}{fig:exp-7-rew}{0.75}
+
+\paragraph{Does sharing observations to neighbour agents improve globally the solution?}
 
 In Figure \ref{fig:exp-7-obs} are shown the results of an experiment in which the agent DQL has been tested with the baseline Density observation function and with the shared-view observation functions presented in the previous chapter (recall that with this shared-view all agents are receiving a concatenation of the baseline and the shared-view features).
 It is observed that almost all shared-view function worsen the performance with respect of the base function.
@@ -256,7 +335,7 @@ However, using the observation function that share the current phase of traffic 
 % 
 % \putimage{figures/exp/exp-7-par.png}{Comparison of intersection partitioning techniques for Few-Agent/Single-Agent learning with the DQL agent.}{fig:exp-7-par}{0.75}
 
-\section{RO 8 - Evaluating the effectiveness of Self-Adaptive strategies}
+\section{Evaluating the effectiveness of Self-Adaptive strategies}
 
 Traffic control system cannot be thought as an immutable object which, once trained, will stay still forever.
 Traffic habits change and so do demand, usually driven by socio-economic factors but also by perception change due to drivens experiencing more or less traffic jams over time.

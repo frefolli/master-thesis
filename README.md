@@ -91,7 +91,6 @@
   - [x] RO 1 - Acquiring a baseline
     - [x] RQ 1.1 - Which is the best implemented reward function?
     - [x] RQ 1.2 - Which is the best implemented observation function?
-  - [x] on{Conclusions
   - [x] RO 2 - Evaluating the effectiveness of Curriculum Learning
   - [x] RO 3 - Comparing Deep Learning with Tabular Learning
     - [x] RQ 3.1 - Which is the best implemented tabular agent?
