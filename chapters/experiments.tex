@@ -216,7 +216,7 @@ Its slower score record in accumulated waiting time is probably due to SARSA's t
 \paragraph{Which is the best implemented neural agent?}
 
 Figure \ref{fig:exp-3-neu} shows that the PPO agent bulldozes the DQN agent in almost every metric.
-Interestingly, the shape of the DQN curve in this graph is similar to the one of the worst reward/observation functions (Figures \ref{fig:exp-1-rew} and \ref{fig:exp-1-obs}).
+Interestingly, the shape of the DQN curve in this graph is similar to the one of the worst reward/observation functions (Figures \ref{fig:exp-1-rew-a} and \ref{fig:exp-1-obs-a}).
 The only difference is that the underlying situation is very different.
 SUMO-RL allows researches to perform a graphical demo in which the agents and their configuration can be seen in action.
 A quick inspection using the demo mode revealed that the DQN agent wasn't learning at all.
@@ -280,7 +280,6 @@ Further experiments have been executed to evaluate their impact, however they ha
 \putimage{figures/exp/exp-5-dql.png}{Comparison of different minimum values for $\epsilon$ (Epsilon-Greedy).}{fig:exp-5-dql}{0.75}
 \putimage{figures/exp/exp-5-ppo.png}{Comparison of disabling/enabling non-determinism in the PPO agent.}{fig:exp-5-ppo}{0.75}
 
-\newpage
 \section{Evaluating the impact of Quantization over performances}
 
 State quantization is a very useful tecnhique because it allows to reduce a continuous space into a discrete space. However, choosing the right number of quantization levels is essential as a excessively small quantization space would lead to loss of information while with a oversized space it would be impossible to have any significant positive effect.
