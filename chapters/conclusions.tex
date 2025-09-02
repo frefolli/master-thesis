@@ -4,15 +4,15 @@ This chapter summarizes the main contributions and findings of the present work,
 
 \section{Thesis contributions}
 
-Through various experiments, this thesis investigated the application of popular concepts such as curriculum learning, multi agent learning, self-adaptive systems to traffic light control and traffic calming.
+Through various experiments, this thesis investigated the application of popular concepts such as curriculum learning, multi agent learning, self-adaptive systems to traffic light control and reinforcement learning.
 These are supported by the SUMO-RL framework, which has been developed as a fork of the original SUMO-RL by Lucas Alegre in order to enhance its capabilities, increase its performance and overcome its limits.
 The extended framework now supports a total of $4$ observation function, $5$ reward function, $3$ tabular-based RL agents, $2$ deep RL agents, the fixed cycle agent with $4$ cycle programs and the ability to run priority-based unregulated intersections (as comparison).
 Moreover SUMO-RL allows to use Multi Agent Learning techniques such as sharing rewards and state, allocate more than one intersection to an agent and is equipped with a self-adaptive algorithm for letting a deployed agent learn when performances are degrading.
 
 The work began by establishing a solid baseline for RL agents, identifying the most effective reward and observation functions, which serve as a foundation for subsequent experiments.
-The best observation function is based on lane density, which is good because it is fairly easy to detect with real-world equipment, saving up to $\frac{2}{3}$ of waiting times.
-The best reward function is based on the derivate of accumulated waiting times, saving up to $\frac{2}{3}$ of waiting times.
-Although it has achieves better results, transit authority should go for more easy metrics to track such as queue lengths or the derivate of queue lengths, which were proved experimentally to be similar in performance to the best reward function.
+The best observation function is based on lane density, which is good because it is fairly easy to detect with real-world equipment, saving up to $\sim 50\%$ of waiting times.
+The best reward function is based on the derivative of accumulated waiting times, saving up to $\sim 60\%$ of waiting times.
+Although it has achieves better results, transit authority should go for more easy metrics to track such as queue lengths or the derivative of queue lengths, which were proved experimentally to be similar in performance to the best reward function.
 
 Building on this, this research compared different ways of building datasets for training traffic light agents.
 Curriculum learning was successfully applied in its combinatorial interpretation in order to simplify the structure of training episodes as it achieves the same performance levels of the monolithic one which exhaustively presents the agent with almost all possible traffic conditions (driven by a traffic registry).
@@ -25,11 +25,15 @@ This study has also proven the better efficiency of short cycle program with res
 
 This research has analyzed the sensitivity of learning agents to various hyperparameters.
 In particular, small sized quantization has been confirmed to be more effective in tabular agents, which is an expected result due to the fact that those are essentially dictionaries of state and actions, bigger quantization means more state space to explore and longer training times.
-Moreover, the non-determinism behaviour often implemented in reinforcement learning models has proven to be useful not only in training phases but also in evaluation phases since it boosts significantly performances.
+Moreover, the non-deterministic behaviour often implemented in reinforcement learning models has proven to be useful not only in training phases but also in evaluation phases since it boosts significantly performances.
 Because Markov Decision Processes and value-function approaches are probabilistic by nature, this result should not be unfamiliar.
 
-%TODO: MARL vs SARL
-%TODO: SA vs STATIC
+The Multi Agent Learning approaches based on observation/reward sharing has been subject of experiments in which the baseline has been compared with the various shared view functions.
+Sharing the current traffic light phase to neighbours has been proven to be beneficial for agents with increased throughput and decreased waiting times.
+Also sharing rewards in the form of derivative of accumulated waiting time is beneficial and a sensitivity analysis revealed that summing raw neighbourhood rewards is just as effective as applying a value dumping (that is, a weighted sum), which is a considerable detail.
+
+Finally, this work has investigated the effectiveness of self-adaptive strategies applied to reinforcement learning, examining whether agents are able to autonomously update their policies in response to changing conditions.
+A self-adaptive algorithm has been implemented but, contrary to expectations, the experimental results reveal that it proves unfeasible in the tested scenarios, as it leads to increased waiting times and reduced throughput compared to non-adaptive methods due to the distortions that learning induces.
 
 \section{Threads to validity}
 
