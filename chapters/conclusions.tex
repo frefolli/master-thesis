@@ -37,33 +37,25 @@ A self-adaptive algorithm has been implemented but, contrary to expectations, th
 
 \section{Threats to validity}
 
-% Internal Threats
-% - SUMO simulation model has a low degree of realism and the most lightweight options were used in simulation. But often works of the same type do the same and here we at least tried to introduce realistic phenomena like artificial queues at the border of the scenario.
-% - We tried no advanced Deep Learning model, nor transformer based architecture, nor advanced tweaks on those models. However we tried three different tabular models (SARSA, QL and Double QL), two neural models (DQN and PPO) done a sensitivity analysis on many hyperparameters such as quantization, epsilon greedy curves, buffer size, entropy regularization coefficient and so on in order to get the max out of it.
-% - Other works in the area use huge observation functions which supply an agent with a lot of data such as current phase, lane densities, lane queue lengths and so on. We tried to keep things as small as possible by providing a "Default" function which is exactly that mixture and other observation functions with just one metric such as lane density, lane queue lengths, lane average speeds, ... etc. Moreover, results shown that the much simpler "Density" function bulldozes the "state of art" observation function "Default".
-% - Rewards computed by reward functions use a dumping so that their values remain tractable, because extreme reward signals are known to cause training instability.
-% - The training process had 4 episodes which is considered low according to literature (usually goes up to 100) but our episodes last for 100k seconds each which is a lot. Therefore an agent get to train for the equivalent of almost a week, which we think is enough to pronounce conclusions (supported by evidence because the DQL agent is able to learn a policy which with only 4 episodes).
-% - The dataset is synthetic and it is subject to biases, but it was created following realistic phenomena like peak/off-peak cycles and time-of-day directions (home -> work and in evening work -> home). Other works often rely also on synthetic data but some times is very simplistic (like NS vs EW equal flows or only in one direction).
-% External Threats
-% - In experiment we used tiny scenarios with a few intersection but it is limited both by computational resources needed and by TraCI inefficiency. Moreover, other works often don't used networks more sophisticated than ours.
-% - The datasets are synthetic and not anchored to a real world Origin/Destination matrix. This is due to the fact that transit authorities that public traffic data either public OD matrices for huge networks which are too big to be simulated with resources available or provide insufficient data consistent of only single vehicles which are not enough to reconstruct a consistent flow.
-
-The limitations of this research activity are acknowledged as threats to internal validity, affecting design choices and the ability to support claims, and threats to external validity, affecting the generalizability of conclusions driven by experimental results.
-Some measures were adopted to mitigate threats (such as introducing realistic traffic patterns, tuning hyperparameters, and extending episode durations), which supports the credibility of the findings, while also identifying areas for improvement in future research.
-Despite these limitations, the design choices made in this thesis balance a trade-off between feasibility and realism, aligning with practices commonly found in the literature.
+This study is affected by limitations driven by design choices, performance constraints and available resources.
+However, several mitigation actions were took in order to balance the trade-off between feasibility and realism, aligning with practices commonly found in the literature or establishing claim boundaries.
 
 \paragraph{Internal validity}
 
-SUMO provides only a limited degree of realism, and the most lightweight configuration was adopted to make experiments feasible.
-While this reduces fidelity, the choice is consistent with other studies in the field, and additional elements such as artificial queues at the network borders were introduced to approximate real-world dynamics.
-The range of models tested also represents a limitation: no advanced deep learning architectures, such as transformers, were explored.
-Nevertheless, three tabular agents (SARSA, Q-Learning, Double Q-Learning) and two neural ones (DQN, PPO) were implemented, and sensitivity analyses were carried out on key hyperparameters to ensure fair evaluation.
-Observation and reward design also introduce potential biases.
-Unlike other works that rely on large observation spaces, this thesis deliberately explored reduced functions.
-Results indicate that a simple \textit{Density} function outperforms the richer \textit{Default} function, suggesting that smaller state representations can be effective.
-Reward signals were dampened to avoid extreme reward signals which are known to cause training instability.
-Training was limited to four episodes, a smaller number than commonly used in the literature.
+Despite SUMO provides a limited degree of realism, it is rather slow, especially when used through TraCI.
+Therefore it was configured in the most lightweight possible in order to rationalize the usage of computational resources.
+This means having to deal with unrealistic phenomena such as lane changes being instant or vehicles interpenetrating on collision.
+Nonetheless, this low fidelity nature was mitigated with flow configuration tweaks in order to approximate real-world dynamics, such as simulating artificial queues at network border and allowing vehicles to use arbitrary lanes on entrance.
+
+Unlike most works in this field, in this thesis observation functions were deliberately chosen to produce a small state space because the interest was on determining from which features agents benefit the most.
+Interestingly, results support this decision because a simple \textit{Density} function outperforms the richer \textit{Default} function, which resembles the ones often used in literature, suggesting that smaller state representations can be more effective than a more complete one.
+
+Moreover, training was limited to four episodes, a smaller number than commonly used in the literature.
 However, each episode lasted 100,000 simulated seconds, giving agents exposure to extended traffic patterns, and effective learning was still achieved.
+
+Also the range of models tested was limited to the base forms of reinforcement learning algorithsm without advanced architectures such as transformers.
+Nevertheless, three tabular agents (SARSA, Q-Learning, Double Q-Learning) and two neural ones (DQN, PPO) were implemented, and sensitivity analyses were carried out on key hyperparameters to ensure fair evaluation.
+Again, the aim was verifying the potential of different approaches with limited resources.
 
 \paragraph{External validity}
 
@@ -73,15 +65,6 @@ The datasets used for training and evaluation are synthetic, therefore not direc
 Publicly available OD data are either too large to simulate with available resources or too sparse to reconstruct meaningful flows.
 
 \section{Future Works}
-
-% Future Works:
-% - Try out incremental learning: instead of monolithic or curriculum learning in the form of a typical workday/weekday, I would like to verify if a dataset made of incrementally intensive casual traffic is able to produce better results of the curriculum learning datasets used in this study. The incremental effort interpretation of curriculum learning has been succesfully applied in other works so i would like to compare my dataset with their.
-% - Experiment with larger networks.
-% - Verify whether agents in a Multi Agent Learning context spontaneously develop a significant degree of modularity, that is: given a set of trained agents with MARL, can i swap them without regret?
-% - Verify if an agent controlling more than one intersection can achieve better results than one distinct agent per intersection, where the agent controlling more intersection means that is plays the role of different ones at the same time.
-% - Experiment with transfer learning to adapt an already trained agent for a intersection of N lanes to work with an intersection of M != N lanes.
-% - Experiment with more training episodes what is the growth rate of knowledge
-% - Verify if given a trained agent (Magister) and a newbie agent (Studens) in the same network, if the newbie agent in training gets benefit from being with a more skilled agent and/or if the trained agent is damaged by inexperience of the untrained agent.
 
 With adequate equipment and time it would be important to perform experiments on broader networks and with more training episodes to confirm the results obtain in this study.
 Future research should investigate dataset acquisition strategies alternative to the monolithic or curriculum-based approaches used in this study.

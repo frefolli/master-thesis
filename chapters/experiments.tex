@@ -1,88 +1,10 @@
 \chapter{Experiments and findings}
 %% DATASETS ARE GENERATED WITH SEED = 170701
 
-In this chapter, the following research objectives and questions are addressed thoroughly and individually, with related experiments and conclusions.
+In this chapter, the research objectives and questions introduced in Chapter 1 are addressed thoroughly and individually, with related experiments and conclusions.
 For the scope of these experiments, if not said otherwise, the experimental setting is based on the Celoria scenario \ref{fig:setting-celoria}.
 The datasets are generated using the \textit{generate-datasets} utility with $seed \; = \; 170701$ and the experiments are run automatically by the \textit{executor} module.
 All the experiments are executed with the computational resources provided by hpc-ReGAInS@DISCo, which is a MUR Department of Excellence Project within the Department of Informatics, Systems and Communication at the University of Milan-Bicocca \footnote{\href{https://www.disco.unimib.it}{https://www.disco.unimib.it}}.
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro1}{RO 1}: Acquiring a baseline}
-\hfill \break
-\textit{\hypertarget{rq1.1}{RQ 1.1}: Which is the best implemented reward function?}
-\hfill \break
-\textit{\hypertarget{rq1.2}{RQ 1.2}: Which is the best implemented observation function?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro2}{RO 2}: Evaluating the effectiveness of Curriculum Learning}
-\hfill \break
-\textit{\hypertarget{rq2.1}{RQ 2.1}: Does curriculum learning leads to better running performances?}
-\hfill \break
-\textit{\hypertarget{rq2.2}{RQ 2.2}: Is there a loss of knowledge due to curriculum learning not being exhaustive?}
-\hfill \break
-\textit{\hypertarget{rq2.3}{RQ 2.3}: Does adding disruption episodes in the training set enable agents to tackle conditions?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro3}{RO 3}: Comparing Deep Learning with Tabular Learning}
-\hfill \break
-\textit{\hypertarget{rq3.1}{RQ 3.1}: Which is the best implemented tabular agent?}
-\hfill \break
-\textit{\hypertarget{rq3.2}{RQ 3.2}: Which is the best implemented neural agent?}
-\hfill \break
-\textit{\hypertarget{rq3.3}{RQ 3.3}: Is Deep Learning worth its cost?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro4}{RO 4}: Comparing Reinforcement Learning with existing solutions}
-\hfill \break
-\textit{\hypertarget{rq4.1}{RQ 4.1}: What is the impact of cycle time in Fixed Cycle Agents?}
-\hfill \break
-\textit{\hypertarget{rq4.2}{RQ 4.2}: Are RL Agents an improvement over non-AI solutions?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro5}{RO 5}: Evaluating the impact of determinism over performances}
-\hfill \break
-\textit{\hypertarget{rq5.1}{RQ 5.1}: Is non-determinism helping the agents?}
-\hfill \break
-\textit{\hypertarget{rq5.2}{RQ 5.2}: Locking determinism does cause a significant drop in performance?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro6}{RO 6}: Evaluating the impact of quantization over performances}
-\hfill \break
-\textit{\hypertarget{rq6.1}{RQ 6.1}: Do agents benefit from a small quantization?}
-\hfill \break
-\textit{\hypertarget{rq6.2}{RQ 6.2}: Do continuous-space agents benefit from disabling quantization?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro7}{RO 7}: Comparing Multi-Agent Learning with Single-Agent Learning}
-\hfill \break
-\textit{\hypertarget{rq7.1}{RQ 7.1}: Does sharing rewards to neighbour agents improve globally the solution?}
-\hfill \break
-\textit{\hypertarget{rq7.2}{RQ 7.2}: Does sharing observations to neighbour agents improve globally the solution?}
-
-\hfill \break
-\noindent
-\textbf{\hypertarget{ro8}{RO 8}: Evaluating the effectiveness of Self-Adaptive strategies}
-\hfill \break
-\textit{\hypertarget{rq8.1}{RQ 8.1}: Can a reinforcement learning system be designed to update itself as needed?}
-\hfill \break
-\textit{\hypertarget{rq8.2}{RQ 8.2}: Is the self-adaptive system improving performance over time?}
-\hfill \break
-\textit{\hypertarget{rq8.3}{RQ 8.3}: Is the self-adaptive system updating as intended?}
-
-% \hfill \break
-% \noindent
-% \textbf{\hypertarget{ro9}{RO 9}: Assessing the impact of agent allocation strategies}
-% \hfill \break
-% \textit{\hypertarget{rq9.1}{RQ 9.1}: Does using an agent controlling multiple intersections of the same type achieve better traffic performance than an agent per intersection?}
-% \hfill \break
-% \textit{\hypertarget{rq9.1}{RQ 9.1}: Are atomic agents less modular than abstract agents?}
 
 \section{Acquiring a baseline}
   
