@@ -82,3 +82,15 @@ Publicly available OD data are either too large to simulate with available resou
 % - Experiment with transfer learning to adapt an already trained agent for a intersection of N lanes to work with an intersection of M != N lanes.
 % - Experiment with more training episodes what is the growth rate of knowledge
 % - Verify if given a trained agent (Magister) and a newbie agent (Studens) in the same network, if the newbie agent in training gets benefit from being with a more skilled agent and/or if the trained agent is damaged by inexperience of the untrained agent.
+
+With adequate equipment and time it would be important to perform experiments on broader networks and with more training episodes to confirm the results obtain in this study.
+Future research should investigate dataset acquisition strategies alternative to the monolithic or curriculum-based approaches used in this study.
+For example, Curriculum Learning can also be interpreted as a set of incrementally difficult task, approach that has been successfully applied in other contexts.
+It would be valuable to investigate the effectiveness of datasets made of casual traffic with gradually increasing intensity.
+Further investigations should also address transfer learning, testing whether an agent trained to manage an intersection of a given size (e.g., with $N$ lanes) can be adapted effectively to intersections of different sizes (e.g., with $M \ne N$ lanes).
+On the same line, it would be interesting to verify with future experiments whether agents trained jointly can later be swapped across different networks or scenarios without significant performance degradation, to test their degree of modularity.
+The degree of generalization of using a intersection allocation strategy, such as partitioning them by state space size, could also be investigated.
+In other words, whether an agent controlling multiple intersections simultaneously can outperform configurations where each intersection is managed by a distinct agent.
+Finally, it would be worth exploring heterogeneous learning environments, where a trained agent (Magister) operates alongside an untrained agent (Studens).
+Such experiments could reveal whether the less experienced agent benefits from the presence of the more skilled one, and whether the latter suffers from the inexperience of its partner.
+All these directions can be supported by the current version of SUMO-RL which already allows almost all of these variations without changes.
