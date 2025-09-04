@@ -271,9 +271,9 @@ However, using the observation function that share the current phase of traffic 
 Traffic control system cannot be thought as an immutable object which, once trained, will stay still forever.
 Traffic habits change and so do demand, usually driven by socio-economic factors but also by perception change due to drivens experiencing more or less traffic jams over time.
 Ideally, the system could need to be retrained with updated dataset every year, if not every month with small learning slots.
-What if a reinforcement learning system is able to detect automatically degradation of performance and to schedule a small training session when needed so that is gets stronger over time?
+What if a reinforcement learning system could automatically detect performance degradation and schedule a small training session when needed, so that it gets stronger over time?
 That's exacly what has been tried applying the Self-Adaptive algorithm explained in the last chapter.
-As usual, the DQL has been the laboratory rat with the best non-shared-view configuration available, and the results of the experiment are shown in Figure \ref{fig:exp-8-sam}.
+As usual, the DQL has been the laboratory rat with the best non-shared-view configuration available and the results of the experiment are shown in Figure \ref{fig:exp-8-sam}.
 Evidence shows that such mechanism would instead worsen performance by a significant amount in all statistics.
 Since the threshold used in triggering a learning slot is very strict, the doubt remained whether it was actually used but an inspection of simulation log has found to be case.
 Therefore, an explanation of this phenomenon is that learning is not a stable process, fluctuations due to Q table updates probably have induced unwanted behavior and therefore worse performance ratings.
