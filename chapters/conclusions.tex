@@ -5,9 +5,9 @@ This chapter summarizes the main contributions and findings of the present work,
 \section{Thesis contributions}
 
 Through various experiments, this thesis investigated the application of popular concepts such as curriculum learning, multi agent learning, self-adaptive systems to traffic light control and reinforcement learning.
-These are supported by the SUMO-RL framework, which has been developed as a fork of the original SUMO-RL by Lucas Alegre in order to enhance its capabilities, increase its performance and overcome its limits.
+These are supported by the SUMO-RF framework, which has been developed as a fork of the original SUMO-RL by Lucas Alegre in order to enhance its capabilities, increase its performance and overcome its limits.
 The extended framework now supports a total of $4$ observation function, $5$ reward function, $3$ tabular-based RL agents, $2$ deep RL agents, the fixed cycle agent with $4$ cycle programs and the ability to run priority-based unregulated intersections (as comparison).
-Moreover SUMO-RL allows to use Multi Agent Learning techniques such as sharing rewards and state, allocate more than one intersection to an agent and is equipped with a self-adaptive algorithm for letting a deployed agent learn when performances are degrading.
+Moreover SUMO-RF allows to use Multi Agent Learning techniques such as sharing rewards and state, allocate more than one intersection to an agent and is equipped with a self-adaptive algorithm for letting a deployed agent learn when performances are degrading.
 
 The work began by establishing a solid baseline for RL agents, identifying the most effective reward and observation functions, which serve as a foundation for subsequent experiments.
 The best observation function is based on lane density, which is good because it is fairly easy to detect with real-world equipment, saving up to $\sim 50\%$ of waiting times.
@@ -76,4 +76,4 @@ The degree of generalization of using a intersection allocation strategy, such a
 In other words, whether an agent controlling multiple intersections simultaneously can outperform configurations where each intersection is managed by a distinct agent.
 Finally, it would be worth exploring heterogeneous learning environments, where a trained agent (Magister) operates alongside an untrained agent (Studens).
 Such experiments could reveal whether the less experienced agent benefits from the presence of the more skilled one, and whether the latter suffers from the inexperience of its partner.
-All these directions can be supported by the current version of SUMO-RL which already allows almost all of these variations without changes.
+All these directions can be supported by the current version of SUMO-RF which already allows almost all of these variations without changes.

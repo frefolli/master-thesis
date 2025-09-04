@@ -9,8 +9,8 @@
 ./figures/markov-decision-process.png: ./figures/markov-decision-process.d2
 	d2 ./figures/markov-decision-process.d2 ./figures/markov-decision-process.png
 
-./figures/sumo-rl-architecture.png: ./figures/sumo-rl-architecture.d2
-	d2 ./figures/sumo-rl-architecture.d2 ./figures/sumo-rl-architecture.png
+./figures/sumo-rf-architecture.png: ./figures/sumo-rf-architecture.d2
+	d2 ./figures/sumo-rf-architecture.d2 ./figures/sumo-rf-architecture.png
 
 ./figures/observation-function-trait.png: ./figures/observation-function-trait.d2
 	d2 ./figures/observation-function-trait.d2 ./figures/observation-function-trait.png
@@ -24,7 +24,7 @@
 ./figures/executor-architecture.png: ./figures/executor-architecture.d2
 	d2 ./figures/executor-architecture.d2 ./figures/executor-architecture.png
 
-thesis.pdf: listings-xml.sty listings-json.sty thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rl-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png ./figures/executor-architecture.png figures/*.png figures/exp/*.png chapters/*.tex
+thesis.pdf: listings-xml.sty listings-json.sty thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rf-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png ./figures/executor-architecture.png figures/*.png figures/exp/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	pdflatex thesis.tex
@@ -35,7 +35,7 @@ clean:
 	rm -f ./figures/monte-carlo-tree-chess.png
 	rm -f ./figures/markov-chain.png
 	rm -f ./figures/markov-decision-process.png
-	rm -f ./figures/sumo-rl-architecture.png
+	rm -f ./figures/sumo-rf-architecture.png
 	rm -f ./figures/observation-function-trait.png
 	rm -f ./figures/reward-function-trait.png
 	rm -f ./figures/agent-trait.png

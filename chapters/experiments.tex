@@ -148,7 +148,7 @@ Its slower score record in accumulated waiting time is probably due to SARSA's t
 Figure \ref{fig:exp-3-neu} shows that the PPO agent bulldozes the DQN agent in almost every metric.
 Interestingly, the shape of the DQN curve in this graph is similar to the one of the worst reward/observation functions (Figures \ref{fig:exp-1-rew-a} and \ref{fig:exp-1-obs-a}).
 The only difference is that the underlying situation is very different.
-SUMO-RL allows researches to perform a graphical demo in which the agents and their configuration can be seen in action.
+SUMO-RF allows researches to perform a graphical demo in which the agents and their configuration can be seen in action.
 A quick inspection using the demo mode revealed that the DQN agent wasn't learning at all.
 Instead, all the intersections where stuck with green light in one direction during the entirety of the simulation.
 A possible explanation is that a DQN model would need more training time to reach the performances of the other neural model.
@@ -165,7 +165,7 @@ Of course, on the long run the PPO agent \textbf{may} be able to gain ground on 
 
 \section{Comparing Reinforcement Learning with existing solutions}
 
-Now that there is a clearer picture of the potential of the main reinforcement learning algorithms implemented in SUMO-RL, it is vital to understand if they stand a chance with fixed cycle traffic light programs.
+Now that there is a clearer picture of the potential of the main reinforcement learning algorithms implemented in SUMO-RF, it is vital to understand if they stand a chance with fixed cycle traffic light programs.
 
 \paragraph{What is the impact of cycle time in Fixed Cycle Agents?}
 
