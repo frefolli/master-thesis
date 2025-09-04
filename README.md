@@ -103,14 +103,12 @@
   - [x] RO 6 - Evaluating the impact of Quantization over performances
   - [x] RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning
   - [x] RO 8 - Evaluating the effectiveness of Self-Adaptive strategies
-- [ ] Threats to Validity
-  - [ ] Internal threats
-    - [ ] Simplistic simulation model
-    - [ ] No advanced tweaks in RL Models
-  - [ ] External threats
-    - [ ] Tiny scenarios
-    - [ ] No experimentation on wide networks with OD Matrix
-- [ ] Future Work
-  - [ ] Apply results to Via Bassini to lower waiting time for ATM trolleybus 93, my beloved
-  - [ ] Apply results to Via Porto Corsini to catch ATM M1 in time for Bisceglie instead of Rho Fieramilano
-- [ ] Conclusion
+- [x] Threats to Validity
+  - [x] Internal threats
+  - [x] External threats
+- [x] Future Work
+- [x] Conclusion
+
+Applications:
+  - lower waiting time in Via Bassini for ATM trolleybus 93, my beloved
+  - allow to catch ATM M1 in time for Bisceglie instead of Rho Fieramilano riding ATM bus 87 in Via Porto Corsini
