@@ -12,3 +12,7 @@
 *.toc
 *.lol
 thesis.pdf
+*.glg
+*.glo
+*.gls
+*.ist

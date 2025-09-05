@@ -26,9 +26,11 @@
 \newcommand{\xmark}{\ding{55}}%
 \usepackage{caption}
 \usetikzlibrary{positioning, quotes}
+\usepackage{csquotes}
 \usepackage[english]{babel}
 %%\usepackage[skip=10pt plus1pt, indent=40pt]{parskip}
 \usepackage{parskip}
+\usepackage{glossaries}
 \usepackage[
   backend=bibtex,
   style=ieee,
@@ -90,6 +92,11 @@
 \newcommand{\FineGrained}   {$\circledvee$}%
 \newcommand{\CoarseGrained} {$\circledwedge$}%
 
+\makeglossaries
+\newglossaryentry{gl:transit}{name={transit}, description={Describes a group of traveling vehicles or the act of traveling through the road network.}}
+\newglossaryentry{gl:traffic}{name={traffic}, description={The phenomenon of high density flows where there is the perception of being slowed down.}}
+\newglossaryentry{gl:jam}{name={jam}, description={A deadlock traffic event.}}
+
 \begin{document}
     
     \begin{titlepage}
@@ -144,7 +151,8 @@
     \include{abstract}
     \printindex
     \tableofcontents
-    \renewcommand{\baselinestretch}{1.5} 
+    \printglossaries
+    \renewcommand{\baselinestretch}{1.5}
 
     \include{chapters/introduction}
     \include{chapters/traffic-science}

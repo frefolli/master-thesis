@@ -1,7 +1,8 @@
 \chapter{Experiments and findings}
+\label{chapter:experiments}
 %% DATASETS ARE GENERATED WITH SEED = 170701
 
-In this chapter, the research objectives and questions introduced in Chapter 1 are addressed thoroughly and individually, with related experiments and conclusions.
+In this chapter, the research objectives and questions introduced in Chapter \ref{chapter:introduction} are addressed thoroughly and individually, with related experiments and conclusions.
 For the scope of these experiments, if not said otherwise, the experimental setting is based on the Celoria scenario \ref{fig:setting-celoria}.
 The datasets are generated using the \textit{generate-datasets} utility with $seed \; = \; 170701$ and the experiments are run automatically by the \textit{executor} module.
 All the experiments are executed with the computational resources provided by hpc-ReGAInS@DISCo, which is a MUR Department of Excellence Project within the Department of Informatics, Systems and Communication at the University of Milan-Bicocca \footnote{\href{https://www.disco.unimib.it}{https://www.disco.unimib.it}}.
@@ -130,7 +131,7 @@ As a consequence, real-world daily traffic data can be used for training without
 \section{Comparing Deep Learning with Tabular Learning}
 
 The QLAgent used so far is an example of tabular method for reinforcement learning.
-In Chapter 3 more reinforcement learning have been presented and now the interest is in comparing \textit{simpler} \textbf{tabular} methods with the more \textit{sophisticated} \textbf{neural} methods.
+In Chapter \ref{chapter:reinforcement-learning} more reinforcement learning have been presented and now the interest is in comparing \textit{simpler} \textbf{tabular} methods with the more \textit{sophisticated} \textbf{neural} methods.
 In order to evaluate the potential of those approaches, two distinct experiments were conducted comparing the different tabular/neural agents available on the same simulation conditions.
 In both the experiments, the dataset being used is \textit{Curriculum Daily + Disruption}, the observation function is \textit{Density} and the reward function is \textit{DiffWaitingTime}.
 

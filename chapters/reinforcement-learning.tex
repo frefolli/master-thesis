@@ -1,4 +1,5 @@
 \chapter{Background on Reinforcement Learning}
+\label{chapter:reinforcement-learning}
 
 This chapter introduces the concept of Reinforcement Learning, along with its differences from traditional machine learning approaches, its advantages and disadvantages, and its mathematical foundation.
 
@@ -46,7 +47,7 @@ This section presents the theoretical concepts useful for understanding Reinforc
 
 \subsection{Markov Chains}
 
-The evolution of RL environment could be roughly described as a \textbf{Markov Chain}, which is is a tuple $MC = (S, P)$ where $S$ is the set of all states and $P$ is a transition function such that $P(S_n | S_{n-1})$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$. An example of Markov chain is shown in figure \ref{fig:markov-chain}. Intuitively, any episode of an environment is a sequence of states and there is some kind of transition function which moves the environment from one state to another.
+The evolution of RL environment could be roughly described as a \textbf{Markov Chain}, which is is a tuple $MC = (S, P)$ where $S$ is the set of all states and $P$ is a transition function such that $P(S_n | S_{n-1})$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$. An example of Markov chain is shown in Figure \ref{fig:markov-chain}. Intuitively, any episode of an environment is a sequence of states and there is some kind of transition function which moves the environment from one state to another.
 
 Notably, an important property of Markov Chains is that \textit{past and future are mutually independent}. This may sound like a contradiction to the concept of Markov Chain, but it is in fact a simplification over statistics which allows to model an environment more easily. The appearance of the current state is assumed to be influenced only by the appearance of the previous state. This principle can be summarized as $P(S_n | S_{n-1}) = P(S_n | S_{n-1}, S_{n-2}, S_{n-3}, S_{n-4})$.
 
@@ -60,11 +61,11 @@ A more subtle detail resides in what it actually models: a Markov chain doesn't 
 
 \subsection{Markov Decision Processes}
 
-A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where S is the set of all states, $A$ is the set of all actions, $P$ is a transition function such that $P(S_n | S_{n-1}, a)$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$ with the action $a$, and $R$ is a reward function such that $R(S_{n-1}, a, S_{n})$ denotes the immediate reward of the transition from state $S_{n-1}$ to state $S_n$ with the action $a$. An example of MDP is shown in figure \ref{fig:markov-decision-process}.
+A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where S is the set of all states, $A$ is the set of all actions, $P$ is a transition function such that $P(S_n | S_{n-1}, a)$ denotes the probability of the state $S_n$ happening given that the previous state is $S_{n-1}$ with the action $a$, and $R$ is a reward function such that $R(S_{n-1}, a, S_{n})$ denotes the immediate reward of the transition from state $S_{n-1}$ to state $S_n$ with the action $a$. An example of MDP is shown in Figure \ref{fig:markov-decision-process}.
 
 This model not only accounts for agents' actions, but also provides an abstraction for expressing the quality of an action or the desirability of a certain state transition.
 
-\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.5}
+\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of Figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.5}
 
 \subsection{Policies}
 

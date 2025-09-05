@@ -1,4 +1,5 @@
 \chapter{The Extended SUMO-RF Framework}
+\label{chapter:sumo-rl}
 
 This chapter introduces the SUMO-RF framework, a fork of the original framework SUMO-RL by Lucas Alegre that has been developed to address the research questions.
 SUMO-RF comprises a Core for running simulations and a toolchain for executing automated experiments and analyzing the results.
@@ -9,7 +10,7 @@ This section is concerned with the core of the reinforcement learning framework,
 
 \subsection{The Architecture}
 
-SUMO-RF has a \textbf{modular} architecture (it can be seen in figure \ref{fig:sumo-rf-architecture}) that allows developers and researchers to replace a-la-carte almost all its components if needed.
+SUMO-RF has a \textbf{modular} architecture (it can be seen in Figure \ref{fig:sumo-rf-architecture}) that allows developers and researchers to replace a-la-carte almost all its components if needed.
 
 The \textit{Environment} object gets created through settings supplied by both command line arguments and a configuration file.
 These settings select which functions, agents, scenario to use in a simulation, as well as feature flags for tuning SUMO and changing other aspects of the experiments.
