@@ -24,7 +24,7 @@
 ./figures/executor-architecture.png: ./figures/executor-architecture.d2
 	d2 ./figures/executor-architecture.d2 ./figures/executor-architecture.png
 
-thesis.pdf: listings-xml.sty listings-json.sty thesis.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rf-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png ./figures/executor-architecture.png figures/*.png figures/exp/*.png chapters/*.tex
+thesis.pdf: listings-xml.sty listings-json.sty thesis.tex abstract.tex quotes.bib figures/*.jpg figures/*.d2 ./figures/monte-carlo-tree-chess.png ./figures/markov-chain.png ./figures/markov-decision-process.png ./figures/sumo-rf-architecture.png ./figures/observation-function-trait.png ./figures/reward-function-trait.png ./figures/agent-trait.png ./figures/executor-architecture.png figures/*.png figures/exp/*.png chapters/*.tex
 	pdflatex thesis.tex
 	bibtex thesis.aux
 	makeglossaries thesis.glo

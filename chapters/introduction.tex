@@ -1,9 +1,34 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
+Traffic congestion is widely recognized as one of the major challenges of modern urban life, generating economic costs, environmental impact and significant discomfort for citizens.
+Despite the continuous expansion of infrastructures, it remains a persistent issue because the growth in traffic demand systematically outpaces the growth in capacity.
+Among the many strategies that can be implemented to mitigate this phenomenon, adaptive traffic light control has attracted growing attention, since small improvements in intersection management may have large-scale effects on the fluidity of traffic flows across entire road networks.
+The availability of high-quality traffic simulators has made it possible to investigate algorithmic solutions before their real-world deployment and within this context reinforcement learning (RL) has emerged as a promising approach for designing adaptive controllers that learn directly from experience rather than relying exclusively on predefined rules or optimization heuristics.
+However, the application of RL to traffic light control presents specific challenges that distinguish it from classical RL domains.
+In its traditional formulation, RL is structured as a single-agent task where an agent interacts with an environment, receives feedback through a reward function and incrementally improves its policy by exploring and exploiting actions; in traffic light control, by contrast, the problem is inherently multi-agent, as every intersection can be seen as an independent agent whose local policy has consequences not only for the immediate environment but also for the performance of neighboring intersections, thereby making the learning process highly interdependent and complex.
+
+In this thesis, the study of RL for traffic light control is conducted under an unconventional perspective, in which several techniques rarely exploited in this field are considered in order to push forward both methodological and practical understanding.
+Curriculum learning is employed as a way to structure the experience of agents by exposing them to increasingly complex traffic scenarios rather than a monolithic dataset covering all possible cases, with the aim of lowering training costs while maintaining adaptability across a wide set of conditions.
+Multi-agent learning is investigated in order to explore the benefits of information sharing and cooperative strategies, such as rewarding or penalizing agents based on their collective effects, compared to the classical assumption of purely individual learning.
+In addition, degradation-responsive algorithms are introduced as a self-adaptive mechanism by which agents can trigger extra learning slots whenever a decline in performance is detected, thus aligning the training effort more closely with the dynamic evolution of real-world traffic patterns that are influenced by human habits and road conditions.
+All these methods are highly experimental and only a few preliminary applications can be found in the literature, meaning that their potential in the domain of traffic light control remains largely unexplored.
+The research therefore aims not only to assess the effectiveness of these techniques but also to contribute to a broader discussion on how artificial intelligence can be embedded into urban infrastructures to alleviate traffic congestion, to fluidify flows and to support the transition towards more sustainable and livable cities.
+Although such solutions cannot fix traffic on their own, as they fundamentally work by increasing the efficiency of existing capacity rather than reducing demand, they nevertheless represent an important step in rethinking mobility systems in ways that are consistent with long-term goals of urban resilience, environmental responsibility and technological innovation.
+
+\section{Aims}
+
+The following section enumerates the research objective along with their motivation and their research questions.
+
 \hfill \break
 \noindent
 \textbf{\hypertarget{ro1}{RO 1}: Acquiring a baseline}
+\hfill \break
+In contrast to the classical tasks such as CartPole \cite{nagendra2017comparison}, in traffic light control the definition of a observation/reward function is not trivial as there are various different features that can be tracked.
+The granularity of observation can go from fine-grained data such as vehicle positions and speeds or a boolean vector of which lanes have the right of way, to more coarse-grained data such as average speed, average waiting time, lane densities and the current traffic light program phase.
+At the same time, also the reward function is not trivial to define as traffic is a phenomenon often easier to experience directly than to formally describe.
+Nonetheless, to detect a traffic event several (equally reasonable) metrics such as average waiting time, instant throughput and average speed.
+This research objective not only tries to determine the best configuration for agents to learn with but also to understand from which features agents benefit the most.
 \hfill \break
 \textit{\hypertarget{rq1.1}{RQ 1.1}: Which is the best implemented reward function?}
 \hfill \break
@@ -13,15 +38,25 @@
 \noindent
 \textbf{\hypertarget{ro2}{RO 2}: Evaluating the effectiveness of Curriculum Learning}
 \hfill \break
+As opposed to classical reinforcement learning benchmarks, the experience of a traffic simulation is directly dependent on its demand configuration and therefore the learning process is biased by the scenarios presented in training and the ones used in evaluation.
+The usual response to this problem is a monolithic approach in which the dataset is constructed through a shuffled concatenation of almost every possible traffic condition.
+As the road network grows, this exhaustiveness becomes unfeasible.
+To solve these issues and to explore more human-like learning processes, Curriculum Learning (CL) is emerging as an alternative for experience engineering.
+This approach allows to compose a training dataset with modular, orthogonal and incrementally intensive episode components.
+This research objective is concerned with evaluating the effectiveness of CL with respect of the classic monolithic approach and in particular determining if agents can generalize what they sought during the modular training process even without directly experiencing disruptive traffic episodes.
+\hfill \break
 \textit{\hypertarget{rq2.1}{RQ 2.1}: Does curriculum learning leads to better running performances?}
 \hfill \break
 \textit{\hypertarget{rq2.2}{RQ 2.2}: Is there a loss of knowledge due to curriculum learning not being exhaustive?}
 \hfill \break
-\textit{\hypertarget{rq2.3}{RQ 2.3}: Does adding disruption episodes in the training set enable agents to tackle conditions?}
+\textit{\hypertarget{rq2.3}{RQ 2.3}: Does adding disruption episodes in the training set enable agents to tackle problematic conditions?}
 
 \hfill \break
 \noindent
 \textbf{\hypertarget{ro3}{RO 3}: Comparing Deep Learning with Tabular Learning}
+\hfill \break
+Modern intelligent systems often use Deep Learning algorithms as silver bullets for their task, since the tendency is to ignore simpler solutions abusing the rich data availability and the computational power of modern computers.
+This research objective is concerned with understanding if using Deep Learning for traffic light control does represent overengineering and as side goals whether Off-Policy methods achieve better performance than On-Policy methods and whether using two Q tables actually improves the quality of learned policy for the Q Learning algorithm.
 \hfill \break
 \textit{\hypertarget{rq3.1}{RQ 3.1}: Which is the best implemented tabular agent?}
 \hfill \break
@@ -33,6 +68,9 @@
 \noindent
 \textbf{\hypertarget{ro4}{RO 4}: Comparing Reinforcement Learning with existing solutions}
 \hfill \break
+This objective aims to determine if reinforcement learning agents implemented in the present thesis are an improvement over classical non intelligent methods to traffic light control such as fixed cycle programs and unregulated intersections (priority-based).
+To ensure a fair comparison, it is important to verify under which conditions fixed cycle program achieve the best performance (i.e. the best cycle time configuration).
+\hfill \break
 \textit{\hypertarget{rq4.1}{RQ 4.1}: What is the impact of cycle time in Fixed Cycle Agents?}
 \hfill \break
 \textit{\hypertarget{rq4.2}{RQ 4.2}: Are RL Agents an improvement over non-AI solutions?}
@@ -40,6 +78,11 @@
 \hfill \break
 \noindent
 \textbf{\hypertarget{ro5}{RO 5}: Evaluating the impact of determinism over performances}
+\hfill \break
+Learned policies are usually meant to be non-deterministic.
+Theoretically speaking, the values of the value functions represent the expected value (the average) due to following a certain policy from one state to the end of the simulation.
+One might wonder whether these policies are robust enough to be used as-is and whether a stochastic use of these policies brings benefits to the agents.
+This research objective answers to these questions.
 \hfill \break
 \textit{\hypertarget{rq5.1}{RQ 5.1}: Is non-determinism helping the agents?}
 \hfill \break
@@ -49,6 +92,9 @@
 \noindent
 \textbf{\hypertarget{ro6}{RO 6}: Evaluating the impact of quantization over performances}
 \hfill \break
+The hypothesis is that continuous state quantization to discrete space allows tabular agents but also deep learning agents to ignore data perturbation and to capture more easily the underlying features.
+This research objective aims to test this hypothesis and to understand which is the boundary in quantization size between usefulness and loss of knowledge.
+\hfill \break
 \textit{\hypertarget{rq6.1}{RQ 6.1}: Do agents benefit from a small quantization?}
 \hfill \break
 \textit{\hypertarget{rq6.2}{RQ 6.2}: Do continuous-space agents benefit from disabling quantization?}
@@ -56,6 +102,11 @@
 \hfill \break
 \noindent
 \textbf{\hypertarget{ro7}{RO 7}: Comparing Multi-Agent Learning with Single-Agent Learning}
+\hfill \break
+Reinforcement learning problems are usually designed as single agent tasks and even when there are multiple agents, their training is usually thought as an individual learning process.
+Evidence shows that observation/reward sharing can be beneficial and that decomposing a complex problem such as the present one, controlling traffic lights of a wide network, into a multi agent system in which more agents contribute locally to a global solution is often effective \cite{panait2005cooperative}.
+Intuitively, it sounds reasonable to penalize agents whose actions impede others and to allow them to consider the conditions of neighboring agents for better coordination.
+This research objective aims to assess these techniques and to verify which data being shared is the most beneficial.
 \hfill \break
 \textit{\hypertarget{rq7.1}{RQ 7.1}: Does sharing rewards to neighbour agents improve globally the solution?}
 \hfill \break
@@ -65,8 +116,26 @@
 \noindent
 \textbf{\hypertarget{ro8}{RO 8}: Evaluating the effectiveness of Self-Adaptive strategies}
 \hfill \break
+Traffic demand is not stable but evolves over time with human behavior and road conditions, therefore it is important to keep reinforcement learning agents updated with the current traffic models.
+This research objective investigates whether a self-adaptive algorithm can detect performance degradation and autonomously trigger additional learning phases bringing benefits over time and without causing collateral damage to performance.
+\hfill \break
 \textit{\hypertarget{rq8.1}{RQ 8.1}: Can a reinforcement learning system be designed to update itself as needed?}
 \hfill \break
 \textit{\hypertarget{rq8.2}{RQ 8.2}: Is the self-adaptive system improving performance over time?}
 \hfill \break
 \textit{\hypertarget{rq8.3}{RQ 8.3}: Is the self-adaptive system updating as intended?}
+
+\section{Execution}
+
+The SUMO-RF framework, a bridge between SUMO (Simulator of Urban MObility) and Python which provides an integrated environment for developing and running reinforcement learning models, has been developed (as fork of the original SUMO-RL by Lucas Alegre) in order to answer the aforementioned research objectives,  enhancing its performance and capabilities, implementing new agents and observation/reward functions, allowing agents to share slices of observations/rewards and adding a self-adaptive algorithm for learning on degrading performances.
+Experiments are executed with the computational resources provided by hpc-ReGAInS@DISCo, which is a MUR Department of Excellence Project within the Department of Informatics, Systems and Communication at the University of Milan-Bicocca.
+
+\section{Outline}
+
+Chapter \ref{chapter:introduction} introduces the research problem, motivations, objectives and contributions of the work.
+Chapter \ref{chapter:traffic-science} presents the fundamental concepts of traffic science, including traffic regulation, demand models and the assumptions underlying the traffic system.
+Chapter \ref{chapter:traffic-simulations} describes the simulation environment, focusing on SUMO, its support for multi-agent simulations and introduces the role of the SUMO-RL framework.
+Chapter \ref{chapter:reinforcement-learning} provides the theoretical background on reinforcement learning, covering learning perspectives, mathematical foundations, core algorithms and key design considerations.
+Chapter \ref{chapter:sumo-rl} presents the extended SUMO-RF framework, describing its architecture, environment design, agents, self-adaptive algorithm and supporting tools for data import, traffic generation, experimentation and analysis.
+Chapter \ref{chapter:experiments} reports the experimental study, structured around research objectives and questions. It evaluates observation and reward functions, curriculum learning, tabular and deep learning approaches, comparisons with existing solutions and the impact of determinism, quantization, multi-agent learning and self-adaptive strategies.
+Chapter \ref{chapter:conclusions} concludes the thesis by summarizing the contributions, discussing threats to validity and suggesting directions for future research.

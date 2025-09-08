@@ -4,7 +4,7 @@
 
 ## Index
 
-- [ ] Introduction
+- [x] Introduction
 - [x] Traffic Science
   - [x] Introduction
   - [x] Transit regulation
@@ -103,11 +103,12 @@
   - [x] RO 6 - Evaluating the impact of Quantization over performances
   - [x] RO 7 - Comparing Multi-Agent Learning with Single-Agent Learning
   - [x] RO 8 - Evaluating the effectiveness of Self-Adaptive strategies
-- [x] Threats to Validity
-  - [x] Internal threats
-  - [x] External threats
-- [x] Future Work
 - [x] Conclusion
+  - [x] Thesis Contribution
+  - [x] Threats to Validity
+    - [x] Internal threats
+    - [x] External threats
+  - [x] Future Work
 
 Applications:
   - lower waiting time in Via Bassini for ATM trolleybus 93, my beloved
