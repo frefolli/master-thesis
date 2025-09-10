@@ -9,7 +9,7 @@ However, the application of RL to traffic light control presents specific challe
 In its traditional formulation, RL is structured as a single-agent task where an agent interacts with an environment, receives feedback through a reward function and incrementally improves its policy by exploring and exploiting actions; in traffic light control, by contrast, the problem is inherently multi-agent, as every intersection can be seen as an independent agent whose local policy has consequences not only for the immediate environment but also for the performance of neighboring intersections, thereby making the learning process highly interdependent and complex.
 
 In this thesis, the study of RL for traffic light control is conducted under an unconventional perspective, in which several techniques rarely exploited in this field are considered in order to push forward both methodological and practical understanding.
-Curriculum learning is employed as a way to structure the experience of agents by exposing them to increasingly complex traffic scenarios rather than a monolithic dataset covering all possible cases, with the aim of lowering training costs while maintaining adaptability across a wide set of conditions.
+Curriculum learning is employed as a way to structure the experience of agents by exposing them to increasingly complex traffic scenarios rather than a monolithic \gls{gl:dataset} covering all possible cases, with the aim of lowering training costs while maintaining adaptability across a wide set of conditions.
 Multi-agent learning is investigated in order to explore the benefits of information sharing and cooperative strategies, such as rewarding or penalizing agents based on their collective effects, compared to the classical assumption of purely individual learning.
 In addition, degradation-responsive algorithms are introduced as a self-adaptive mechanism by which agents can trigger extra learning slots whenever a decline in performance is detected, thus aligning the training effort more closely with the dynamic evolution of real-world traffic patterns that are influenced by human habits and road conditions.
 All these methods are highly experimental and only a few preliminary applications can be found in the literature, meaning that their potential in the domain of traffic light control remains largely unexplored.
@@ -39,10 +39,10 @@ This research objective not only tries to determine the best configuration for a
 \textbf{\hypertarget{ro2}{RO 2}: Evaluating the effectiveness of Curriculum Learning}
 \hfill \break
 As opposed to classical reinforcement learning benchmarks, the experience of a traffic simulation is directly dependent on its demand configuration and therefore the learning process is biased by the scenarios presented in training and the ones used in evaluation.
-The usual response to this problem is a monolithic approach in which the dataset is constructed through a shuffled concatenation of almost every possible traffic condition.
+The usual response to this problem is a monolithic approach in which the \gls{gl:dataset} is constructed through a shuffled concatenation of almost every possible traffic condition.
 As the road network grows, this exhaustiveness becomes unfeasible.
 To solve these issues and to explore more human-like learning processes, Curriculum Learning (CL) is emerging as an alternative for experience engineering.
-This approach allows to compose a training dataset with modular, orthogonal and incrementally intensive episode components.
+This approach allows to compose a training \gls{gl:dataset} with modular, orthogonal and incrementally intensive episode components.
 This research objective is concerned with evaluating the effectiveness of CL with respect of the classic monolithic approach and in particular determining if agents can generalize what they sought during the modular training process even without directly experiencing disruptive traffic episodes.
 \hfill \break
 \textit{\hypertarget{rq2.1}{RQ 2.1}: Does curriculum learning leads to better running performances?}

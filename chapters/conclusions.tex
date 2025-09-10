@@ -15,7 +15,7 @@ The best observation function is based on lane density, which is good because it
 The best reward function is based on the derivative of accumulated waiting times, saving up to $\sim 60\%$ of waiting times.
 Although it has achieves better results, transit authority should go for more easy metrics to track such as queue lengths or the derivative of queue lengths, which were proved experimentally to be similar in performance to the best reward function.
 
-Building on this, this research compared different ways of building datasets for training traffic light agents.
+Building on this, this research compared different ways of building \gls{gl:dataset}[s] for training traffic light agents.
 Curriculum learning was successfully applied in its combinatorial interpretation in order to simplify the structure of training episodes as it achieves the same performance levels of the monolithic one which exhaustively presents the agent with almost all possible traffic conditions (driven by a traffic registry).
 The insertion of disruptive time slots in training episodes is shown to improve agent resilience in challenging traffic conditions, highlighting the benefits of structured exposure to variability.
 On the other way round, the lack of intensive episodes doesn't stimulate enough the agent and worsen all the metrics.
@@ -62,15 +62,15 @@ Again, the aim was verifying the potential of different approaches with limited 
 
 The scenarios employed were restricted to small networks due to computational constraints and TraCI inefficiency.
 This choice narrows the generalizability of the findings, although it is in line with the scale of experiments typically reported in comparable research.
-The datasets used for training and evaluation are synthetic, therefore not directly induced by real-world origin–destination matrices (OD), but they were constructed to reflect realistic traffic phenomena, such as peak cycles and directional commuting flows, which are often absent from the highly simplified datasets used in related works.
+The \gls{gl:dataset}[s] used for training and evaluation are synthetic, therefore not directly induced by real-world origin–destination matrices (OD), but they were constructed to reflect realistic traffic phenomena, such as peak cycles and directional commuting flows, which are often absent from the highly simplified \gls{gl:dataset}[s] used in related works.
 Publicly available OD data are either too large to simulate with available resources or too sparse to reconstruct meaningful flows.
 
 \section{Future Works}
 
 With adequate equipment and time it would be important to perform experiments on broader networks and with more training episodes to confirm the results obtain in this study.
-Future research should investigate dataset acquisition strategies alternative to the monolithic or curriculum-based approaches used in this study.
+Future research should investigate \gls{gl:dataset} acquisition strategies alternative to the monolithic or curriculum-based approaches used in this study.
 For example, Curriculum Learning can also be interpreted as a set of incrementally difficult task, approach that has been successfully applied in other contexts.
-It would be valuable to investigate the effectiveness of datasets made of casual traffic with gradually increasing intensity.
+It would be valuable to investigate the effectiveness of \gls{gl:dataset}[s] made of casual traffic with gradually increasing intensity.
 Further investigations should also address transfer learning, testing whether an agent trained to manage an intersection of a given size (e.g., with $N$ lanes) can be adapted effectively to intersections of different sizes (e.g., with $M \ne N$ lanes).
 On the same line, it would be interesting to verify with future experiments whether agents trained jointly can later be swapped across different networks or scenarios without significant performance degradation, to test their degree of modularity.
 The degree of generalization of using a intersection allocation strategy, such as partitioning them by state space size, could also be investigated.

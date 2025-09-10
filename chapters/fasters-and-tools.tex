@@ -1,7 +1,7 @@
 \chapter{The Extended SUMO-RF Framework}
 \label{chapter:sumo-rl}
 
-This chapter introduces the SUMO-RF framework, a fork of the original framework SUMO-RL by Lucas Alegre that has been developed to address the research questions.
+This chapter introduces the \textbf{SUMO-RF framework}, a fork of the original framework SUMO-RL by Lucas Alegre that has been developed to address the research questions.
 SUMO-RF comprises a Core for running simulations and a toolchain for executing automated experiments and analyzing the results.
 
 \section{The Core}
@@ -1010,8 +1010,13 @@ This string instructs the generator to use a transition with all the atomic entr
 
 \paragraph{Generating datasets}
 
-The module \textbf{generate-datasets} accepts as input a description of a dataset to be generated with a name and the traffic specifiers of which it is composed (into distinct sets: training and evaluation).
-This is actively used in the experiments to generate the datasets automatically from a seed.
+In Reinforcement Learning, there is no dataset in the same sense as in classical Supervised or Unsupervised Learning.
+In standard RL problems, such as CartPole, the agent’s experience is generated through its interaction with the environment, which depends only on a random seed, while the dynamics unfold stochastically from that seed.
+However, in more complex settings, such as urban traffic simulation, the simulator is also parameterized with a traffic demand specification that defines which flows are generated and with what intensity.
+In this thesis, this traffic demand blueprint is regarded as a dataset, in the sense that it enables stable, comparable and repeatable training and evaluation processes.
+
+The module \textbf{generate-datasets} accepts as input a description of a \gls{gl:dataset} to be generated with a name and the traffic specifiers of which it is composed (into distinct sets: training and evaluation).
+This is actively used in the experiments to generate the \gls{gl:dataset}[s] automatically from a seed.
 
 \subsection{Executing experiments}
 
@@ -1024,7 +1029,7 @@ The Experiment instance also need an access to the singleton Archive instance.
 The Archive class enables an experiment to switch context from one Configuration to another in order to run different configurations SUMO-RF in the same experiment.
 
 A Configuration instance has multiple attributes which reflect the options passed to the SUMO-RF core module.
-For each run it is possible to configure the agent, the observation function, the reward function, the dataset used, the number of quantization levels.
+For each run it is possible to configure the agent, the observation function, the reward function, the \gls{gl:dataset} used, the number of quantization levels.
 It is also possible to enable the Self Adaptive mechanism, to shutdown the controlled intersection so that they behave like precedence based intersections and the partition type (which if enabled allows an agent to control more than one traffic light intersection at the same time).
 
 The Configuration object also has an \textit{hash()} method which is used to give a name to the active configuration.

@@ -3,13 +3,13 @@
 
 This chapter introduces the concept of Reinforcement Learning, along with its differences from traditional machine learning approaches, its advantages and disadvantages, and its mathematical foundation.
 
-\section{A new perspective}
+\section{A different perspective}
 
 Machine Learning (ML) is a branch of Artificial Intelligence concerning all those statistical techniques and algorithms that can be used to learn a task from an existing data and generalize this knowledge to unseen data. Depending on how the agents learns and what task it learns, ML can be divided into three paradigms: supervised, unsupervised and reinforcement learning.
 
-\paragraph{Learning by example}
+\paragraph{Learning from examples}
 
-Supervised learning (SL) is perhaps the most intuitive and widely used learning paradigm.
+Supervised learning (SL) \cite{nasteski2017overview} is perhaps the most intuitive and widely used learning paradigm.
 The agent is given an input and returns an output. Its output is then compared with the expected output (provided along with the input) using a \textit{Loss Function}, which measures the error between the two values.
 This loss is then used to update the agent's model in order to improve its accuracy.
 Since the quality of the agent is defined by the similitude between its output and the reference (``correct'') output, it is essentially learning to replicate a behaviour of which the labelled dataset is an example.
@@ -19,17 +19,22 @@ Despite its simplicity, this paradigm take two strong assumptions.
 Tasks involving classification or labelling, such as identifying the class of a dry bean or spam detection, fall naturally into this category.
 2) A dataset of input-output pairs is available and, more importantly, a correct output value exists and it is priorly known or computable. This restriction automatically excludes all problems involving uncertainty, long-term consequences, or scenarios in which the optimal decision depends on a sequence of past and future actions. However, it accommodates a lot of problems for which knowledge about past is available, as in prediction tasks like stock forecasting and language models.
 
-\paragraph{Learning by inference}
+\paragraph{Learning from patterns in the data}
 
-Unsupervised learning (US) removes the need of labelled data, as the goal here is not to imitate known outcomes but to find hidden structure within the data itself.
+Unsupervised learning (US) \cite{gentleman2008unsupervised} removes the need of labelled data, as the goal here is not to imitate known outcomes but to find hidden structure within the data itself.
 Usually, this activity involves partitioning the input dataset into k classes, which result can be then applied to further processing.
 Although the ultimate goal is to ensure that items within the same group resemble each other more than they resemble those in other groups, different approaches to achieve such partitioning exist, ranging from distance-based algorithms (such as K-Means) to hashing-based algorithms (such as Locality Sensitive Hashing).
 In both cases, the agent is inferring an hidden connection between elements of the dataset using its features.
 However, it should be noted that the resulting classification carries no semantic beyond element similarity and, in particular, there is no concept as intrinsic partitioning correctness. Which means that US cannot be applied directly in decision making problems and can only be used for aggregation tasks such as ancestral reconstruction (useful in phylogenetics) and feature extraction.
 
-\paragraph{Learning by experience}
+\paragraph{Learning from experience}
 
-A useful analogy comes from early human development. Consider a toddler learning to walk. The parent may encourage the child by standing across the room and using gestures or facial expressions (such as smiles or glares) to signal success or failure. The toddler does not receive explicit instructions or labelled examples of correct foot placement. Instead, learning unfolds through trial and error, with the child gradually discovering which patterns of movement lead to praise or comfort. Reinforcement learning (RL) mirrors this process: knowledge is acquired not through imitation or discovery of structure, but through experience and consequence.
+A useful analogy comes from early human development.
+Consider a toddler learning to walk.
+The parent may encourage the child by standing across the room and using gestures or facial expressions (such as smiles or glares) to signal success or failure.
+The toddler does not receive explicit instructions or labelled examples of correct foot placement.
+Instead, learning unfolds through trial and error, with the child gradually discovering which patterns of movement lead to praise or comfort.
+Reinforcement learning (RL) \cite{sutton1998reinforcement} mirrors this process: knowledge is acquired not through imitation or discovery of structure, but through experience and consequence.
 
 The agent is acknowledged to lie into an environment, which has an internal logic and an internal state but those are not exposed to the agent.
 The agent can only observe the environment with an \textit{Observation Function}, which returns a partial view (``observation'') of its state.
@@ -43,7 +48,7 @@ For that reason, RL is applicable in all those tasks in which the quality of an 
 
 \section{Mathematical foundations}
 
-This section presents the theoretical concepts useful for understanding Reinforcement Learning models and algorithms.
+This section presents the theoretical concepts useful for understanding Reinforcement Learning models and algorithms \cite{sewak2019mathematical}.
 
 \subsection{Markov Chains}
 
@@ -65,7 +70,7 @@ A \textbf{Markov Decision Process} is defined a tuple $MDP = (S, A, P, R)$ where
 
 This model not only accounts for agents' actions, but also provides an abstraction for expressing the quality of an action or the desirability of a certain state transition.
 
-\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of Figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{0.5}
+\putimage{figures/markov-decision-process.png}{The expansion of the Markov Chain of Figure \ref{fig:markov-chain} as a Markov Decision Process. Green transitions release a positive reward, red transitions release a negative one.}{fig:markov-decision-process}{1.0}
 
 \subsection{Policies}
 
@@ -83,7 +88,7 @@ If the relative quality of a policy if defined by a scalar value, how can the ac
 
 The \textbf{state-value} function $V^{\pi}(s)$ evaluates the amount of expected reward obtained by following a policy $\pi$ from the state $s$.
 Since both the environment and the agent's policy can be stochastic, an abstract formula to compute this concept reuses the expected value operator $\mathbb{E}$ from probability theory.
-An slice of the episode of an MDP can be represented as a process graph starting from a node $s_i$, developing into a chain of states and actions. The value of this computation is given by a weighted sum of the rewards of tis transitions.
+A slice of the episode of an MDP can be represented as a process graph starting from a node $s_i$, developing into a chain of states and actions. The value of this computation is given by a weighted sum of the rewards of tis transitions.
 Since the same node and action can lead to different nodes, the process becomes a sequential, ramified structure as all possible transitions are recursively considered.
 The expected reward of the state $s_i$ can be thought as the weighted sum of rewards of the average path along this ramified process, which leads to the following formula:
 
@@ -132,7 +137,7 @@ In the present research, the focus is on \textit{model-free} learning agents, as
 
 \paragraph{On/Off-Policy learning}
 
-As the model-free agent should gain experience interacting with environment, a question arise? Which policy should it use? A \textbf{on-policy} algorithm uses the currently known best policy which is being updated at every interaction. A \textbf{off-policy} algorithm uses the consolidated optimal policy to interact with the environment and gain experience (tuples state-action-reward, for example) which will be used at a later time to update the consolidated policy, building the new optimal policy. It is also possible to use a \textbf{on-policy} strategy combined with a greedy exploration of the state-action cross space.
+As the model-free agent should gain experience interacting with environment, a question arise: Which policy should it use? A \textbf{on-policy} algorithm uses the currently known best policy which is being updated at every interaction. A \textbf{off-policy} algorithm uses the consolidated optimal policy to interact with the environment and gain experience (tuples state-action-reward, for example) which will be used at a later time to update the consolidated policy, building the new optimal policy. It is also possible to use a \textbf{on-policy} strategy combined with a greedy exploration of the state-action cross space.
 
 For example, the \textbf{Epsilon-Greedy} (EG) \cite{liu2021improving} algorithm balances exploration (finding variants of a policy) and exploitation (using the optimal policy) phases using an decaying $\epsilon$ coefficient.
 Every time an inference is needed, EG peeks a random decimal number $x \in [0, 1]$. If $x \leq \epsilon$ then is chooses randomly an action to perform, otherwise it selects the current best action given by the policy.
@@ -148,7 +153,7 @@ The Monte Carlo method is historically an impactful evolution of exhaustive recu
 
 Usually updates happen on a episode-by-episode basis, using only the cumulative reward for averages. Thus, MC doesn't account for distance in time of immediate rewards and in general it doesn't case of short-term rewards. As a consequence, MC is unable to update the value function for intermediate states.
 
-\putimage{figures/monte-carlo-tree-chess.png}{An example of Monte Carlo random sampling for Chess}{fig:monte-carlo-tree-chess}{0.5}
+\putimage{figures/monte-carlo-tree-chess.png}{An example of Monte Carlo random sampling for Chess}{fig:monte-carlo-tree-chess}{0.75}
 
 \paragraph{Temporal Difference methods}
 
@@ -218,7 +223,7 @@ The critic provides feedback to the actor (essentially telling it how good its d
     \right]
 \end{equation}
 
-\putimage{figures/actor-critic-diagram.png}{The workflow of an Actor-Critic RL system. Source: ``Actor-critic reinforcement learning leads decision-making in energy systems optimization—steam injection optimization'', Abdalla et al, Springer \cite{abdalla2023actor}.}{fig:actor-critic-diagram}{0.5}
+\putimage{figures/actor-critic-diagram.png}{The workflow of an Actor-Critic RL system. Source: ``Actor-critic reinforcement learning leads decision-making in energy systems optimization—steam injection optimization'', Abdalla et al, Springer \cite{abdalla2023actor}.}{fig:actor-critic-diagram}{0.75}
 
 \section{Reinforcement Learning Algorithms}
 
@@ -317,7 +322,7 @@ With \textbf{quantization}, a continuous value is mapped into a discrete value b
   quant(x) = \left\{
   \begin{array}{cl}
   C_{min} & x < D_{min} \\
-  (x - D_{min}) \frac{C_{max} - C_{min}} {D_{max} - D_{min}} + C_{min} & D_{min} < x < D_{max} \\
+  \left\lfloor (x - D_{min}) \frac{C_{max} - C_{min}} {D_{max} - D_{min}} \right\rfloor + C_{min} & D_{min} < x < D_{max} \\
   C_{max} & x > D_{max}
   \end{array}
   \right\}
@@ -388,14 +393,14 @@ These are by no means disjunctive choices, as they are simply orthogonal advises
 
 \paragraph{Incremental learning}
 
-Incremental learning arranges the training experience in a sequence of increasingly difficult tasks or environments.
+Incremental learning arranges the training experience in a sequence of increasingly difficult tasks or environments \cite{narvekar2020curriculum}.
 Inspired by human learning, this strategy improves convergence and generalization by guiding exploration and avoiding premature failures.
 
 \paragraph{Curriculum learning}
 
 Curriculum learning is another interpretation of how humans learn.
 Humans, usually learn skills individually. In a math class, a student learns about equations, inequalities, logarithms, trigonometry and so on. Then, he is expected to cumulate its knowledge in order to solve complex problems requiring the combination of all those skills. As a side note, other than math class, students attend English class, history class, Italian class and so on. Depending on local regulation, the student may be required to apply interdisciplinary knowledge to pass the graduation exam.
-Curriculum learning translates this learning process to reinforcement learning.
+Curriculum learning translates this learning process to reinforcement learning \cite{narvekar2020curriculum}.
 
 It is easier to explain this porting with an example: a pedestrian agent is learning how to walk into an environment.
 There can be multiple obstacles and situations combined, but the learning process presents them one at a time instead of combinations of obstacles.
@@ -404,9 +409,9 @@ Curriculum learning is a more feasible approach for those problems in which ther
 
 \paragraph{Simulated learning}
 
-An agent can also learn via \textbf{simulated learning}.
+An agent can also learn via \textbf{simulated learning} \cite{lin1992self}.
 A collection of tuples $(s_t, a_t, s_{t+1}, r_t)$ can be created as an agent interacts with the environment.
 Then this collection can used to train another agent without requiring direct interaction with the environment.
 Reinforcement Learning agents sometimes also stumble across memory loss problems, since over time they may loose knowledge gained some time ago.
-This collection can also be used to tackle memory.
+This collection can also be used to refresh the agent's memory by presenting it the examples contained in this collection (\textit{Experience Replay} \cite{lin1992self}).
 Obviously, those tuples where added as a consequence of the policy being followed by the agent, so this collection cannot be intended as an exhaustive training samples set.

@@ -3,15 +3,15 @@
 %% DATASETS ARE GENERATED WITH SEED = 170701
 
 In this chapter, the research objectives and questions introduced in Chapter \ref{chapter:introduction} are addressed thoroughly and individually, with related experiments and conclusions.
-For the scope of these experiments, if not said otherwise, the experimental setting is based on the Celoria scenario \ref{fig:setting-celoria}.
-The datasets are generated using the \textit{generate-datasets} utility with $seed \; = \; 170701$ and the experiments are run automatically by the \textit{executor} module.
+For the scope of these experiments, if not said otherwise, the experimental setting is based on the \textbf{Celoria scenario} \ref{fig:setting-celoria}.
+The \gls{gl:dataset}[s] are generated using the \textit{generate-datasets} utility with $seed \; = \; 170701$ and the experiments are run automatically by the \textit{executor} module.
 All the experiments are executed with the computational resources provided by hpc-ReGAInS@DISCo, which is a MUR Department of Excellence Project within the Department of Informatics, Systems and Communication at the University of Milan-Bicocca \footnote{\href{https://www.disco.unimib.it}{https://www.disco.unimib.it}}.
 
 \section{Acquiring a baseline}
   
   Before even evaluating novel approaches in Reinforcement Learning it is useful to investigate which are the best base settings. This involves finding the best Reward function and the best Observation function among the implemented set of functions. To optimize these two hyperparameters, two distinct experiments have been performed in parallel, each one comparing the various implemented functions.
 
-  The QLAgent has been trained for $400k$ virtual seconds with a \textbf{monolithic} dataset containing each one of the entries of the Traffic Registry. It is then evaluated for another $400k$ virtual seconds using an evaluation dataset composed of four possible everyday scenarios comprising both low traffic and high congestions. From a technical standpoint, this complete dataset has been generated with the following schema using the \textit{generate-flow/dataset} utility:
+  The QLAgent has been trained for $400k$ virtual seconds with a \textbf{monolithic} \gls{gl:dataset} containing each one of the entries of the Traffic Registry. It is then evaluated for another $400k$ virtual seconds using an evaluation \gls{gl:dataset} composed of four possible everyday scenarios comprising both low traffic and high congestions. From a technical standpoint, this complete \gls{gl:dataset} has been generated with the following schema using the \textit{generate-flow/dataset} utility:
 
 \noindent
 \begin{minipage}{\linewidth}
@@ -29,7 +29,7 @@ All the experiments are executed with the computational resources provided by hp
 
 \paragraph{Which is the best implemented reward function?}
 
-Each of the basic reward functions (\textit{dwt, as, ql, dql, p}) have been used to train an agent with the same dataset and seeds.
+Each of the basic reward functions (\textit{dwt, as, ql, dql, p}) have been used to train an agent with the same \gls{gl:dataset} and seeds.
 These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
 
 As can be seen in Figure \ref{fig:exp-1-rew-b}, which summarizes the results in a radar plot, the \textit{DiffWaitingTime} (dwt) reward function excels among the other because it grants lower (accumulated) waiting times and is among the highest for average speed, departure rate and arrival rate.
@@ -45,7 +45,7 @@ Since its performance are notably worse, to increase the readibility of the prev
 
 \paragraph{Which is the best implemented observation function?}
 
-Each of the basic observation functions (\textit{default, s, d, q}) have been used to train an agent with the same dataset and seeds. These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
+Each of the basic observation functions (\textit{default, s, d, q}) have been used to train an agent with the same \gls{gl:dataset} and seeds. These configurations have been then evaluated with five runs each (using the same seed for each configuration but a different one for each run) and the results have been collected and analyzed.
 
 As can be seen in Figure \ref{fig:exp-1-obs-b}, the \textit{Density} (d) observation function excels among the other because it grants lower accumulated waiting times and is among the highest for average speed, departure rate and arrival rate.
 The only metric in which seems to be worse than the alternatives is the mean waiting time: vehicles are waiting in average $\sim2$ seconds more at full-stop.
@@ -70,15 +70,15 @@ Notably, every \textit{"winning"} option is among the ones with slower average s
 
 \section{Evaluating the effectiveness of Curriculum Learning}
 
-Using a proper training dataset is at least as important as choosing the right reward and observation functions.
-So far a monolithic dataset have been used in experiments.
+Using a proper training \gls{gl:dataset} is at least as important as choosing the right reward and observation functions.
+So far a monolithic \gls{gl:dataset} have been used in experiments.
 It is constructed so that the agent while training it can experience all possible types of real-world traffic imaginable.
-Such dataset can be assemble more easily with synthetic data rather than with real data because it would take a very long time for every single possibility to happear and it would be necessary to shred the collected data to synthesize a complete tape.
+Such \gls{gl:dataset} can be assemble more easily with synthetic data rather than with real data because it would take a very long time for every single possibility to happear and it would be necessary to shred the collected data to synthesize a complete tape.
 Moreover, when the network scales from a few intersections to hundreds or thousands of intersections, maybe with different shape and importance, a monolithic approach will suffer of Curse of Dimensionality.
 
-Curriculum learning can applied in this context to simplify dataset construction and hopefully enhancing the agent learning process.
-The \textbf{Curriculum Daily} dataset contains four episodes of daily traffic which represent the regular traffic on workday (2) and weekdays (2) without any kind of artificial impairments.
-The \textbf{Curriculum Daily + Disruption} dataset follows the same principle as the last dataset but replaces two regular traffic episodes with two episodes in which there is disruption.
+Curriculum learning can applied in this context to simplify \gls{gl:dataset} construction and hopefully enhancing the agent learning process.
+The \textbf{Curriculum Daily} \gls{gl:dataset} contains four episodes of daily traffic which represent the regular traffic on workday (2) and weekdays (2) without any kind of artificial impairments.
+The \textbf{Curriculum Daily + Disruption} \gls{gl:dataset} follows the same principle as the last \gls{gl:dataset} but replaces two regular traffic episodes with two episodes in which there is disruption.
 Their schemas are reported in Listings \ref{lst:dataset-schema-curriculum-daily} and \ref{lst:dataset-schema-curriculum-daily-plus-disruption}.
 
 \noindent
@@ -113,16 +113,16 @@ Their schemas are reported in Listings \ref{lst:dataset-schema-curriculum-daily}
 \end{lstlisting}
 \end{minipage}
 
-Experiment results (shown in Figure \ref{fig:exp-2-dat}) suggest that the \textbf{Curriculum Daily + Disruption} dataset grants a lower average (accumulated) waiting time while increasing the throughput with higher arrival/departure rates, all at the cost of a lower average vehicle speed. Moreover, an inspection of the metric plots over time revealed that the performances of this dataset are more stable than the ones of the \textbf{Curriculum Daily} dataset and of the \textbf{Monolithic} dataset.
+Experiment results (shown in Figure \ref{fig:exp-2-dat}) suggest that the \textbf{Curriculum Daily + Disruption} \gls{gl:dataset} grants a lower average (accumulated) waiting time while increasing the throughput with higher arrival/departure rates, all at the cost of a lower average vehicle speed. Moreover, an inspection of the metric plots over time revealed that the performances of this \gls{gl:dataset} are more stable than the ones of the \textbf{Curriculum Daily} \gls{gl:dataset} and of the \textbf{Monolithic} \gls{gl:dataset}.
 
-Collected data supports the hypothesis that \textit{Curriculum Daily + Disruption} dataset balances the best of both other datasets.
-The stability and easiness from the \textit{Curriculum Daily} dataset allows agent to incrementally learn without being permanently drown in negative rewards.
-On the other hand, the presence of disruptions as in the \textit{Monolithic} dataset allows the agent to learn to adapt to tough traffic conditions.
+Collected data supports the hypothesis that \textit{Curriculum Daily + Disruption} \gls{gl:dataset} balances the best of both other \gls{gl:dataset}[s].
+The stability and easiness from the \textit{Curriculum Daily} \gls{gl:dataset} allows agent to incrementally learn without being permanently drown in negative rewards.
+On the other hand, the presence of disruptions as in the \textit{Monolithic} \gls{gl:dataset} allows the agent to learn to adapt to tough traffic conditions.
 Notably, the peak-hour disruptions supplied in the \textit{Curriculum Daily + Disruption} are the low-to-medium volume variants of their type.
-This means that a curriculum learning driven dataset allows the agents to generalize more and learn a policy of higher quality (with respect to performance and stability) than a collage-like monolithic dataset.
+This means that a curriculum learning driven \gls{gl:dataset} allows the agents to generalize more and learn a policy of higher quality (with respect to performance and stability) than a collage-like monolithic \gls{gl:dataset}.
 As a consequence, real-world daily traffic data can be used for training without regret (with the assumption that disruptions often happen on a daily basis).
 
-\putimage{figures/exp/exp-2-dat.png}{Comparison of Monolithic, Curriculum Daily and Curriculum Daily + Disruption datasets.}{fig:exp-2-dat}{0.75}
+\putimage{figures/exp/exp-2-dat.png}{Comparison of Monolithic, Curriculum Daily and Curriculum Daily + Disruption \gls{gl:dataset}[s].}{fig:exp-2-dat}{0.75}
 
 % Does curriculum learning leads to better running performances? Yes, it can generalize more and is more stable
 % Is there a loss of knowledge due to curriculum learning not being exhaustive? Probably no
@@ -133,7 +133,7 @@ As a consequence, real-world daily traffic data can be used for training without
 The QLAgent used so far is an example of tabular method for reinforcement learning.
 In Chapter \ref{chapter:reinforcement-learning} more reinforcement learning have been presented and now the interest is in comparing \textit{simpler} \textbf{tabular} methods with the more \textit{sophisticated} \textbf{neural} methods.
 In order to evaluate the potential of those approaches, two distinct experiments were conducted comparing the different tabular/neural agents available on the same simulation conditions.
-In both the experiments, the dataset being used is \textit{Curriculum Daily + Disruption}, the observation function is \textit{Density} and the reward function is \textit{DiffWaitingTime}.
+In both the experiments, the \gls{gl:dataset} being used is \textit{Curriculum Daily + Disruption}, the observation function is \textit{Density} and the reward function is \textit{DiffWaitingTime}.
 
 \paragraph{Which is the best implemented tabular agent?}
 
@@ -271,7 +271,7 @@ However, using the observation function that share the current phase of traffic 
 
 Traffic control system cannot be thought as an immutable object which, once trained, will stay still forever.
 Traffic habits change and so do demand, usually driven by socio-economic factors but also by perception change due to drivens experiencing more or less traffic jams over time.
-Ideally, the system could need to be retrained with updated dataset every year, if not every month with small learning slots.
+Ideally, the system could need to be retrained with updated \gls{gl:dataset} every year, if not every month with small learning slots.
 What if a reinforcement learning system could automatically detect performance degradation and schedule a small training session when needed, so that it gets stronger over time?
 That's exacly what has been tried applying the Self-Adaptive algorithm explained in the last chapter.
 As usual, the DQL has been the laboratory rat with the best non-shared-view configuration available and the results of the experiment are shown in Figure \ref{fig:exp-8-sam}.
