@@ -3,6 +3,8 @@
 
 \section{Introduction}
 
+This chapter introduces the domain of vehicle transit networks, the traffic phenomenon, transit regulation infrastructure, traffic management measures and traffic modelling.
+
 \paragraph{Vehicles}
 
 This is a umbrella term for referring to any kind of entity which travels along a network.
@@ -128,14 +130,3 @@ Traffic peaks depend also on the day of the year. In those days before or after 
 
 \putimage{figures/ODGraph.Mean.Lombardia2014.png}{Traffic levels from OD Matrix of Lombardy in 2014.}{fig:odmatrix-lombardy-2014}{1.0}
 \putimage{figures/ODGraph.Mean.Milano2010.png}{Traffic levels from OD Matrix of Milan in 2010.}{fig:odmatrix-milano-2010}{1.0}
-
-\section{Settings and assumptions}
-
-I will use \gls{gl:transit} flows made up of only private vehicles (in particular, cars) and settings will reflect the case of an urban area with one main road and more intersecting side roads. Another powerful assumption is that main/side actually reflect the demand from those directions: there is no hidden disequilibrium.
-The scenario \textit{Breda} (Figure \ref{fig:setting-breda}) is inspired by Viale Monza, Milan, and has a two-lane two-way main road and two intersecting one-lane two-way roads.
-The scenario \textit{Celoria} (Figure \ref{fig:setting-celoria}) is inspired by Via Bassini, Milan, and has a two-lane two-way main road and five intersecting one-lane two-way roads.
-Since scenarios are synthetic though inspired by real city slices, also flows will be synthetic. Moreover, the distribution of vehicles over time will follow the two-peak rush hour model presented in the previous section and will provide also abnormal \gls{gl:traffic} conditions. Since the setting is a slice of a wider urban area, such slice is assumed to be tightly connected to neighbor slices as can be seen in Figure \ref{fig:city-slice-of-a-whole}, therefore vehicles are assumed to be able to enter freely in the scenario but to face a "queue" when exiting. Intersections in the network are assumed to be regulated by traffic lights, which as by baseline are synchronized with the green-wave mode of operation presented before.
-
-\putimage{figures/setting-celoria.png}{The setting "Celoria" with five intersections.}{fig:setting-celoria}{1.0}
-\putimage{figures/setting-breda.png}{The setting "Breda" with nine intersections.}{fig:setting-breda}{1.0}
-\putimage{figures/city-slice-of-a-whole.png}{The setting of simulation scenarios is a slice of a highly connected city.}{fig:city-slice-of-a-whole}{0.45}
