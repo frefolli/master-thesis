@@ -43,7 +43,7 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v2
       - name: Zip and Upload Artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: './static/'
       - name: Deploy to GitHub Pages
